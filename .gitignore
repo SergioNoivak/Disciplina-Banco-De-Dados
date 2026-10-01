@@ -1,14 +1,19 @@
 # ==========================================
-# Ignorar pastas de Notas e Dados Sensíveis
+# Ignorar EXCLUSIVAMENTE a pasta de Notas
 # ==========================================
 Aulas Latex/notas/
 **/notas/
 notas/
 
-# Arquivos de planilhas de notas
-*.xlsx
-*.xls
-*.csv
+# ==========================================
+# Ambientes Virtuais Python e Caches
+# ==========================================
+.venv/
+**/ .venv/
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
 
 # ==========================================
 # Arquivos temporários e auxiliares de LaTeX
@@ -33,15 +38,6 @@ notas/
 # Arquivos de trava do LibreOffice / Office
 # ==========================================
 .~lock.*#
-
-# ==========================================
-# Ambientes Python e Jupyter Notebook
-# ==========================================
-.venv/
-venv/
-__pycache__/
-*.pyc
-.ipynb_checkpoints/
 
 # ==========================================
 # Configurações de Sistema / IDEs
