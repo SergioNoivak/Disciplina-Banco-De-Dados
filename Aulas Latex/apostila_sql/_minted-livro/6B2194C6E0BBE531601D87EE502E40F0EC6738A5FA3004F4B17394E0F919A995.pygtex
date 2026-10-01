@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Alunos ativos (E) moradores de Goiânia}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{aluno}\PYG{+w}{ }\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{cidade}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}Goiânia\PYGZsq{}}\PYG{+w}{ }\PYG{k}{AND}\PYG{+w}{ }\PYG{n}{ativo}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{TRUE}\PYG{p}{;}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Alunos não ativos de qualquer cidade}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{aluno}\PYG{+w}{ }\PYG{k}{WHERE}\PYG{+w}{ }\PYG{k}{NOT}\PYG{+w}{ }\PYG{n}{ativo}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{TRUE}\PYG{p}{;}
+\end{Verbatim}

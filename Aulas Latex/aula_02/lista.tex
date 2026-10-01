@@ -1,0 +1,139 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática e listas
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+
+% Layout e cores
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+
+% Blocos
+\usepackage[most]{tcolorbox}
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=maincolor,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=6pt,
+  right=6pt,
+  top=6pt,
+  bottom=6pt
+}
+
+% Margens
+\geometry{margin=2.5cm}
+
+% Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+
+\renewcommand{\headrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+
+\renewcommand{\footrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+
+% Altura do cabeçalho (corrigida)
+\setlength{\headheight}{52pt}
+\addtolength{\topmargin}{-20pt}
+
+% Cabeçalho
+\fancyhead[L]{%
+  \includegraphics[height=1.2cm]{Universidade_de_Rio_Verde.jpg}
+}
+
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{%
+    \small
+    \textbf{Lista de Exercícios}\\
+    Me.~Sergio Souza Novak\\
+    \textit{Banco de Dados}
+    }
+    }
+    
+    % Rodapé
+    \fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+    
+    % =========================
+    \begin{document}
+    % =========================
+    
+    \vspace*{0.2cm}
+    \begin{center}
+      {\Large \textbf{Atividade Prática}}\\[0.2cm]
+      {\large Banco de dados}\\[0.2cm]
+      Tema: Modelo Entidade Relacionamento (MER)
+    \end{center}
+    
+    \vspace{0.5cm}
+    
+\section*{Atividade: Modelagem Entidade--Relacionamento}
+
+\subsection*{Contexto}
+
+Uma universidade deseja desenvolver um \textbf{sistema de controle acadêmico} para gerenciar informações sobre alunos, cursos, disciplinas, professores e matrículas. O sistema deverá armazenar e organizar os dados de forma consistente, permitindo consultas e relatórios acadêmicos.
+
+\subsection*{Descrição do Sistema}
+
+Considere as seguintes regras de negócio:
+
+\begin{itemize}
+  \item Cada \textbf{aluno} possui um número de matrícula único, nome, CPF, data de nascimento e e-mail.
+  \item Um \textbf{curso} possui um código identificador, nome, carga horária total e modalidade (presencial ou a distância).
+  \item Cada aluno está vinculado a \textbf{um único curso}, mas um curso pode possuir \textbf{vários alunos}.
+  \item As \textbf{disciplinas} possuem código, nome e carga horária.
+  \item Um curso é composto por \textbf{várias disciplinas}, e uma mesma disciplina pode fazer parte de \textbf{mais de um curso}.
+  \item Os \textbf{professores} possuem um identificador, nome, titulação e área de atuação.
+  \item Cada disciplina é ministrada por \textbf{um professor}, enquanto um professor pode ministrar \textbf{várias disciplinas}.
+  \item O aluno pode se matricular em várias disciplinas, e cada disciplina pode ter vários alunos matriculados.
+  \item Para cada matrícula em disciplina, devem ser armazenadas a \textbf{nota final} e a \textbf{frequência} do aluno.
+\end{itemize}
+
+\subsection*{Atividades}
+
+Com base na descrição apresentada, responda:
+
+\begin{enumerate}
+  \item Identifique as \textbf{entidades} do sistema.
+  \item Identifique os \textbf{atributos} de cada entidade, destacando as chaves primárias.
+  \item Defina os \textbf{relacionamentos} entre as entidades.
+  \item Indique as \textbf{cardinalidades} e participações (mínima e máxima) de cada relacionamento.
+  \item Elabore o \textbf{Diagrama Entidade--Relacionamento (DER)}, utilizando a notação vista em aula.
+\end{enumerate}
+
+\subsection*{Orientações}
+
+\begin{itemize}
+  \item O diagrama pode ser feito à mão (de forma legível) ou utilizando uma ferramenta de modelagem.
+  \item Utilize corretamente os conceitos de entidade forte, entidade associativa (se necessário), atributos simples e compostos.
+  \item Justifique brevemente as decisões de modelagem, quando julgar necessário.
+\end{itemize}
+
+    
+    
+
+
+% =========================
+\end{document}
+% =========================

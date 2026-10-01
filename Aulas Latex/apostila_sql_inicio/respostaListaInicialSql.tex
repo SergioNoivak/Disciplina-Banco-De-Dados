@@ -1,0 +1,229 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática e listas
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+
+% Layout e cores
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Código SQL
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  columns=fullflexible
+}
+
+% Cores institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+\usepackage[most]{tcolorbox}
+
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=maincolor,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm
+}
+
+\newtcolorbox{resposta}{%
+  colback=white,
+  colframe=forestgreen!30,
+  arc=1mm,
+  width=\textwidth,
+  boxrule=0.8pt,
+  breakable
+}
+
+\geometry{margin=2.5cm}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+\setlength{\headheight}{52pt}
+\addtolength{\topmargin}{-20pt}
+
+\fancyhead[L]{%
+  \includegraphics[height=1.2cm]{Universidade_de_Rio_Verde.jpg}
+}
+
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{%
+    \small
+    \textbf{Gabarito - Lista de Exercícios SQL}\\
+    Me.~Sergio Souza Novak\\
+    \textit{Banco de Dados I}
+  }
+}
+
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{Gabarito – Modelagem e SQL (DDL + DML)}}
+\end{center}
+
+\vspace{0.5cm}
+
+\textbf{1.}
+\begin{resposta}
+\begin{lstlisting}
+CREATE TABLE Professor (
+ id SERIAL PRIMARY KEY,
+ nome VARCHAR(100) NOT NULL,
+ cpf CHAR(11) UNIQUE NOT NULL,
+ titulacao VARCHAR(50),
+ salario DECIMAL(10,2) CHECK (salario > 0),
+ ativo BOOLEAN DEFAULT TRUE
+);
+\end{lstlisting}
+\end{resposta}
+
+\textbf{2.}
+\begin{resposta}
+\begin{lstlisting}
+CREATE TABLE Veterinario (
+ id SERIAL PRIMARY KEY,
+ nome VARCHAR(100) NOT NULL,
+ crmv VARCHAR(20) UNIQUE NOT NULL,
+ especialidade VARCHAR(50),
+ salario DECIMAL(10,2),
+ data_contratacao DATE
+);
+\end{lstlisting}
+\end{resposta}
+
+\textbf{3.}
+\begin{resposta}
+\begin{lstlisting}
+CREATE TABLE FornoIndustrial (
+ id SERIAL PRIMARY KEY,
+ modelo VARCHAR(50),
+ temperatura_maxima INTEGER CHECK (temperatura_maxima > 0),
+ capacidade_litros INTEGER,
+ data_instalacao DATE,
+ ativo BOOLEAN DEFAULT TRUE
+);
+\end{lstlisting}
+\end{resposta}
+
+\textbf{4.}
+\begin{resposta}
+\begin{lstlisting}
+CREATE TABLE Caldeira (
+ id SERIAL PRIMARY KEY,
+ fabricante VARCHAR(100),
+ pressao_maxima DECIMAL(8,2) CHECK (pressao_maxima > 0),
+ volume DECIMAL(8,2),
+ data_ultima_inspecao DATE
+);
+\end{lstlisting}
+\end{resposta}
+
+\textbf{5.}
+\begin{resposta}
+\begin{lstlisting}
+CREATE TABLE Drone (
+ id SERIAL PRIMARY KEY,
+ modelo VARCHAR(50),
+ autonomia_minutos INTEGER CHECK (autonomia_minutos > 0),
+ alcance_km DECIMAL(6,2),
+ peso DECIMAL(6,2),
+ ativo BOOLEAN DEFAULT TRUE
+);
+\end{lstlisting}
+\end{resposta}
+
+\textbf{6.}
+\begin{resposta}
+\begin{lstlisting}
+INSERT INTO Professor (nome, cpf, titulacao, salario)
+VALUES
+('Carlos Silva','12345678901','Mestre',5500.00),
+('Ana Souza','12345678902','Doutora',8200.00),
+('Marcos Lima','12345678903','Especialista',4800.00);
+\end{lstlisting}
+\end{resposta}
+
+\textbf{7.}
+\begin{resposta}
+\begin{lstlisting}
+INSERT INTO Drone (modelo, autonomia_minutos, alcance_km, peso)
+VALUES
+('DJI Mini',45,10.5,0.8),
+('Phantom X',60,15.0,1.2),
+('AgroDrone',35,8.0,2.5);
+\end{lstlisting}
+\end{resposta}
+
+\textbf{8.}
+\begin{resposta}
+\begin{lstlisting}
+SELECT nome, salario
+FROM Professor
+WHERE salario > 5000
+ORDER BY salario DESC;
+\end{lstlisting}
+\end{resposta}
+
+\textbf{9.}
+\begin{resposta}
+\begin{lstlisting}
+SELECT nome, data_contratacao
+FROM Veterinario
+WHERE data_contratacao > '2020-12-31';
+\end{lstlisting}
+\end{resposta}
+
+\textbf{10.}
+\begin{resposta}
+\begin{lstlisting}
+SELECT modelo, autonomia_minutos
+FROM Drone
+WHERE autonomia_minutos > 40;
+\end{lstlisting}
+\end{resposta}
+
+\textbf{11.}
+\begin{resposta}
+\begin{lstlisting}
+SELECT modelo, temperatura_maxima
+FROM FornoIndustrial
+WHERE ativo = TRUE
+ORDER BY temperatura_maxima DESC;
+\end{lstlisting}
+\end{resposta}
+
+\textbf{12.}
+\begin{resposta}
+\begin{lstlisting}
+SELECT fabricante, pressao_maxima
+FROM Caldeira
+WHERE pressao_maxima > 100;
+\end{lstlisting}
+\end{resposta}
+
+\vspace{0.8cm}
+
+\begin{center}
+\textit{Gabarito Oficial – Uso exclusivo do professor.}
+\end{center}
+
+\end{document}

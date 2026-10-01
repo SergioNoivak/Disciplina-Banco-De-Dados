@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{INSERT}\PYG{+w}{ }\PYG{k}{INTO}\PYG{+w}{ }\PYG{n}{nome\PYGZus{}da\PYGZus{}tabela}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{coluna1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{coluna2}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{...)}
+\PYG{k}{VALUES}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{valor1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{valor2}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{...);}
+\end{Verbatim}

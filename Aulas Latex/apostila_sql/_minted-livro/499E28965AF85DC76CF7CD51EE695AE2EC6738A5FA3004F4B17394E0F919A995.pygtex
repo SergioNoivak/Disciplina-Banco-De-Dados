@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Exibe apenas registros onde a cidade equivale a Rio Verde}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{aluno}\PYG{+w}{ }\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{cidade}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}Rio Verde\PYGZsq{}}\PYG{p}{;}
+\end{Verbatim}

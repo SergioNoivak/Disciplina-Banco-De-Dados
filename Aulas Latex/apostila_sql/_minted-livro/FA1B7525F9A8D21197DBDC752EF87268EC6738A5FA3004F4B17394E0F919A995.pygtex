@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Renomeando colunas para relatórios:}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{AS}\PYG{+w}{ }\PYG{l+s+ss}{\PYGZdq{}Nome Completo\PYGZdq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{cidade}\PYG{+w}{ }\PYG{k}{AS}\PYG{+w}{ }\PYG{l+s+ss}{\PYGZdq{}Naturalidade\PYGZdq{}}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{aluno}\PYG{p}{;}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Listando cidades únicas cadastradas, ignorando as duplicatas:}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{k}{DISTINCT}\PYG{+w}{ }\PYG{n}{cidade}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{aluno}\PYG{p}{;}
+\end{Verbatim}

@@ -1,0 +1,250 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática e listas
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{colortbl} % Necessário para colorir células de tabelas
+% Layout e cores
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{booktabs}
+% Blocos
+\usepackage[most]{tcolorbox}
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=maincolor,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=6pt,
+  right=6pt,
+  top=6pt,
+  bottom=6pt
+}
+
+% Margens
+\geometry{margin=2.5cm}
+
+% Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+\renewcommand{\headrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+
+\setlength{\headheight}{52pt}
+\addtolength{\topmargin}{-20pt}
+
+% Cabeçalho (Ajuste o caminho da imagem se necessário)
+\fancyhead[L]{%
+  %\includegraphics[height=1.2cm]{Universidade_de_Rio_Verde.jpg}
+  \textbf{UniRV} % Placeholder caso a imagem não esteja no diretório
+}
+
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{%
+    \small
+    \textbf{Lista de Exercícios Complementar}\\
+    Me.~Sergio Souza Novak\\
+    \textit{Banco de Dados}
+    }
+}
+    
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+    
+\begin{document}
+
+\begin{center}
+    \Large \textbf{Atividade Prática II — Modelagem Avançada} \\
+    \normalsize Especialização, Generalização e Agregação \\
+    \normalsize Tema: Expansão do Sistema de Ordenha
+\end{center}
+
+\vspace{0.3cm}
+\begin{table}[H]
+    \centering
+    \footnotesize 
+    \definecolor{tableheader}{RGB}{210,230,210} % Tom de verde claro para o cabeçalho
+
+    % --- ESPECIALIZAÇÃO DE FUNCIONÁRIOS ---
+    \textbf{FUNCIONARIO}\\
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{id\_func} (PK) & nome & telefone \\ \hline
+    101 & Sergio Novak & (64) 9999-0001 \\ \hline
+    102 & Ana Paula & (64) 9999-0002 \\ \hline
+    103 & Carlos Lima & (64) 9999-0003 \\ \hline
+    \end{tabular}
+
+    \vspace{0.4cm}
+
+    \begin{minipage}{0.31\textwidth}
+        \centering
+        \textbf{ORDENHADOR}\\
+        \begin{tabular}{|l|l|}
+        \hline
+        \rowcolor{tableheader} \underline{\textit{id\_func}} (FK) & experiencia \\ \hline
+        102 & Pleno \\ \hline
+        \end{tabular}
+    \end{minipage}
+    \begin{minipage}{0.31\textwidth}
+        \centering
+        \textbf{VETERINARIO}\\
+        \begin{tabular}{|l|l|}
+        \hline
+        \rowcolor{tableheader} \underline{\textit{id\_func}} (FK) & crmv \\ \hline
+        101 & CRMV-GO 55 \\ \hline
+        \end{tabular}
+    \end{minipage}
+    \begin{minipage}{0.31\textwidth}
+        \centering
+        \textbf{SUPERVISOR}\\
+        \begin{tabular}{|l|l|}
+        \hline
+        \rowcolor{tableheader} \underline{\textit{id\_func}} (FK) & bonus \\ \hline
+        103 & R\$ 500,00 \\ \hline
+        \end{tabular}
+    \end{minipage}
+
+    \vspace{0.6cm}
+
+    % --- ESPECIALIZAÇÃO DE EQUIPAMENTOS ---
+    \textbf{EQUIPAMENTO}\\
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{id\_equip} (PK) & situacao & ultima\_manutencao \\ \hline
+    E01 & Em Uso & 10/01/2026 \\ \hline
+    E02 & Disponível & 15/02/2026 \\ \hline
+    \end{tabular}
+
+    \vspace{0.4cm}
+
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \textbf{EQUIP\_MANUAL}\\
+        \begin{tabular}{|l|l|}
+        \hline
+        \rowcolor{tableheader} \underline{\textit{id\_equip}} (FK) & material \\ \hline
+        E01 & Inox \\ \hline
+        \end{tabular}
+    \end{minipage}
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \textbf{EQUIP\_ROBOTICO}\\
+        \begin{tabular}{|l|l|l|}
+        \hline
+        \rowcolor{tableheader} \underline{\textit{id\_equip}} (FK) & software & kwh \\ \hline
+        E02 & v2.4.1 & 4.5 \\ \hline
+        \end{tabular}
+    \end{minipage}
+
+    \vspace{0.6cm}
+
+    % --- AGREGAÇÃO: ATENDIMENTO E MEDICAMENTOS ---
+    \textbf{VACA}\\
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{id\_vaca} (PK) & nome & raca \\ \hline
+    V-88 & Mimosa & Holandesa \\ \hline
+    \end{tabular}
+
+    \vspace{0.4cm}
+
+    \textbf{ATENDIMENTO (Agregação entre Vet e Vaca)}\\
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{id\_atendimento} (PK) & \textit{id\_vet} (FK) & \textit{id\_vaca} (FK) & data \\ \hline
+    7001 & 101 & V-88 & 18/02/2026 \\ \hline
+    \end{tabular}
+
+    \vspace{0.4cm}
+
+    \textbf{PRESCRICAO\_MEDICAMENTO}\\
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{\textit{id\_atendimento}} (FK) & \underline{medicamento} & dosagem \\ \hline
+    7001 & Antibiótico X & 50ml \\ \hline
+    7001 & Vitamina B12 & 10ml \\ \hline
+    \end{tabular}
+\end{table}
+\section*{Objetivo}
+Aprofundar os conceitos de modelagem conceitual utilizando abstrações de alto nível: Herança (Especialização/Generalização) e Agregação, aplicadas ao cenário de gestão agropecuária.
+
+\section*{Novos Requisitos do Sistema}
+
+Com o crescimento da fazenda, o sistema de ordenha precisa de um nível de detalhamento maior para suportar novas operações administrativas e técnicas.
+
+\subsection*{1. Especialização de Funcionários}
+Atualmente, todos os colaboradores são tratados como "Funcionários". Porém, a administração exige dados específicos:
+\begin{itemize}
+    \item \textbf{Ordenhadores:} Deve-se registrar o nível de experiência (Iniciante, Pleno, Sênior).
+    \item \textbf{Veterinários:} É obrigatório o registro no CRMV (Conselho Regional de Medicina Veterinária).
+    \item \textbf{Supervisores:} Devem ter registrado o bônus de produtividade da equipe.
+\end{itemize}
+
+\subsection*{2. Especialização de Equipamentos}
+Os equipamentos de ordenha evoluíram. Agora existem:
+\begin{itemize}
+    \item \textbf{Equipamentos Manuais:} Necessitam do registro do tipo de material (Inox ou Plástico).
+    \item \textbf{Sistemas Automáticos/Robóticos:} Exigem a versão do software de controle e o consumo de energia em kW/h.
+\end{itemize}
+
+\subsection*{3. Conceito de Agregação (Atendimento Clínico)}
+A fazenda agora registra formalmente os atendimentos. Um Veterinário atende uma Vaca (Relacionamento: Atendimento). No entanto, durante este atendimento específico, o veterinário pode prescrever diversos Medicamentos. 
+\textit{Nota: O medicamento não é dado para a vaca de forma isolada, mas sim dentro do contexto de um atendimento realizado pelo veterinário.}
+
+---
+
+\section*{Atividades Propostas}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    
+    \item \textbf{Modelagem de Herança (Especialização):}
+    Crie uma hierarquia de especialização para a entidade \textbf{Funcionário}. 
+    \begin{enumerate}[label=\alph*)]
+        \item Identifique a entidade Superclasse e as Subclasses.
+        \item Defina se a especialização é \textbf{Total ou Parcial} e \textbf{Exclusiva (Disjoint) ou Compartilhada (Overlapping)}, justificando sua escolha.
+    \end{enumerate}
+
+    \item \textbf{Atributos Localizados:}
+    Refaça a entidade \textbf{Equipamento}. Utilize a técnica de especialização para separar os atributos de equipamentos \textit{Manuais} de equipamentos \textit{Robóticos}.
+
+    \item \textbf{Aplicação de Agregação:}
+    Modele o cenário onde o relacionamento entre \textbf{Veterinário} e \textbf{Vaca} deve ser "agregado" para que possa se relacionar com a entidade \textbf{Medicamento}. Demonstre isso visualmente usando o retângulo de agregação (entidade associativa).
+
+    \item \textbf{Discussão Técnica:}
+    Explique por que, no caso da \textbf{Ordenha} (Vaca, Funcionário, Equipamento), o uso de uma agregação poderia ser mais vantajoso do que um relacionamento ternário simples, considerando que cada ordenha gera um lote de leite que precisa ser testado posteriormente por um laboratório.
+
+\end{enumerate}
+
+\begin{block}{Dica dos Slides}
+Lembre-se: A \textbf{Agregação} é usada quando um relacionamento inteiro precisa ser tratado como se fosse uma entidade para se relacionar com outra. Já a \textbf{Especialização} evita o uso de atributos que ficam "nulos" para muitos registros (ex: CRMV nulo para quem não é veterinário).
+\end{block}
+
+\vspace{0.5cm}
+\begin{center}
+    \textbf{Bom trabalho!}
+\end{center}
+
+\end{document}

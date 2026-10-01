@@ -1,0 +1,1222 @@
+\documentclass[12pt,a4paper,openright]{book}
+
+% =======================
+% Pacotes básicos
+% =======================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+\usepackage{graphicx}    % Para inserir logo/imagens
+\usepackage{xcolor}      % Cores
+\usepackage{hyperref}    % Links clicáveis
+\usepackage{minted}      % Código com destaque (compilar com -shell-escape)
+\usepackage{tcolorbox}   % Caixas estilizadas
+\usepackage{titlesec}    % Para customizar títulos
+\usepackage{fancyhdr}    % Cabeçalho e rodapé
+\usepackage{tikz}        % Para desenhar capa com moldura colorida
+\usepackage{caption}
+\usepackage{subcaption}
+% =======================
+% Cores personalizadas
+% =======================
+\definecolor{verdeuni}{RGB}{0,70,40} % Verde do logo UniRV
+\definecolor{bgsql}{rgb}{0.95,0.95,0.95}
+% FIX: Para o erro do fancyhdr headheight
+\setlength{\headheight}{26pt} 
+\addtolength{\topmargin}{-1.5pt}
+% =======================
+% Cabeçalho e rodapé
+% =======================
+% --- Configuração de Cabeçalho e Rodapé ---
+\pagestyle{fancy}
+\fancyhf{}
+
+% Nome do autor no lado esquerdo
+\lhead{\color{verdeuni} \textbf{Prof. Me. Sergio Souza Novak}} 
+
+% Título do guia no lado direito
+\rhead{\textbf{\color{verdeuni}Banco de Dados}}
+
+% Número da página no centro do rodapé
+\cfoot{\thepage}
+
+% Linha horizontal colorida (opcional, combina com o estilo)
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{verdeuni}\leaders\hrule height \headrulewidth\hfill}}
+
+% =======================
+% Sumário automático
+% =======================
+\setcounter{tocdepth}{2} % mostra até subseções
+\hypersetup{
+    colorlinks=true,
+    linkcolor=verdeuni,
+    urlcolor=blue 
+}
+
+% =======================
+% Estilo de títulos
+% =======================
+\titleformat{\section}{\Large\bfseries\color{black}}{\thesection}{1em}{} % seções em preto
+\titleformat{\subsection}{\large\bfseries\color{verdeuni}}{\thesubsection}{1em}{} % subseções no verde
+
+% =======================
+% Caixa para exemplos de SQL
+% =======================
+\tcbuselibrary{minted}
+
+\newtcblisting{sqlcode}{
+    listing engine=minted,
+    minted language=sql,
+    colback=bgsql,
+    colframe=verdeuni,
+    listing only,               % só mostra código
+    title=SQL,                  % título visível
+    fonttitle=\bfseries\color{white},
+    coltitle=white,
+    colbacktitle=verdeuni
+}
+
+\newtcolorbox{diagramER}{
+    colback=white,
+    colframe=verdeuni,
+    title=Diagrama ER,
+    fonttitle=\bfseries\color{white},
+    coltitle=white,
+    colbacktitle=verdeuni,
+    boxrule=0.8pt,
+    arc=2mm,
+    left=4mm,
+    right=4mm,
+    top=3mm,
+    bottom=3mm
+}
+  
+% =======================
+% Caixa para observações
+% =======================
+\newtcolorbox{observacao}{
+    colback=green!5,
+    colframe=verdeuni,
+    boxrule=0.6mm,
+    arc=2mm,
+    left=4mm,
+    right=4mm,
+    top=3mm,
+    bottom=3mm
+}
+% =======================
+% Definição dos Blocos (FIX para o erro de Environment undefined)
+% =======================
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=verdeuni,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1pt,
+  arc=2mm,
+  left=6pt,
+  right=6pt,
+  top=6pt,
+  bottom=6pt
+}
+% =======================
+% Dados do documento
+% =======================
+\title{Banco de Dados}
+\author{Me. Sergio Souza Novak}
+\date{\today}
+% =======================
+% Página de Apresentação do Autor
+% =======================
+\newcommand{\authorpage}{
+  \newpage
+  \thispagestyle{empty} % sem cabeçalho e rodapé
+  \begin{tikzpicture}[remember picture, overlay]
+    % Fundo verde escuro
+    \fill[verdeuni] (current page.north west) rectangle (current page.south east);
+  \end{tikzpicture}
+
+  \begin{center}
+        {\color{white}\bfseries\LARGE Me. Sergio Souza Novak, autor deste livro.}
+    \vspace{1cm}
+
+    % Foto do autor
+    \includegraphics[width=5cm,height=5cm,keepaspectratio]{foto_sergio.jpeg} % coloque o nome do arquivo da sua foto
+
+    \vspace{1cm}
+    % Texto da biografia
+    \begin{minipage}{0.85\textwidth}
+      \color{white} % texto branco para contraste com o fundo verde escuro
+      \small
+      Sergio Souza Novak, nascido em 7 de dezembro de 1996 em Corbélia (PR),
+      iniciou o curso de Ciência da Computação na UNIOESTE em 2017, onde também atuou
+      como professor de apoio a pessoas com necessidades especiais, especialmente à
+      comunidade surda, nas áreas de Programação, Física e Matemática. Filho de Sergio
+      Novak, mecânico, e Rosilei de Souza Novak, doutora pela Universidade Federal do
+      Paraná (UFPR), mudou-se com a família para Rio Verde (GO) em 2018. Nesse mesmo
+      ano transferiu-se para o Instituto Federal Goiano (IF Goiano) para dar continuidade à
+      graduação, período em que também lecionou cursos de Informática na Prefeitura
+      Municipal de Rio Verde. Além de ministrar cursos na prefeitura, ainda ministrou aulas
+      em 2019 no Programa Nacional de Acesso ao Ensino Técnico e Emprego (PRONATEC),
+      do Governo Federal, para o curso de Redes de Computadores e Programação de Jogos Digitais. 
+      Tendo se formado em Bacharelado em Ciência da Computação, em 2022, trabalhou como
+      Desenvolvedor de Software em uma empresa de Belo Horizonte, Minas Gerais, chamada 
+      Engenharia Assistida por Computador (ENACOM), concomitantemente com a rotina de professor. 
+      Atuou como desenvolvedor, construindo sites por mais de dois anos na ENACOM, produtos voltados
+      à otimização de processos industriais, siderurgia e logística. Durante a pandemia de COVID-19 desenvolveu pesquisas e
+      trabalhos sobre o funcionalismo público e e, graças a parcerias com
+      pesquisadores do IF Goiano, rendendo então, publicações na área da Gestão Pública.
+      Ingressou em 2024 no Programa de Pós Graduação em Ciências Agrárias (PPGCA-AGRO),
+      nível mestrado, do Instituto Federal Goiano. Durante o mestrado, no Laboratório de Irrigação
+      do Instituto Federal Goiano, desenvolveu mais de dez (10) programas de computador registrados no Instituto Nacional
+      da Propriedade Industrial (INPI) e diversos artigos na área de Inteligência Artificial. No IF Goiano atuou em projetos
+      em outros programas de pós-graduação. Em parceria com a Pós-graduação em Biodiversidade e
+      Conservação (PPGBio), publicou trabalhos em Inteligência Artificial para detecção de Abelhas Nativas
+      do Cerrado e também na fruticultura e psicultura. Atualmente, Sergio é Mestre em Ciências Agrárias e professor na Universidade de Rio Verde (UNIRV), docente responsável pela disciplina de Banco de Dados no curso de Engenharia de Software.
+    \end{minipage}
+  \end{center}
+  \newpage
+}
+% =======================
+% Capa Estilo Tanenbaum
+% =======================
+\newcommand{\makecapa}{
+  \begin{titlepage}
+    \thispagestyle{empty}
+
+    \begin{tikzpicture}[remember picture, overlay]
+      % Faixa Superior (Topo) - Cor Verdeuni
+      \fill[verdeuni] (current page.north west) rectangle ++(\paperwidth,-6.5cm);
+      
+      % Texto do Topo: Autores e Título Principal
+      \node[anchor=north, text width=\paperwidth, align=center] at ([yshift=-1.5cm]current page.north) {
+        {\Large\sffamily\color{white}  ME. SERGIO SOUZA NOVAK } \\[0.8cm]
+        {\Huge\bfseries\sffamily\color{yellow} Banco de Dados} \\[0.4cm]
+        {\Large\sffamily\color{white} 1ª EDIÇÃO}
+      };
+
+      % Imagem Central (A ilustração de commodities que geramos)
+      % Ela fica posicionada entre as faixas, como no livro original
+      \node[anchor=center] at ([yshift=-2.2cm]current page.center) {
+        \includegraphics[width=1.02\paperwidth]{capa.jpg} % Ligeiramente maior para sangria lateral
+      };
+
+      % Faixa Inferior (Rodapé) - Cor Verdeuni
+      \fill[verdeuni] (current page.south west) rectangle ++(\paperwidth,2cm);
+      
+      % Texto do Rodapé: Instituição e Data
+      \node[anchor=south, text width=\paperwidth, align=center] at ([yshift=0.7cm]current page.south) {
+        % {\large\sffamily\color{white} \textbf{UNIVERSIDADE DE RIO VERDE} \quad | \quad \today}
+      };
+      
+      % Detalhe branco no rodapé (simulando o "Pearson" ou "Always Learning")
+      \node[anchor=south east, xshift=-1cm, yshift=0.6cm] at (current page.south east) {
+        % {\small\sffamily\color{white} UniRV}
+      };
+    \end{tikzpicture}
+
+  \end{titlepage}
+}
+
+% =======================
+% Capa personalizada
+% =======================
+\newcommand{\maketitlecustom}{
+  \begin{titlepage}
+    \thispagestyle{empty}
+    % Moldura verde escura em cima e embaixo
+    \begin{tikzpicture}[remember picture, overlay]
+      % Cabeçalho verde
+      \fill[verdeuni] (current page.north west) rectangle ++(\paperwidth,-2cm);
+      % Rodapé verde
+      \fill[verdeuni] (current page.south west) rectangle ++(\paperwidth,2cm);
+    \end{tikzpicture}
+
+    % Conteúdo centralizado na página
+    \vspace*{3cm}
+    \begin{center}
+      % Logo central grande
+\setlength{\fboxrule}{1pt}
+      \fbox{\includegraphics[width= 10cm ]{capa.jpg}}
+
+
+      \vspace{1.5cm}
+      {\Huge\bfseries\color{verdeuni} Capítulo 1 - Conhecendo as ferramentas}
+
+      \vspace{1cm}
+      {\Large Universidade de Rio Verde}
+
+    \end{center}
+
+  \end{titlepage}
+}
+
+% =======================
+% Documento
+% =======================
+\begin{document}
+
+% Capa personalizada
+\makecapa
+
+% \maketitlecustom
+\authorpage
+
+% Sumário
+\tableofcontents
+\chapter{Modelo Entidade Relacionamento}
+ 
+O desenvolvimento de um Banco de Dados para uma aplicação, antes da implementação técnica, exige uma compreensão clara e estruturada dos dados que serão manipulados. Nesse contexto, o \textbf{Diagrama Entidade-Relacionamento (DER)} desempenha um papel fundamental no processo de modelagem de dados. O Diagrama Entidade-Relacionamento é um \textbf{modelo conceitual}, utilizado para representar, de forma abstrata e organizada, a estrutura das informações de um sistema. Ele está mais próximo da visão que o usuário possui dos dados, pois descreve os elementos do mundo real que serão armazenados e como eles se conectam entre si.
+
+Por meio do DER, é possível identificar e definir:
+
+\begin{itemize}
+    \item Quais dados devem ser armazenados pela aplicação;
+    \item As entidades que representam objetos ou conceitos do domínio do problema;
+    \item Os atributos que caracterizam essas entidades;
+    \item Como esses dados se relacionam entre si.
+\end{itemize}
+
+Dessa forma, o modelo Entidade-Relacionamento serve como base para a construção do modelo lógico e, posteriormente, do banco de dados físico. Ele contribui para reduzir ambiguidades, melhorar a comunicação entre desenvolvedores e usuários e garantir que o sistema atenda corretamente aos requisitos estabelecidos. Ao longo deste livro, serão apresentados os conceitos fundamentais do modelo Entidade-Relacionamento, suas notações, regras de construção e exemplos práticos, permitindo ao leitor compreender e aplicar essa importante ferramenta no projeto de bancos de dados. Abaixo está ilustrado um diagrama desse tipo:
+\begin{diagramER}
+\begin{center}
+\includegraphics[width = 15.3cm]{er1.png}
+\end{center}
+\end{diagramER}
+
+Antes de entendermos o diagrama, vejamos a Tabela~\ref{tab:elementos_der}. A Tabela~\ref{tab:elementos_der} apresenta os principais elementos que compõem o Diagrama Entidade-Relacionamento, destacando suas representações gráficas e respectivas funções no modelo conceitual. Os retângulos identificam os conjuntos de entidades, as elipses representam os atributos que descrevem suas características, os losangos indicam os relacionamentos estabelecidos entre entidades e as linhas evidenciam as conexões estruturais entre esses componentes. Em conjunto, esses elementos permitem a representação organizada e formal das informações de um domínio, servindo como base para a modelagem lógica e posterior implementação em banco de dados.
+
+
+\begin{table}[h!]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{|p{3.5cm}|p{9cm}|}
+\hline
+\textbf{Elemento Gráfico} & \textbf{Descrição} \\ \hline
+
+\textbf{Retângulo} &
+Representa um \textit{conjunto de entidades}. Uma entidade corresponde a um objeto ou conceito do mundo real sobre o qual se deseja armazenar informações. Exemplos incluem \textit{Aluno}, \textit{Turma} ou \textit{Produto}. Cada instância da entidade possui existência própria dentro do sistema. \\ \hline
+
+\textbf{Elipse} &
+Representa um \textit{atributo}. Os atributos descrevem características ou propriedades das entidades ou dos relacionamentos. Exemplos incluem \textit{nome}, \textit{matrícula}, \textit{data\_nascimento}. Um atributo pode ser simples, composto, multivalorado ou chave. \\ \hline
+
+\textbf{Losango} &
+Representa um \textit{relacionamento}. O relacionamento descreve a associação existente entre dois ou mais conjuntos de entidades. Por exemplo, o relacionamento \textit{pertence} pode associar a entidade \textit{Aluno} à entidade \textit{Turma}. \\ \hline
+
+\textbf{Linha} &
+Representa a ligação entre elementos do diagrama. As linhas conectam atributos às entidades e entidades aos relacionamentos, indicando participação e associação estrutural no modelo conceitual. \\ \hline
+
+\end{tabular}
+
+\caption{Elementos fundamentais do Diagrama Entidade-Relacionamento}
+\label{tab:elementos_der}
+
+\end{table}
+O Diagrama Entidade-Relacionamento apresentado modela um cenário acadêmico composto pelas entidades \textit{Turma}, \textit{Aluno} e \textit{Contato}. O modelo entidade-relacionamento tem por base a percepção de que o mundo real é formado por conjunto de objetos chamados entidades e pelo conjunto dos relacionamentos entre esses objetos. Retângulos, que representam os conjuntos de entidades; Elipses, que representam os atributos; Losangos, que representam os relacionamentos entre os conjuntos de entidades; Linhas, que unem os atributos aos conjuntos de entidades e o conjunto de entidades aos seus relacionamentos.
+
+O modelo tem como objetivo representar a organização de alunos em turmas e o cadastro de contatos associados a cada aluno, evidenciando as estruturas de dados e as restrições de cardinalidade existentes no domínio analisado. A entidade \textbf{Turma} representa as unidades organizacionais às quais os alunos estão vinculados. Ela possui dois atributos: \textit{codigo}, que atua como chave primária e identifica unicamente cada turma no sistema, e \textit{nome}, que descreve a denominação da turma. A presença de uma chave primária garante a integridade da identificação das instâncias dessa entidade. A entidade \textbf{Aluno} representa os estudantes vinculados às turmas. Seus atributos são \textit{matricula}, \textit{nome} e \textit{data\_nascimento}. O atributo \textit{matricula} é definido como chave primária, sendo responsável por identificar de forma única cada aluno. Os demais atributos armazenam informações descritivas e complementares necessárias para caracterizar cada estudante.
+
+A entidade \textbf{Contato} representa os dados de contato associados aos alunos. Ela possui os atributos \textit{nome} e \textit{fone}, que registram, respectivamente, o nome do contato e o número de telefone correspondente. Essa entidade permite armazenar múltiplos registros vinculados a um mesmo aluno. O relacionamento \textbf{pertence} estabelece a associação entre as entidades \textit{Aluno} e \textit{Turma}. A cardinalidade indicada no diagrama demonstra que cada aluno deve estar obrigatoriamente vinculado a exatamente uma turma, enquanto uma turma pode estar associada a um ou vários alunos. Trata-se, portanto, de um relacionamento do tipo um-para-muitos (1:N), com participação obrigatória do lado da entidade Aluno. O relacionamento \textbf{possui} associa a entidade \textit{Aluno} à entidade \textit{Contato}. A cardinalidade apresentada indica que cada aluno possui pelo menos um contato, podendo possuir vários, enquanto cada contato está vinculado a exatamente um aluno. Esse relacionamento também é classificado como um relacionamento do tipo um-para-muitos (1:N), com participação obrigatória da entidade Contato em relação ao aluno ao qual está associado.
+
+De maneira geral, o modelo representa de forma consistente as restrições do domínio acadêmico considerado, garantindo identificação única das entidades principais e estabelecendo vínculos obrigatórios entre alunos e turmas, bem como entre alunos e seus respectivos contatos. A estrutura apresentada é adequada para posterior transformação em modelo relacional, preservando as chaves primárias e as dependências representadas pelas cardinalidades.
+
+\section{Conceito de Atributos}
+
+No modelo Entidade-Relacionamento, os \textbf{atributos} são as propriedades que descrevem as características de uma entidade ou de um relacionamento. Eles representam as informações que desejamos armazenar sobre cada ocorrência de uma entidade no sistema.
+
+Cada entidade possui um conjunto próprio de atributos que definem seus dados. Por exemplo, a entidade \textbf{Professor} pode possuir atributos como matrícula, nome e telefone. A entidade \textbf{Disciplina} pode possuir atributos como código e nome. Já a entidade \textbf{Aluno} pode possuir atributos como matrícula, nome e data de nascimento.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=15.3cm]{atributos.png}
+    \caption{Atributos do Diagrama ER.}
+    \label{fig:atributos}
+\end{figure}
+
+
+
+
+Os atributos podem ser classificados em diferentes tipos conceituais:
+
+\begin{itemize}
+    \item \textbf{Atributo simples}: não pode ser subdividido em partes menores (exemplo: matrícula).
+    \item \textbf{Atributo composto}: pode ser dividido em subpartes (exemplo: um endereço poderia ser dividido em rua, número e cidade).
+    \item \textbf{Atributo multivalorado}: pode assumir mais de um valor para a mesma entidade (exemplo: múltiplos telefones).
+    \item \textbf{Atributo identificador (chave)}: atributo responsável por identificar unicamente cada ocorrência de uma entidade.
+\end{itemize}
+
+Os atributos são fundamentais para dar significado às entidades, pois sem eles não seria possível armazenar ou diferenciar as instâncias no banco de dados.
+
+\section{Chave Primária}
+
+Em um modelo de banco de dados relacional, a \textbf{chave primária} é o atributo, ou conjunto de atributos, responsável por identificar de maneira única cada registro de uma tabela. Isso significa que não podem existir duas linhas com o mesmo valor para a chave primária, garantindo que cada tupla seja distinta dentro da relação.
+
+A principal função da chave primária é assegurar a integridade dos dados, evitando duplicidades e permitindo que cada registro seja referenciado de forma precisa. Para cumprir esse papel, ela deve apresentar algumas características fundamentais: seus valores devem ser únicos em toda a tabela, não podem assumir o valor \texttt{NULL}, devem ser preferencialmente estáveis ao longo do tempo (ou seja, não devem sofrer alterações frequentes) e devem conter apenas os atributos estritamente necessários para identificar o registro, preservando o princípio da minimalidade.
+
+Como exemplo, considere a entidade \textit{Cliente}, composta pelos atributos id\_cliente, nome e telefone. Nesse caso, o atributo \texttt{id\_cliente} é definido como chave primária, pois identifica exclusivamente cada cliente no sistema, independentemente de possíveis repetições de nome ou telefone.
+
+Em determinadas situações, a chave primária pode ser formada por mais de um atributo, caracterizando uma \textbf{chave primária composta}. Isso ocorre quando nenhum atributo isoladamente é capaz de garantir a identificação única do registro. Um exemplo comum é uma tabela que representa um relacionamento muitos-para-muitos entre as entidades \textit{Aluno} e \textit{Disciplina}. Nessa situação, a combinação dos atributos \texttt{id\_aluno} e \texttt{id\_disciplina} forma a chave primária, pois apenas o conjunto desses dois valores assegura a unicidade de cada registro.
+
+Assim, a definição adequada da chave primária é essencial no modelo relacional, pois possibilita o estabelecimento correto de relacionamentos entre tabelas, previne inconsistências e mantém a integridade referencial do banco de dados. Por esse motivo, toda tabela deve possuir uma chave primária claramente definida.
+
+\section{Conceito de Relacionamentos}
+
+Os \textbf{relacionamentos} representam as associações existentes entre duas ou mais entidades dentro do modelo. Eles indicam como as entidades se conectam e interagem no domínio do problema. Um relacionamento pode ser classificado de acordo com sua \textbf{cardinalidade}, que define o número mínimo e máximo de ocorrências de uma entidade que podem estar associadas a outra. As cardinalidades mais comuns são:
+
+\begin{itemize}
+    \item \textbf{Um-para-um (1:1)}: uma ocorrência de uma entidade está associada a apenas uma ocorrência da outra.
+    \item \textbf{Um-para-muitos (1:N)}: uma ocorrência de uma entidade pode estar associada a várias ocorrências da outra.
+    \item \textbf{Muitos-para-muitos (N:M)}: várias ocorrências de uma entidade podem estar associadas a várias ocorrências da outra.
+\end{itemize}
+
+\begin{diagramER}
+\begin{center}
+\includegraphics[width = 15.3cm]{er_1_1.png}
+\end{center}
+\end{diagramER}\begin{observacao}
+No primeiro diagrama, é apresentado um relacionamento do tipo um-para-um (1:1) entre as entidades Padrinho e Madrinha, mediado pelo relacionamento casamento. A cardinalidade (1,1) em ambos os lados indica que cada padrinho está associado a exatamente uma madrinha, e cada madrinha está associada a exatamente um padrinho dentro do contexto modelado. Isso caracteriza uma associação exclusiva entre as duas entidades. Cada entidade possui um atributo identificador destacado como chave primária id\_padrinho e id\_madrinha, cuja função é garantir a identificação única de cada ocorrência. Além disso, ambas possuem atributos descritivos, como nome. O relacionamento casamento também possui um atributo próprio, data, que armazena uma informação específica da associação entre padrinho e madrinha, demonstrando que relacionamentos também podem possuir atributos quando é necessário registrar características do vínculo entre as entidades.
+\end{observacao}
+\begin{diagramER}
+\begin{center}
+\includegraphics[width = 15.3cm]{er_1_n.png}
+\end{center}
+\end{diagramER}\begin{observacao}
+No segundo diagrama, é representado um relacionamento do tipo um-para-muitos (1:N) entre as entidades Pessoa e Computador, por meio do relacionamento possui. A cardinalidade (1,n) do lado de Pessoa indica que uma pessoa pode possuir vários computadores, enquanto a cardinalidade (1,1) do lado de Computador indica que cada computador pertence a exatamente uma pessoa. Esse tipo de modelagem é comum quando um elemento principal pode estar associado a várias ocorrências de outro elemento dependente. A entidade Pessoa possui como chave primária o atributo id\_pessoa, além do atributo descritivo nome. A entidade Computador possui id\_computador como chave primária, além dos atributos marca e modelo. Neste caso, o relacionamento não possui atributos próprios, pois a associação “possui” não necessita armazenar informações adicionais além da ligação entre as entidades.
+\end{observacao}
+
+\begin{diagramER}
+\begin{center}
+\includegraphics[width = 15.3cm]{er_n_n_.png}
+\end{center}
+\end{diagramER}
+\begin{observacao}
+No terceiro diagrama, é apresentado um relacionamento do tipo muitos-para-muitos (N:M) entre as entidades Clube e Cliente, por meio do relacionamento ação. A cardinalidade \(1,n\) em ambos os lados indica que um clube pode estar associado a vários clientes e que um cliente pode participar de vários clubes simultaneamente. Esse tipo de relacionamento representa uma associação múltipla em ambas as direções, sendo bastante comum em sistemas reais. 
+
+A entidade Clube possui id\_clube como chave primária e nome como atributo descritivo, enquanto a entidade Cliente possui id\_cliente como chave primária, além de nome e telefone. Diferentemente do caso anterior, o relacionamento ação possui atributos próprios, como data\_adesao e valor, que armazenam informações específicas da participação do cliente no clube. 
+
+Isso demonstra que, em relacionamentos muitos-para-muitos, é frequente a necessidade de registrar dados adicionais referentes à própria associação.
+\end{observacao}
+
+Além disso, os relacionamentos podem possuir atributos próprios, quando é necessário armazenar informações específicas sobre a associação entre as entidades. Portanto, enquanto as entidades representam os objetos principais do domínio e os atributos descrevem suas características, os relacionamentos estabelecem as ligações estruturais que organizam o modelo de dados.
+
+\section{Exemplo de diagrama ER}
+  O diagrama Entidade-Relacionamento apresentado é composto por três entidades principais: \textbf{Professor}, \textbf{Disciplina} e \textbf{Aluno}. Essas entidades representam os objetos fundamentais do domínio acadêmico modelado. A entidade \textbf{Professor} representa os docentes responsáveis pela oferta das disciplinas. Já a entidade \textbf{Disciplina} representa as matérias ofertadas na instituição. Por sua vez, a entidade \textbf{Aluno} representa os estudantes matriculados na instituição. Entre essas entidades existem dois relacionamentos principais. O primeiro relacionamento, denominado \textbf{leciona}, conecta as entidades \textbf{Professor} e \textbf{Disciplina}. A cardinalidade indica que cada professor participa do relacionamento com cardinalidade (1,1), enquanto cada disciplina participa com cardinalidade (1,n). Isso significa que um professor está associado a exatamente uma ocorrência no relacionamento, enquanto uma disciplina pode estar associada a uma ou várias ocorrências conforme definido no modelo. O segundo relacionamento, denominado \textbf{estuda}, conecta as entidades \textbf{Disciplina} e \textbf{Aluno}. A cardinalidade (1,n) em ambos os lados indica que uma disciplina pode estar relacionada a vários alunos e que um aluno pode estar relacionado a várias disciplinas, caracterizando um relacionamento do tipo muitos-para-muitos.
+
+Assim, o modelo descreve a estrutura básica de um sistema acadêmico no qual professores lecionam disciplinas e alunos estudam disciplinas, estabelecendo as ligações essenciais entre os principais elementos do domínio. 
+
+\begin{diagramER}
+\begin{center}
+\includegraphics[width = 15.3cm]{er2.png}
+\end{center}
+\end{diagramER}
+
+\section{Atividade prática de MER}
+
+\subsection{Objetivo}
+O objetivo desta atividade é desenvolver a capacidade de análise de requisitos e modelagem conceitual de um banco de dados por meio da construção de um \textbf{Diagrama Entidade-Relacionamento (DER)} para um sistema realista de controle de ordenha em uma fazenda leiteira.
+
+\subsection{Contexto do Sistema}
+
+\begin{center}
+    \includegraphics[width=9cm]{fazenda.png}
+    \captionof{figure}{Uma fazenda da cidade de Rio Verde. Fonte: Instagram @fazendanycolle}
+\end{center}
+
+Uma fazenda leiteira deseja informatizar o controle de suas atividades de ordenha. Atualmente, os registros são feitos manualmente, o que dificulta o acompanhamento da produção, da saúde dos animais e do desempenho dos funcionários. O sistema deverá armazenar informações sobre as vacas, as ordenhas realizadas, os funcionários responsáveis, os equipamentos utilizados e a produção de leite obtida em cada ordenha.
+
+\subsection{Descrição dos Requisitos}
+
+Abaixo são detalhados os requisitos levantados para a modelagem do sistema:
+
+\subsubsection{Vacas}
+Cada vaca da fazenda deve ser identificada por um código único. Além disso, devem ser armazenadas informações como:
+\begin{itemize}
+    \item Nome ou identificação visual;
+    \item Data de nascimento;
+    \item Raça, Peso e Status de saúde.
+\end{itemize}
+
+\subsubsection{Funcionários e Supervisão}
+A fazenda possui funcionários com diferentes atribuições:
+\begin{itemize}
+    \item \textbf{Funcionários de Campo:} Registrados por código, nome completo, função (ordenhador, etc.) e telefone.
+    \item \textbf{Supervisor:} Responsável por acompanhar o trabalho. Registra-se código, nome, telefone e turno de supervisão.
+    \item \textbf{Veterinário:} Responsável pela saúde clínica. Registra-se código, nome, registro profissional (CRMV) e telefone.
+\end{itemize}
+
+\subsubsection{Processo de Ordenha}
+A ordenha ocorre diariamente e pode acontecer mais de uma vez por dia para a mesma vaca. Cada registro de ordenha deve conter: \textbf{Data, Horário e Quantidade de leite (litros)}.
+
+\subsection{Regras de Negócio e Relacionamentos}
+
+Para facilitar o entendimento das cardinalidades, o produtor descreveu a rotina da seguinte forma:
+
+\begin{block}{Rotina de Ordenha}
+Cada vaca da fazenda é ordenhada ao longo do tempo. Em alguns períodos, a mesma vaca pode ser ordenhada mais de uma vez no mesmo dia. Sempre que ocorre uma ordenha, ela diz respeito a uma única vaca.
+\end{block}
+
+\begin{block}{Trabalho dos Funcionários}
+Os funcionários são responsáveis por realizar as ordenhas. Um mesmo funcionário pode ordenhar várias vacas ao longo do dia. No entanto, toda ordenha precisa ter alguém responsável por realizá-la.
+\end{block}
+
+\begin{block}{Uso dos Equipamentos}
+Para realizar a ordenha, podem ser usados um ou vários equipamentos (manuais, automáticos ou robóticos). Os equipamentos podem ser utilizados em diferentes ordenhas ou ficar parados para manutenção.
+\end{block}
+
+\begin{block}{Cuidado com a Saúde}
+O veterinário pode atender várias vacas ao longo do tempo e, dependendo do caso, a mesma vaca pode precisar de mais de um atendimento em momentos diferentes.
+\end{block}
+
+\begin{block}{Visão do Proprietário}
+O proprietário não participa da ordenha diretamente, mas acompanha os relatórios de produção, desempenho da equipe e utilização de equipamentos para tomada de decisão.
+\end{block}
+
+\subsection{Atividades Propostas}
+
+Com base na descrição acima, realize a modelagem conceitual seguindo os passos:
+\begin{enumerate}
+    \item Identifique todas as \textbf{entidades} do sistema.
+    \item Para cada entidade, defina seus \textbf{atributos} e a \textbf{chave primária}.
+    \item Modele os \textbf{relacionamentos} (ex: Vaca \textit{sofre} Ordenha).
+    \item Defina as \textbf{cardinalidades} (1:1, 1:N, N:M) e a \textbf{participação} (total ou parcial).
+    \item Identifique se há necessidade de atributos nos relacionamentos.
+\end{enumerate}
+
+\begin{observacao}
+\textbf{Instruções de Entrega:}
+O Diagrama Entidade-Relacionamento deve ser feito de forma legível (à mão ou ferramenta digital como brModelo/Lucidchart). O arquivo final deve ser convertido para \textbf{PDF} e conter apenas o diagrama finalizado.
+\end{observacao}
+
+\subsection{Critérios de Avaliação}
+A avaliação considerará a correta identificação das entidades, adequação das chaves primárias, precisão das cardinalidades frente às regras de negócio e a organização visual do diagrama.
+
+\vspace{0.5cm}
+
+\chapter{Introdução ao SQL e ao pgAdmin 4}
+
+SQL é a sigla para \textit{Structured Query Language} (Linguagem de Consulta Estruturada). Trata-se de uma linguagem padrão utilizada para manipular e gerenciar bancos de dados relacionais. Um \textbf{banco de dados relacional} organiza as informações em \textbf{tabelas}, compostas por \textbf{linhas} (registros) e \textbf{colunas} (atributos). Esse modelo foi formalizado por Edgar F. Codd na década de 1970 e tornou-se o paradigma dominante em sistemas de gerenciamento de dados. A linguagem SQL permite realizar diversas operações fundamentais no gerenciamento de bancos de dados relacionais, tais como a criação de bancos de dados e tabelas, a inserção de novos registros, a consulta de informações específicas por meio de critérios definidos, a atualização de dados já existentes, a remoção de registros e o controle de permissões de acesso dos usuários ao sistema.É importante destacar que o SQL é utilizado por diversos Sistemas Gerenciadores de Banco de Dados (SGBDs), como o \textit{PostgreSQL}, o MySQL, o Oracle Database e o SQL Server.
+
+De forma didática, podemos dividir os comandos SQL em categorias:
+\begin{itemize}
+    \item \textbf{DDL (Data Definition Language)}: comandos de definição de estrutura, como \texttt{CREATE}, \texttt{ALTER} e \texttt{DROP}.
+    \item \textbf{DML (Data Manipulation Language)}: comandos de manipulação de dados, como \texttt{INSERT}, \texttt{UPDATE}, \texttt{DELETE}.
+    \item \textbf{DQL (Data Query Language)}: comandos de consulta, como \texttt{SELECT}.
+    \item \textbf{DCL (Data Control Language)}: comandos de controle de acesso, como \texttt{GRANT} e \texttt{REVOKE}.
+\end{itemize}
+
+
+
+
+
+
+
+
+
+Um exemplo simples de consulta em SQL é:
+
+\begin{sqlcode}
+SELECT nome, idade
+FROM alunos
+WHERE idade > 18;
+\end{sqlcode}
+
+Nesse exemplo, o comando solicita a exibição dos campos \texttt{nome} e \texttt{idade} da tabela \texttt{alunos}, considerando apenas os registros em que a idade seja maior que 18 anos. Esse exemplo poderia retornar a tabela abaixo, dependendo dos dados armazenados:
+\begin{center}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Nome} & \textbf{Idade} & \textbf{CPF} \\
+\hline
+Ana Silva & 20 & 123.456.789-00 \\
+Carlos Lima & 22 & 987.654.321-00 \\
+Mariana Souza & 19 & 456.789.123-00 \\
+\hline
+\end{tabular}
+\end{center}
+
+
+
+
+
+\section{pgAdmin 4}
+O pgAdmin 4 é uma ferramenta gráfica utilizada para administrar bancos de dados do sistema PostgreSQL. Ele funciona como uma interface visual que facilita a interação com o banco de dados, especialmente para usuários iniciantes, pois permite executar tarefas administrativas sem a necessidade de memorizar todos os comandos da linguagem SQL. A Figura \ref{fig:interface_pgAdmin4} apresenta a interface do pgAdmin 4, destacando os principais painéis e recursos disponíveis para gerenciamento de bancos de dados PostgreSQL.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15.3cm]{interface_pgAdmin4.png}
+    \caption{Interface do pgAdmin 4.}
+    \label{fig:interface_pgAdmin4}
+\end{figure}
+
+Enquanto o SQL é a linguagem utilizada para escrever comandos e realizar consultas diretamente no banco de dados, o pgAdmin 4 é o ambiente que possibilita criar e configurar servidores PostgreSQL, criar bancos de dados, tabelas e relacionamentos por meio de recursos gráficos, executar comandos SQL em um editor integrado, visualizar e editar dados em formato tabular, gerenciar usuários e permissões e monitorar as atividades do servidor.
+
+O pgAdmin 4 pode ser executado tanto como aplicação desktop quanto por meio de navegador web. Sua interface é organizada em painéis, normalmente estruturados em um navegador de objetos (que apresenta a árvore de bancos de dados e seus componentes), um editor de consultas (Query Tool), no qual os comandos SQL são digitados e executados, e uma área destinada à exibição de resultados e mensagens do sistema.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15.3cm]{pgadmin_vs_postgresql.png}
+    \caption{Comparação entre pgAdmin 4 e PostgreSQL.}
+    \label{fig:pgadmin_vs_postgresql}
+\end{figure}
+
+Há de se ressaltar que o pgAdmin 4 é uma ferramenta de administração e desenvolvimento para bancos de dados PostgreSQL, enquanto o PostgreSQL é o sistema gerenciador de banco de dados relacional em si. O pgAdmin 4 serve como uma interface gráfica para facilitar a interação com o PostgreSQL, permitindo que os usuários criem, configurem e gerenciem seus bancos de dados de maneira mais intuitiva, sem a necessidade de utilizar exclusivamente a linha de comando ou scripts SQL.
+
+
+
+\section{Iniciando o PostgreSQL no Windows}
+No ambiente Windows, o PostgreSQL é gerenciado como um serviço do sistema. Muitas vezes, após a instalação ou um reinício, o serviço pode estar interrompido, impedindo a conexão via pgAdmin ou terminal.
+
+\section{Método 1: Gerenciador de Serviços (Interface Gráfica)}
+Este é o método mais simples para usuários que preferem não utilizar linhas de comando.
+
+\begin{enumerate}
+    \item Pressione as teclas \textbf{Win + R}, digite \texttt{services.msc} e aperte Enter.
+    \item Na lista de serviços, procure por \textbf{postgresql-x64-[versão]} (ex: postgresql-x64-16).
+    \item Clique com o botão direito sobre o nome do serviço.
+    \item Selecione \textbf{Iniciar} (Start) ou \textbf{Reiniciar} (Restart).
+\end{enumerate}
+
+
+
+\section{Método 2: Linha de Comando (Prompt/PowerShell)}
+Para ativar o serviço via terminal, você deve executar o Prompt de Comando como \textbf{Administrador}.
+
+\subsection{Iniciar o Serviço}
+\begin{sqlcode}
+net start postgresql-x64-16
+\end{sqlcode}
+
+\subsection{Parar o Serviço}
+\begin{sqlcode}
+net stop postgresql-x64-16
+\end{sqlcode}
+\textit{*Nota: Substitua "16" pela versão que você instalou.}
+
+\section{Verificação de Variáveis de Ambiente}
+Para utilizar o comando \texttt{psql} em qualquer lugar do terminal, o caminho da pasta \texttt{bin} do PostgreSQL deve estar no \textbf{PATH} do sistema.
+
+\begin{itemize}
+    \item Caminho padrão: \texttt{C:\textbackslash Program Files\textbackslash PostgreSQL\textbackslash 16\textbackslash bin}
+\end{itemize}
+
+\section{Teste de Conexão}
+Após ativar o serviço, teste a conexão no terminal:
+\begin{sqlcode}
+psql -U postgres
+\end{sqlcode}
+O sistema solicitará a senha definida durante a instalação.
+
+\section{A Porta Padrão (5432)}
+O PostgreSQL utiliza, por padrão, a porta \textbf{5432} para comunicações TCP/IP. 
+Esta porta é o "endereço do guichê" onde o serviço escuta as requisições de clientes como o pgAdmin, DBeaver ou aplicações Java/Python.
+
+\begin{itemize}
+    \item \textbf{Localização do arquivo:} A porta pode ser alterada no arquivo \texttt{postgresql.conf}, na linha \texttt{port = 5432}.
+    \item \textbf{Firewall:} Certifique-se de que a porta 5432 está liberada nas regras de entrada do Windows se for acessar o banco de outra máquina.
+\end{itemize}
+
+\section{Credenciais de Acesso}
+Para este ambiente, utilizaremos as seguintes credenciais:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Parâmetro} & \textbf{Valor} \\ \hline
+Usuário            & \texttt{unirv} \\ \hline
+Senha              & \texttt{unirv} \\ \hline
+Porta              & 5432           \\ \hline
+Host               & localhost      \\ \hline
+\end{tabular}
+\caption{Resumo das credenciais de conexão.}
+\end{table}
+
+\section{Comando para Criação do Usuário}
+Como o PostgreSQL inicia apenas com o usuário \texttt{postgres}, é necessário executar o comando abaixo para habilitar o novo usuário:
+
+\begin{sqlcode}
+-- Criar usuario com senha e privilégios de criação de banco
+CREATE USER unirv WITH PASSWORD 'unirv' CREATEDB;
+
+-- Caso queira que ele seja um superusuario (uso acadêmico)
+ALTER USER unirv WITH SUPERUSER;
+\end{sqlcode}
+
+\section{String de Conexão (URL)}
+Em muitas linguagens de programação, a conexão é feita através de uma única linha:
+\begin{center}
+    \texttt{postgresql://unirv:unirv@localhost:5432/nome\_do\_banco}
+\end{center}
+
+
+\section{Atividade Prática: Modelagem de Dados}
+
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Exercício Dirigido com o Professor]
+Nesta etapa, realizaremos a modelagem lógica da nossa primeira entidade. Sob a orientação do professor, analise os atributos necessários para representar uma \textbf{Pessoa} no sistema. 
+
+O objetivo é compreender como as regras de negócio do mundo real se transformam em restrições (\textit{constraints}) no PostgreSQL.
+\end{tcolorbox}
+
+\subsection{Estrutura Lógica da Tabela \texttt{pessoa}}
+
+Abaixo, detalhamos a estrutura que será implementada. Preste atenção aos tipos de dados e às propriedades de cada campo:
+
+\begin{itemize}
+    \item \textbf{id}: Chave Primária (\textit{Primary Key}). Será do tipo \texttt{SERIAL} para garantir que o identificador seja autoincrementado e exclusivo.
+    \item \textbf{nome}: Nome completo. Campo \textbf{obrigatório} (\textit{NOT NULL}), definido como \texttt{VARCHAR(100)}.
+    \item \textbf{cpf}: Cadastro de Pessoa Física. Deve ser \textbf{único} (\textit{UNIQUE}) e \textbf{obrigatório}, garantindo que não haja duplicidade de registros.
+    \item \textbf{email}: Endereço eletrônico. Também deve ser \textbf{único}, permitindo o uso como login ou canal de comunicação exclusivo.
+    \item \textbf{data\_nascimento}: Campo do tipo \texttt{DATE}, essencial para o cálculo de idade e validações de maioridade.
+    \item \textbf{criado\_em}: Registro automático de auditoria. Armazena a data e hora exata em que o registro foi inserido no banco.
+\end{itemize}
+
+
+
+\vspace{0.5cm}
+\begin{center}
+\textit{\textbf{Nota para o aluno:} Durante a explicação do professor, anote quais desses campos poderiam ser opcionais em um cenário real e quais devem ser sempre protegidos por restrições de integridade.}
+\end{center}
+
+\begin{figure}[H]
+     \centering
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{Pessoa_ER.png}
+         \caption{Diagrama ER}
+         \label{fig:atributosER}
+     \end{subfigure}
+     \hfill
+     \begin{subfigure}[b]{0.45\textwidth}
+         \centering
+         \includegraphics[width=\textwidth]{PessoaLogico.png}
+         \caption{Diagrama Lógico}
+         \label{fig:atributos_logico}
+     \end{subfigure}
+     \caption{Modelagem da Entidade Pessoa: Visão ER e Lógica.}
+     \label{fig:modelagem_pessoa}
+\end{figure}
+\section{Script SQL de Criação}
+
+O código abaixo executa a criação da tabela no schema \texttt{public}.
+
+\begin{sqlcode}
+CREATE TABLE pessoa (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf CHAR(11) UNIQUE NOT NULL,
+    email VARCHAR(150) UNIQUE,
+    data_nascimento DATE,
+    ativo BOOLEAN DEFAULT TRUE,
+    criado_em TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Adicionar um comentário na tabela para documentação
+
+COMMENT ON TABLE pessoa IS 'Tabela que armazena dados cadastrais de pessoas físicas';
+\end{sqlcode}
+
+\section{Operações Básicas (DML)}
+
+\subsection{Inserção de Dados}
+Para inserir um novo registro, utilize o comando abaixo:
+
+\begin{sqlcode}
+INSERT INTO pessoa (nome, cpf, email, data_nascimento) 
+VALUES ('João Silva', '12345678901', 'joao@email.com', '1990-05-15');
+\end{sqlcode}
+
+\subsection{Consulta}
+Para listar todas as pessoas cadastradas:
+
+\begin{sqlcode}
+SELECT id, nome, email FROM pessoa WHERE ativo = TRUE;
+\end{sqlcode}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15.3cm]{execucao_select_primeira_tabela.png}
+    \caption{Execução do comando SELECT na tabela pessoa.}
+    \label{fig:execucao_select_pessoa}
+\end{figure}
+
+
+\section{Comando SELECT: Estrutura e Funcionalidades}
+
+\begin{sqlcode}
+SELECT nome, salario
+FROM funcionarios
+WHERE salario > 30020
+ORDER BY salario DESC; 
+\end{sqlcode}
+
+O comando \texttt{SELECT} é utilizado para realizar consultas em um banco de dados relacional. Sua principal finalidade é recuperar dados armazenados em uma ou mais tabelas, permitindo ao usuário visualizar informações específicas conforme determinados critérios.
+
+A estrutura básica do comando é:
+
+\begin{sqlcode}
+SELECT coluna1, coluna2, ...
+FROM nome_da_tabela;
+\end{sqlcode}
+
+Nesse formato, especificam-se as colunas que se deseja visualizar após a palavra-chave \texttt{SELECT}, enquanto a cláusula \texttt{FROM} indica a tabela de onde os dados serão obtidos. Caso seja necessário retornar todas as colunas da tabela, pode-se utilizar o caractere curinga \texttt{*}, como no exemplo:
+
+\begin{sqlcode}
+SELECT * FROM alunos;
+\end{sqlcode}
+
+Além disso, o comando \texttt{SELECT} pode ser combinado com outras cláusulas para refinar a consulta. Entre as mais utilizadas estão:
+
+\begin{itemize}
+    \item \texttt{WHERE}: filtra registros de acordo com uma condição lógica;
+    \item \texttt{ORDER BY}: organiza os resultados em ordem crescente ou decrescente;
+    \item \texttt{GROUP BY}: agrupa registros para aplicação de funções agregadas;
+    \item \texttt{HAVING}: define condições sobre grupos;
+    \item \texttt{LIMIT}: restringe a quantidade de registros retornados (em alguns SGBDs).
+\end{itemize}
+
+Por exemplo:
+
+\begin{sqlcode}
+SELECT nome, idade
+FROM alunos
+WHERE idade > 18
+ORDER BY idade DESC;
+\end{sqlcode}
+
+Nesse caso, a consulta retorna apenas os alunos com idade superior a 18 anos, organizando o resultado em ordem decrescente de idade.Portanto, o comando \texttt{SELECT} é a base das operações de consulta em SQL, sendo essencial para a extração e análise de dados em sistemas de gerenciamento de bancos de dados relacionais.
+
+\subsection{Praticando Filtros e Ordenação: WHERE e ORDER BY}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!40!black,title=Exercício Dirigido com o Professor: Refinando a Busca]
+Em sistemas reais, um banco de dados pode conter milhões de registros. Retornar todos os dados de uma vez não é apenas ineficiente, mas muitas vezes inútil para o usuário final. Sob a orientação do professor, vamos testar na nossa tabela \texttt{Pessoa} como extrair apenas a informação exata que precisamos.
+\end{tcolorbox}
+
+\subsection{A Cláusula \texttt{WHERE} (Onde)}
+
+A cláusula \texttt{WHERE} atua como um "peneira". Ela avalia cada linha da tabela e retorna apenas aquelas que satisfazem uma condição lógica. Podemos usar operadores de comparação como \texttt{=}, \texttt{>}, \texttt{<}, \texttt{>=}, \texttt{<=} e \texttt{<>} (diferente).
+
+
+
+Por exemplo, se quisermos encontrar apenas os usuários que estão com o cadastro ativo em nosso sistema:
+
+\begin{sqlcode}
+-- O banco de dados retornará apenas as linhas onde 'ativo' for verdadeiro
+SELECT nome, email 
+FROM pessoa 
+WHERE ativo = TRUE;
+\end{sqlcode}
+
+Outro exemplo comum é o uso com datas. Vamos buscar todas as pessoas que nasceram após o ano 2000:
+
+\begin{sqlcode}
+SELECT nome, data_nascimento 
+FROM pessoa 
+WHERE data_nascimento > '2000-12-31';
+\end{sqlcode}
+
+\subsection{A Cláusula \texttt{ORDER BY} (Ordenar Por)}
+
+Enquanto o \texttt{WHERE} decide \textit{quais} linhas serão exibidas, o \texttt{ORDER BY} decide \textit{em qual ordem} elas aparecerão na tela. A ordenação pode ser feita em duas direções:
+
+\begin{itemize}
+    \item \textbf{\texttt{ASC}} (Ascendente): Ordem crescente (A-Z, 0-9, datas mais antigas para as mais recentes). Se você não especificar a direção, o SQL usará \texttt{ASC} por padrão.
+    \item \textbf{\texttt{DESC}} (Descendente): Ordem decrescente (Z-A, 9-0, datas mais recentes para as mais antigas).
+\end{itemize}
+Se o professor pedir para organizar a lista de pessoas em ordem alfabética inversa (de Z a A), o comando será:
+\begin{sqlcode}
+SELECT nome, cpf 
+FROM pessoa 
+ORDER BY nome DESC;
+\end{sqlcode}
+
+\subsubsection{Juntando as Peças}
+
+O verdadeiro poder do SQL aparece quando combinamos essas cláusulas. É importante notar que \textbf{a ordem dos comandos importa}: o \texttt{WHERE} sempre deve vir antes do \texttt{ORDER BY}.
+
+Vamos resolver um cenário prático: \textit{"Liste o nome e a data de nascimento de todas as pessoas com cadastro ativo, ordenando das mais velhas para as mais novas"}.
+
+\begin{sqlcode}
+SELECT nome, data_nascimento
+FROM pessoa
+WHERE ativo = TRUE
+ORDER BY data_nascimento ASC;
+\end{sqlcode}
+
+
+\subsection{Restringindo e Agrupando Resultados: LIMIT e HAVING}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!40!black,title=Exercício Dirigido com o Professor: Top Resultados e Agrupamentos]
+À medida que nosso banco de dados cresce, algumas perguntas mudam. Em vez de perguntar "Quais são todos os usuários?", passamos a perguntar "Quais são os 5 usuários mais recentes?" ou "Quantos usuários ativos temos em comparação aos inativos?". Acompanhe com o professor como responder a essas perguntas de negócios.
+\end{tcolorbox}
+
+\subsubsection{A Cláusula \texttt{LIMIT} (Limite de Linhas)}
+
+A cláusula \texttt{LIMIT} é extremamente útil para \textbf{paginação} (como quando você avança para a "página 2" de uma pesquisa no Google) ou para buscar os resultados do "Top N" (os maiores, menores, mais recentes, etc.). Ela simplesmente corta o resultado final para exibir apenas a quantidade de linhas especificada.
+
+
+\textbf{Exemplo Prático:} Se o professor pedir para listar apenas as \textbf{3 pessoas cadastradas mais recentemente}, precisamos ordenar pela data de criação de forma decrescente e, em seguida, aplicar o limite:
+
+\begin{sqlcode}
+-- Traz os 3 registros mais novos
+SELECT nome, criado_em
+FROM pessoa
+ORDER BY criado_em DESC
+LIMIT 3;
+\end{sqlcode}
+
+\subsubsection{A Cláusula \texttt{HAVING} (Filtro de Grupos)}
+
+Para entender o \texttt{HAVING}, primeiro precisamos lembrar do \texttt{GROUP BY} (Agrupar Por), que une registros que possuem valores idênticos em uma ou mais colunas, permitindo o uso de funções matemáticas como \texttt{COUNT()} (contar), \texttt{SUM()} (somar) ou \texttt{AVG()} (média).
+
+A grande confusão dos alunos iniciantes é: \textit{Qual a diferença entre WHERE e HAVING?}
+\begin{itemize}
+    \item O \textbf{\texttt{WHERE}} filtra \textbf{linhas individuais} ANTES de serem agrupadas.
+    \item O \textbf{\texttt{HAVING}} filtra \textbf{os grupos} DEPOIS que eles foram formados.
+\end{itemize}
+
+\textbf{Exemplo Prático:} Vamos agrupar as pessoas pelo status (\texttt{ativo} = \texttt{TRUE} ou \texttt{FALSE}) e contar quantas pessoas existem em cada grupo. Porém, o professor solicitou que a consulta mostre \textbf{apenas os grupos que possuam mais de 10 pessoas}. 
+
+Como a restrição "mais de 10" é baseada no resultado de uma contagem (um grupo), \textbf{não podemos usar o WHERE}. Usamos o \texttt{HAVING}:
+
+\begin{sqlcode}
+SELECT ativo, COUNT(id) AS total_pessoas
+FROM pessoa
+GROUP BY ativo
+HAVING COUNT(id) > 10;
+\end{sqlcode}
+
+\vspace{0.5cm}
+\begin{tcolorbox}[colback=red!5,colframe=red!70!black,title=Atenção à Ordem de Execução!]
+O banco de dados SQL segue uma ordem estrita para ler o seu comando. Se você for usar todas as cláusulas que aprendemos até agora em uma única consulta, a ordem \textbf{obrigatória} no código deve ser:
+\begin{enumerate}
+    \item \texttt{SELECT} (O que mostrar)
+    \item \texttt{FROM} (De qual tabela)
+    \item \texttt{WHERE} (Filtro de linhas)
+    \item \texttt{GROUP BY} (Como agrupar)
+    \item \texttt{HAVING} (Filtro de grupos)
+    \item \texttt{ORDER BY} (Ordem de exibição final)
+    \item \texttt{LIMIT} (Quantidade final de linhas)
+\end{enumerate}
+\end{tcolorbox}
+
+
+
+\section{Estudo Dirigido: Agrupamentos e a Cláusula \texttt{HAVING}}
+
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Objetivo da Atividade]
+Neste exercício, vamos simular um sistema de vendas para entender como o SQL pode realizar cálculos complexos e filtrar resultados baseados em agregados (somas), algo que o \texttt{WHERE} não consegue fazer sozinho.
+\end{tcolorbox}
+
+\subsection{Passo 1: Criando o Cenário de Teste}
+
+O primeiro passo é criar uma tabela temporária. Tabelas do tipo \texttt{TEMP} existem apenas durante a sua sessão atual no banco de dados.
+
+\begin{sqlcode}
+-- 1. Criar tabela de vendas rápida
+CREATE TEMP TABLE vendas (
+    id SERIAL,
+    produto VARCHAR(50),
+    categoria VARCHAR(50),
+    valor DECIMAL(10,2)
+);
+\end{sqlcode}
+
+\subsection{Passo 2: Populando a Tabela}
+
+Vamos inserir dados que nos permitam comparar categorias diferentes. Observe que a categoria 'Eletrônicos' terá um valor total maior que 'Papelaria'.
+
+\begin{sqlcode}
+-- 2. Inserir dados para teste
+INSERT INTO vendas (produto, categoria, valor) VALUES
+('Teclado', 'Eletrônicos', 80.00),
+('Mouse',   'Eletrônicos', 50.00),  -- Soma Eletrônicos: 130.00
+('Caderno', 'Papelaria',   15.00),
+('Caneta',  'Papelaria',    5.00);  -- Soma Papelaria: 20.00
+\end{sqlcode}
+
+\subsection{Passo 3: A Consulta de Faturamento}
+
+
+
+Agora, execute a query abaixo. O objetivo é listar o faturamento total por categoria, mas \textbf{excluir} do relatório qualquer categoria que tenha vendido menos de 100.00 no total.
+
+\begin{sqlcode}
+-- 3. Testar a query com HAVING
+SELECT categoria, SUM(valor) AS faturamento_total
+FROM vendas
+GROUP BY categoria
+HAVING SUM(valor) > 100.00;
+\end{sqlcode}
+
+\begin{tcolorbox}[colback=orange!5,colframe=orange!75!black,title=Questionário de Reflexão]
+Após executar os comandos acima, discuta com o professor:
+\begin{enumerate}
+    \item Por que a categoria 'Papelaria' não apareceu no resultado final?
+    \item Se mudarmos o valor do \texttt{HAVING} para \texttt{10.00}, o que acontece?
+    \item Tente substituir \texttt{HAVING SUM(valor) > 100.00} por \texttt{WHERE SUM(valor) > 100.00}. Qual erro o PostgreSQL retorna? Por que isso acontece?
+\end{enumerate}
+\end{tcolorbox}
+
+\subsection{Diferença Crucial: WHERE vs HAVING}
+
+Para nunca mais esquecer:
+\begin{itemize}
+    \item \textbf{WHERE}: Filtra os dados \textbf{antes} da soma (ex: excluir o produto 'Caneta' antes de somar).
+    \item \textbf{HAVING}: Filtra os dados \textbf{depois} da soma (ex: olhar o total da categoria e decidir se mostra ou não).
+\end{itemize}
+
+\section{Análise Avançada: Funções de Agregação e Comportamento do Agrupamento}
+
+Nesta etapa do estudo dirigido, vamos analisar como o banco de dados se comporta quando alteramos a lógica da nossa "pergunta". O código abaixo prepara uma base com diferentes estados de atividade para testarmos a sensibilidade das funções \texttt{COUNT} e \texttt{SUM}.
+
+\subsection{Script de Preparação}
+
+Observe que estamos lidando com restrições de integridade (\textit{Unique}) e valores padrão (\textit{Default}).
+
+\begin{sqlcode}
+DROP TABLE IF EXISTS PESSOA;
+
+CREATE TABLE PESSOA (
+    ID SERIAL PRIMARY KEY,
+    NOME VARCHAR(100) NOT NULL,
+    CPF CHAR(11) UNIQUE NOT NULL,
+    EMAIL VARCHAR(150) UNIQUE,
+    DATA_NASCIMENTO DATE,
+    ATIVO BOOLEAN DEFAULT TRUE,
+    CRIADO_EM TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Inserindo dois registros inativos
+INSERT INTO PESSOA (NOME, CPF, EMAIL, DATA_NASCIMENTO, ATIVO)
+VALUES ('João Silva', '12345678900', 'joao@email.com', '1996-12-07', false),
+       ('Camila Santana', '12345678901', 'camila@email.com', '1996-12-07', false);
+
+-- Inserindo um registro ativo (padrão)
+INSERT INTO PESSOA (NOME, CPF, EMAIL, DATA_NASCIMENTO)
+VALUES ('João Silv1a', '12345678902', 'joao2@email.com', '1996-12-07');
+\end{sqlcode}
+
+\subsection{Discussão: COUNT vs SUM}
+
+A consulta original utiliza a função \texttt{COUNT(ID)}. Mas o que aconteceria se tentássemos usar \texttt{SUM}?
+
+
+
+\begin{sqlcode}
+-- Consulta A: Contagem por grupo
+SELECT ATIVO, COUNT(ID) AS TOTAL_PESSOAS 
+FROM PESSOA 
+GROUP BY ATIVO;
+\end{sqlcode}
+
+\begin{tcolorbox}[colback=red!5,colframe=red!75!black,title=Conceito Fundamental]
+\begin{itemize}
+    \item \textbf{COUNT(ID)}: Conta quantas \textbf{linhas} existem no grupo. Funciona com qualquer tipo de dado (números, texto, datas, booleanos). No nosso exemplo, resultará em 2 para \textit{false} e 1 para \textit{true}.
+    \item \textbf{SUM(coluna)}: Tenta realizar uma \textbf{adição aritmética} dos valores. Só funciona com tipos de dados numéricos (inteiros, decimais).
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{O que acontece se alterarmos para SUM?}
+
+Se tentarmos rodar \texttt{SELECT ATIVO, SUM(ID) FROM PESSOA GROUP BY ATIVO;}, o banco somará os valores numéricos das Chaves Primárias.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Função} & \textbf{Lógica} & \textbf{Resultado (para ATIVO = false)} \\ \hline
+    \texttt{COUNT(ID)} & 1 + 1 (duas ocorrências) & \textbf{2} \\ \hline
+    \texttt{SUM(ID)} & ID 1 + ID 2 (soma dos valores) & \textbf{3} \\ \hline
+    \end{tabular}
+    \caption{Diferença de resultado entre contar e somar.}
+\end{table}
+
+
+
+\begin{tcolorbox}[colback=orange!5,colframe=orange!70!black,title=Reflexão para o Aluno]
+\textbf{Pergunta:} Por que não poderíamos usar \texttt{SUM(NOME)}?
+\end{tcolorbox}
+
+\section{Tipos de Dados Básicos no PostgreSQL}
+
+A escolha do tipo de dado correto é uma das etapas mais importantes da modelagem. No PostgreSQL, cada coluna deve ter um tipo definido para que o SGBD saiba como armazenar e processar aquela informação.
+
+
+
+\subsection{Principais Categorias}
+
+Abaixo, apresentamos os tipos mais utilizados em aplicações comerciais e acadêmicas:
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{Categoria} & \textbf{Tipo SQL} & \textbf{Descrição / Exemplo} \\ \hline
+        \textbf{Numéricos} & \texttt{INTEGER} & Números inteiros (ex: idade, quantidade). \\ \cline{2-3} 
+         & \texttt{DECIMAL} ou \texttt{NUMERIC} & Números reais com precisão (ex: salário, preço). \\ \cline{2-3} 
+         & \texttt{SERIAL} & Inteiro autoincrementado (usado para IDs). \\ \hline
+        \textbf{Texto} & \texttt{VARCHAR(n)} & Texto de tamanho variável com limite $n$. \\ \cline{2-3} 
+         & \texttt{CHAR(n)} & Texto de tamanho fixo (ex: CPF, UF). \\ \cline{2-3} 
+         & \texttt{TEXT} & Texto de tamanho ilimitado (ex: descrições). \\ \hline
+        \textbf{Data/Hora} & \texttt{DATE} & Apenas data (AAAA-MM-DD). \\ \cline{2-3} 
+         & \texttt{TIMESTAMP} & Data e hora combinadas. \\ \hline
+        \textbf{Lógicos} & \texttt{BOOLEAN} & Valores verdadeiro (\texttt{TRUE}) ou falso (\texttt{FALSE}). \\ \hline
+    \end{tabular}
+    \caption{Tipos de dados fundamentais no PostgreSQL.}
+\end{table}
+
+\subsection{Diferenças Importantes para o Desenvolvedor}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!40!black,title=Dica do Professor: CHAR vs VARCHAR]
+Uma dúvida comum é quando usar \texttt{CHAR} ou \texttt{VARCHAR}. 
+\begin{itemize}
+    \item Use \textbf{\texttt{CHAR(n)}} para dados que \textbf{sempre} têm o mesmo tamanho, como um campo \textit{Estado} (UF) que sempre terá 2 letras ou um \textit{CPF} com 11 dígitos.
+    \item Use \textbf{\texttt{VARCHAR(n)}} para nomes, e-mails ou endereços, onde o tamanho muda de uma pessoa para outra. Isso economiza espaço de armazenamento.
+\end{itemize}
+\end{tcolorbox}
+
+
+
+\subsection{Tipos Numéricos com Precisão}
+
+Para lidar com dinheiro (moeda), nunca utilize tipos de ponto flutuante (\textit{float}), pois eles podem apresentar arredondamentos imprecisos. Utilize sempre:
+
+\begin{sqlcode}
+-- Exemplo: Salario com 10 digitos no total, sendo 2 decimais
+salario DECIMAL(10,2)
+\end{sqlcode}
+
+\vspace{0.5cm}
+ 
+\section{Criação de Tabelas: O Comando \texttt{CREATE TABLE}}
+
+Após o planejamento no Diagrama Entidade-Relacionamento (ER), o próximo passo é a implementação física no SGBD. Para isso, utilizamos a linguagem de definição de dados (\textit{Data Definition Language} - DDL) através do comando \texttt{CREATE TABLE}.
+
+Este comando define não apenas o nome da tabela, mas também quais colunas ela terá, seus tipos de dados e suas regras de integridade.
+
+\subsection{Sintaxe Básica}
+
+A estrutura fundamental do comando segue o padrão abaixo:
+
+\begin{sqlcode}
+CREATE TABLE nome_da_tabela (
+    coluna1 tipo_de_dado restricoes,
+    coluna2 tipo_de_dado restricoes,
+    ...
+    colunaN tipo_de_dado restricoes
+);
+\end{sqlcode}
+
+
+
+\subsection{Restrições de Integridade (\textit{Constraints})}
+
+As restrições são regras aplicadas às colunas para garantir que os dados inseridos sejam válidos e consistentes. Sem elas, o banco de dados correria o risco de ter informações duplicadas ou incompletas.
+
+As principais restrições são:
+
+\begin{itemize}
+    \item \textbf{\texttt{PRIMARY KEY}}: Identifica unicamente cada registro. Não permite valores nulos nem repetidos.
+    \item \textbf{\texttt{NOT NULL}}: Garante que a coluna não aceite valores vazios (campo obrigatório).
+    \item \textbf{\texttt{UNIQUE}}: Garante que todos os valores na coluna sejam distintos (ex: CPF, e-mail).
+    \item \textbf{\texttt{DEFAULT}}: Define um valor padrão caso nenhum seja informado na inserção.
+\end{itemize}
+
+\subsection{Exemplo Comentado}
+
+Vamos analisar a criação da tabela \texttt{produto}, aplicando os conceitos aprendidos:
+
+\begin{sqlcode}
+CREATE TABLE produto (
+    id SERIAL PRIMARY KEY,            -- ID autoincrementado e chave primaria
+    nome VARCHAR(100) NOT NULL,      -- Nome obrigatorio
+    preco DECIMAL(10,2) NOT NULL,    -- Preco com 2 casas decimais
+    estoque INTEGER DEFAULT 0,       -- Se nao informado, comeca com 0
+    sku CHAR(8) UNIQUE               -- Codigo unico de produto
+);
+\end{sqlcode}
+
+
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!40!black,title=Dica do Professor: Planejamento]
+Antes de digitar o comando no terminal, sempre valide se os tipos de dados escolhidos suportam as necessidades do negócio. Mudar a estrutura de uma tabela (\texttt{ALTER TABLE}) depois que ela já possui milhões de registros é uma tarefa muito mais complexa e arriscada.
+\end{tcolorbox}
+
+
+\section{Inserção de Dados: O Comando \texttt{INSERT INTO}}
+
+Após criar a estrutura das tabelas com o \texttt{CREATE TABLE}, o próximo passo é popular o banco de dados. O comando \texttt{INSERT} é utilizado para inserir novos registros (linhas) em uma tabela existente.
+
+
+
+\subsection{Sintaxe Básica}
+
+Existem duas formas principais de utilizar este comando. A mais segura e recomendada é especificar explicitamente as colunas onde os dados serão inseridos:
+
+\begin{sqlcode}
+INSERT INTO nome_da_tabela (coluna1, coluna2, ...)
+VALUES (valor1, valor2, ...);
+\end{sqlcode}
+
+\subsection{Regras Cruciais para Inserção}
+
+Para que a inserção ocorra sem erros, o desenvolvedor deve seguir algumas regras fundamentais de sintaxe e integridade:
+
+\begin{itemize}
+    \item \textbf{Textos e Datas}: Devem sempre estar entre aspas simples (ex: \texttt{'João Silva'}, \texttt{'2024-05-10'}).
+    \item \textbf{Números}: Não utilizam aspas (ex: \texttt{1500.50}, \texttt{25}).
+    \item \textbf{Ordem}: A ordem dos valores no \texttt{VALUES} deve ser exatamente a mesma das colunas listadas.
+    \item \textbf{Campos Obrigatórios}: Colunas com a restrição \texttt{NOT NULL} devem obrigatoriamente receber um valor, a menos que possuam um \texttt{DEFAULT}.
+\end{itemize}
+
+\subsection{Prática: Inserindo Dados na Tabela Pessoa}
+
+Vamos aplicar o comando à tabela que modelamos anteriormente. Observe que não precisamos inserir o campo \texttt{ID}, pois ele é do tipo \texttt{SERIAL} e o banco o gera automaticamente.
+
+\begin{sqlcode}
+-- Insercao especificando as colunas
+INSERT INTO pessoa (nome, cpf, email, data_nascimento)
+VALUES ('Ana Souza', '12345678910', 'ana@email.com', '1992-08-24');
+
+-- Insercao de multiplos registros em um unico comando
+INSERT INTO pessoa (nome, cpf, email)
+VALUES 
+    ('Carlos Luz', '98765432100', 'carlos@email.com'),
+    ('Beatriz Vaz', '55544433322', 'beatriz@email.com');
+\end{sqlcode}
+
+
+
+\begin{tcolorbox}[colback=red!5,colframe=red!40!black,title=Atenção: Erros de Restrição]
+Se você tentar inserir um CPF que já existe ou deixar de preencher um campo \texttt{NOT NULL}, o PostgreSQL impedirá a operação e retornará um erro de \textbf{violação de restrição}. Isso garante que o banco de dados nunca aceite dados inválidos ou "sujos".
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!40!black,title=Dica do Professor: Omissions]
+Campos que possuem \texttt{DEFAULT} (como o campo \texttt{ativo} ou \texttt{criado\_em} da nossa tabela) podem ser omitidos no \texttt{INSERT}. O PostgreSQL preencherá automaticamente com o valor padrão definido na criação da tabela.
+\end{tcolorbox}
+
+\vspace{0.5cm}
+\begin{center}
+
+\end{center}
+
+
+% \begin{observacao}
+% Observe que usamos \texttt{ORDER BY} para ordenar os resultados de forma decrescente.
+% \end{observacao}
+
+% \section{Exercício}
+% Crie uma tabela de clientes com os campos \texttt{id}, \texttt{nome} e \texttt{email}.
+
+% \begin{sqlcode}
+% CREATE TABLE clientes (
+%     id INT PRIMARY KEY,
+%     nome VARCHAR(100) NOT NULL,
+%     email VARCHAR(150) UNIQUE
+% );
+% \end{sqlcode}
+
+\end{document}
+  

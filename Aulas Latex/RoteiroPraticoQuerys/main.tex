@@ -1,0 +1,666 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática e listas
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{longtable}
+
+% Layout e cores
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+\definecolor{sqlblue}{RGB}{0,60,120}
+\definecolor{sqlbg}{RGB}{240,245,255}
+\definecolor{warnyellow}{RGB}{255,200,0}
+\definecolor{warnbg}{RGB}{255,252,230}
+\definecolor{okgreen}{RGB}{0,130,60}
+\definecolor{okbg}{RGB}{230,255,240}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+
+% TikZ para diagramas
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, backgrounds}
+
+% listingsSQL
+\usepackage{listings}
+\lstdefinestyle{sqlstyle}{
+  language=SQL,
+  backgroundcolor=\color{sqlbg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{sqlblue}\bfseries,
+  stringstyle=\color{red!60!black},
+  commentstyle=\color{gray}\itshape,
+  numberstyle=\tiny\color{gray},
+  numbers=left,
+  stepnumber=1,
+  numbersep=6pt,
+  frame=single,
+  framerule=1pt,
+  rulecolor=\color{sqlblue!40},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4,
+  showstringspaces=false,
+  captionpos=b,
+  xleftmargin=10pt,
+  xrightmargin=4pt,
+  morekeywords={SERIAL,VARCHAR,DECIMAL,REFERENCES,CASCADE,
+                CONSTRAINT,ADD,IF,NOT,EXISTS,PRIMARY,FOREIGN,
+                KEY,DEFAULT,DATE,TIME,INT,ALTER,TABLE,ONLY,
+                GENERATED,ALWAYS,AS,VIRTUAL,STORED,STRFTIME,
+                JULIANDAY,ABS,RANDOM}
+}
+\lstset{style=sqlstyle}
+
+% Blocos coloridos
+\usepackage[most]{tcolorbox}
+
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=maincolor,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=6pt, right=6pt, top=6pt, bottom=6pt
+}
+
+\newtcolorbox{dica}{%
+  colback=okbg,
+  colframe=okgreen,
+  coltitle=white,
+  title=\textbf{Dica Prática},
+  fonttitle=\bfseries\small,
+  boxrule=1pt,
+  arc=2mm,
+  left=6pt, right=6pt, top=4pt, bottom=4pt
+}
+
+\newtcolorbox{atencao}{%
+  colback=warnbg,
+  colframe=orange!80!black,
+  coltitle=white,
+  title=\textbf{Atenção},
+  fonttitle=\bfseries\small,
+  boxrule=1pt,
+  arc=2mm,
+  left=6pt, right=6pt, top=4pt, bottom=4pt
+}
+
+\newtcolorbox{exercbox}[1]{%
+  colback=blue!3,
+  colframe=sqlblue,
+  coltitle=white,
+  title=Exercício #1,
+  fonttitle=\bfseries\small,
+  boxrule=1pt,
+  arc=2mm,
+  left=6pt, right=6pt, top=4pt, bottom=4pt
+}
+
+\newtcolorbox{resposta}{%
+  colback=white,
+  colframe=gray!40,
+  arc=0mm,
+  height=5cm,
+  left=6pt, right=6pt, top=6pt, bottom=6pt,
+  title=\textit{Resposta:},
+  coltitle=gray!80,
+  fonttitle=\bfseries\small,
+  attach title to upper
+}
+
+% Margens
+\geometry{margin=2.5cm}
+
+% Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+\renewcommand{\headrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+\setlength{\headheight}{52pt}
+\addtolength{\topmargin}{-20pt}
+\fancyhead[L]{%
+  \includegraphics[height=1.2cm]{Universidade_de_Rio_Verde.jpg}
+}
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{%
+    \small
+    \textbf{Roteiro Prático --- Banco de Dados}\\
+    Me.~Sergio Souza Novak\\
+    \textit{Banco de Dados}
+  }
+}
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+
+% ──────────────────────────────────────────────
+\begin{document}
+% ──────────────────────────────────────────────
+
+
+\section{Criação da Tabela Alunos}
+\begin{block}{Tabela Alunos}
+Será construída a tabela \texttt{alunos} com as colunas:
+\begin{itemize}
+    \item \texttt{id} - identificador único (chave primária)
+    \item \texttt{nome} - nome do aluno
+    \item \texttt{idade} - idade do aluno
+    \item \texttt{curso} - curso em que o aluno está matriculado
+\end{itemize}
+\end{block}
+
+\vspace{1em}
+\begin{center}
+\begin{tikzpicture}[
+    node distance=1.5cm and 2.5cm,
+    entity/.style={rectangle, draw=maincolor, fill=maincolor!10, thick,
+                   minimum width=3cm, minimum height=1cm},
+    attribute/.style={ellipse, draw=sqlblue, fill=sqlblue!5, thin,
+                      minimum width=2.4cm, font=\footnotesize},
+    line/.style={draw, -}
+]
+    % Entidade
+    \node[entity] (aluno) {ALUNOS};
+
+    % Atributos
+    \node[attribute] (id)        [above left=of aluno]  {\underline{id}};
+    \node[attribute] (nome)      [above right=of aluno] {nome};
+    \node[attribute] (idade)     [below left=of aluno]  {idade};
+    \node[attribute] (curso)     [below right=of aluno] {curso};
+
+    % Conexões
+    \draw[line] (aluno) -- (id);
+    \draw[line] (aluno) -- (nome);
+    \draw[line] (aluno) -- (idade);
+    \draw[line] (aluno) -- (curso);
+\end{tikzpicture}
+\end{center}
+
+\vspace{1.5em}
+\begin{block}{Registros para Inserção}
+A tabela a seguir apresenta 20 registros de exemplo a serem inseridos na tabela \texttt{alunos}.
+
+\vspace{0.8em}
+\begin{center}
+{\tiny
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{%
+    >{\centering\arraybackslash}p{1cm}
+    >{\raggedright\arraybackslash}p{5cm}
+    >{\centering\arraybackslash}p{2cm}
+    >{\raggedright\arraybackslash}p{6cm}}
+\toprule
+\textbf{id} & \textbf{nome} & \textbf{idade} & \textbf{curso} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{id} & \textbf{nome} & \textbf{idade} & \textbf{curso} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+1  & William          & 30 & Engenharia de Software \\
+2  & João             & 18 & Engenharia de Software \\
+3  & Maria            & 22 & Direito \\
+4  & José             & 18 & Letras \\
+5  & Ana              & 20 & Medicina \\
+6  & Carlos           & 25 & Agronomia \\
+7  & Beatriz          & 19 & Psicologia \\
+8  & Fernando         & 21 & Arquitetura \\
+9  & Helena           & 23 & Engenharia Civil \\
+10 & Ricardo          & 24 & Economia \\
+11 & Juliana          & 20 & Pedagogia \\
+12 & Marcos           & 22 & Odontologia \\
+13 & Fernanda         & 19 & Veterinária \\
+14 & Gabriel          & 21 & Fisioterapia \\
+15 & Larissa          & 23 & Nutrição \\
+16 & Roberto          & 26 & Administração \\
+17 & Patrícia         & 20 & Enfermagem \\
+18 & Samuel           & 22 & Ciência da Computação \\
+19 & Amanda           & 19 & Publicidade \\
+20 & Igor             & 21 & Educação Física \\
+\end{longtable}
+} % end \tiny
+\end{center}
+\end{block}
+
+\vspace{1em}
+\begin{block}{Comando SQL --- Definição e Inserção}
+\begin{lstlisting}
+-- Remocao e criacao da tabela
+DROP TABLE IF EXISTS Alunos;
+CREATE TABLE Alunos(
+  id INTEGER PRIMARY KEY,
+  nome VARCHAR(255) NOT NULL,
+  idade INTEGER NOT NULL,
+  curso VARCHAR(255) NOT NULL
+);
+
+-- Insercao dos 20 registros
+INSERT INTO Alunos (nome, idade, curso) VALUES
+('William', 30, 'Engenharia de Software'),
+('Joao', 18, 'Engenharia de Software'),
+('Maria', 22, 'Direito'),
+('Jose', 18, 'Letras'),
+('Ana', 20, 'Medicina'),
+('Carlos', 25, 'Agronomia'),
+('Beatriz', 19, 'Psicologia'),
+('Fernando', 21, 'Arquitetura'),
+('Helena', 23, 'Engenharia Civil'),
+('Ricardo', 24, 'Economia'),
+('Juliana', 20, 'Pedagogia'),
+('Marcos', 22, 'Odontologia'),
+('Fernanda', 19, 'Veterinaria'),
+('Gabriel', 21, 'Fisioterapia'),
+('Larissa', 23, 'Nutricao'),
+('Roberto', 26, 'Administracao'),
+('Patricia', 20, 'Enfermagem'),
+('Samuel', 22, 'Ciencia da Computacao'),
+('Amanda', 19, 'Publicidade'),
+('Igor', 21, 'Educacao Fisica');
+\end{lstlisting}
+\end{block}
+\section{Atualização de Dados (UPDATE)}
+
+O comando \texttt{UPDATE} é utilizado para modificar registros já existentes em uma tabela. Diferente do \texttt{INSERT}, que adiciona novas linhas, o \texttt{UPDATE} altera os valores de colunas em linhas que já constam no banco de dados.
+
+\begin{block}{Sintaxe e Exemplo}
+A sintaxe básica envolve definir qual tabela será alterada, quais colunas receberão novos valores (\texttt{SET}) e qual condição deve ser atendida para que a alteração ocorra (\texttt{WHERE}).
+
+Exemplo de atualização da idade da aluna Maria:
+\begin{lstlisting}
+UPDATE Alunos 
+SET idade = 20 
+WHERE nome = 'Maria';
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Outros Exemplos Práticos}
+Abaixo estão mais 6 variações do comando \texttt{UPDATE} para diferentes cenários:
+
+\begin{lstlisting}
+-- 1. Alterar o curso de um aluno especifico pelo ID
+UPDATE Alunos SET curso = 'Sistemas de Informacao' WHERE id = 5;
+
+-- 2. Atualizar multiplas colunas ao mesmo tempo
+UPDATE Alunos SET nome = 'William Silva', idade = 31 WHERE id = 1;
+
+-- 3. Alterar a idade de todos os alunos de Engenharia
+UPDATE Alunos SET idade = 19 WHERE curso LIKE 'Engenharia%';
+
+-- 4. Incrementar a idade de todos os alunos (Aniversario)
+UPDATE Alunos SET idade = idade + 1;
+
+-- 5. Corrigir o nome de um curso para todos os registros
+UPDATE Alunos SET curso = 'Direito Penal' WHERE curso = 'Direito';
+
+-- 6. Atualizar registros em um intervalo de IDs
+UPDATE Alunos SET idade = 21 WHERE id BETWEEN 10 AND 15;
+\end{lstlisting}
+\end{block}
+
+\begin{atencao}
+É fundamental utilizar a cláusula \texttt{WHERE} em comandos \texttt{UPDATE}. Caso ela seja omitida, o banco de dados aplicará a alteração em \textbf{todos} os registros da tabela, o que pode causar perda acidental de dados.
+\end{atencao}
+\section{Boas Práticas: Idade vs. Data de Nascimento}
+
+Em projetos de banco de dados reais, \textbf{não é recomendado} armazenar a idade do usuário diretamente. Isso ocorre porque a idade é um dado volátil (muda a cada ano), o que exigiria atualizações constantes no banco de dados.
+
+A melhor prática é armazenar a \textbf{data de nascimento} e calcular a idade dinamicamente sempre que necessário.
+
+\begin{block}{Alterando a Estrutura (ALTER TABLE)}
+Para corrigir nossa tabela, primeiro devemos remover a coluna \texttt{idade} e adicionar a coluna \texttt{data\_nascimento}.
+
+\begin{lstlisting}
+-- 1. Remover a coluna obsoleta
+ALTER TABLE Alunos DROP COLUMN idade;
+
+-- 2. Adicionar a coluna de data de nascimento
+ALTER TABLE Alunos ADD COLUMN data_nascimento DATE;
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Preenchendo Dados Aleatórios}
+Como removemos a coluna de idade e adicionamos a de nascimento, os registros atuais estão com a nova coluna vazia. Podemos usar uma técnica avançada do SQLite para gerar datas de nascimento aleatórias para teste.
+
+\begin{lstlisting}
+UPDATE Alunos
+SET data_nascimento = date(
+    '1970-01-01',
+    (abs(random()) % (julianday('2025-12-31') - julianday('1970-01-01'))) || ' days'
+);
+\end{lstlisting}
+
+Nesse comando, usamos \texttt{julianday} para converter datas em números de dias, calculamos um intervalo aleatório e somamos à data base.
+\end{block}
+
+\begin{block}{Calculando a Idade na Consulta (SELECT)}
+Para exibir a idade sem armazená-la, realizamos o cálculo diretamente no \texttt{SELECT}. A fórmula abaixo é precisa, pois subtrai 1 ano caso o aluno ainda não tenha feito aniversário no ano corrente.
+
+\begin{lstlisting}
+SELECT
+  id,
+  nome,
+  curso,
+  data_nascimento,
+  (STRFTIME('%Y', 'now') - STRFTIME('%Y', data_nascimento)) - 
+  (STRFTIME('%m-%d', 'now') < STRFTIME('%m-%d', data_nascimento)) AS idade
+FROM Alunos;
+\end{lstlisting}
+\end{block}
+
+\begin{dica}
+A expressão \texttt{(data\_atual < data\_aniversario)} retorna 1 (verdadeiro) ou 0 (falso) no SQLite, permitindo esse ajuste automático de forma elegante.
+\end{dica}
+\section{Análise de Normalização e Design de Dados}
+
+Abaixo, analisaremos como o design da nossa tabela se comporta ao lidar com relacionamentos do mundo real.
+
+\begin{block}{Cenário: O Problema da Duplicação}
+O problema surge quando tentamos representar que um aluno está matriculado em mais de um curso ao mesmo tempo. 
+
+Conceitualmente, temos a relação: \textbf{Ana $\rightarrow$ \{Engenharia de Computação, Direito\}}.
+
+Ao inserirmos essa informação na estrutura atual:
+\begin{lstlisting}
+INSERT INTO Alunos (nome, curso, data_nascimento)
+VALUES ('Ana', 'Direito', '2021-07-27');
+\end{lstlisting}
+
+O resultado no banco gera uma duplicação de toda a entidade ``Ana'':
+
+\begin{center}
+{\tiny
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{cccc}
+\toprule
+\textbf{id} & \textbf{nome} & \textbf{curso} & \textbf{data\_nascimento} \\
+\midrule
+5  & Ana  & Engenharia de Computação & 2021-07-27 \\
+13 & Ana  & Direito                  & 2021-07-27 \\
+\bottomrule
+\end{longtable}
+}
+\end{center}
+
+Essa duplicação de linhas é um sinal claro de que a tabela não está corretamente normalizada para o domínio, pois mistura dados do \textit{Aluno} com dados da \textit{Matrícula}.
+\end{block}
+
+\begin{block}{Solução: Modelagem Correta (Separação de Entidades)}
+Para corrigir esse problema e eliminar a redundância, devemos separar as informações em duas tabelas distintas:
+
+\textbf{1. Tabela Alunos (id, nome, data\_nascimento)}
+\begin{center}
+{\tiny
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{id} & \textbf{nome} & \textbf{data\_nascimento} \\ \hline
+5 & Ana & 2021-07-27 \\ \hline
+\end{tabular}
+}
+\end{center}
+
+\textbf{2. Tabela Aluno\_Curso (id\_aluno, curso)}
+\begin{center}
+{\tiny
+\begin{tabular}{|c|c|}
+\hline
+\textbf{id\_aluno} & \textbf{curso} \\ \hline
+5 & Engenharia de Computação \\ \hline
+5 & Direito \\ \hline
+\end{tabular}
+}
+\end{center}
+\end{block}
+
+\begin{atencao}
+Ao normalizar dessa forma, cada informação é armazenada em apenas um lugar. Se precisarmos alterar a data de nascimento da Ana, faremos isso em apenas um registro na tabela \texttt{Alunos}, sem risco de inconsistências.
+\end{atencao}
+\section{Migração de Dados: Criando a Tabela Curso}
+
+Para implementar a modelagem correta que discutimos, o primeiro passo é extrair os nomes dos cursos que já existem na tabela \texttt{Alunos} para uma nova tabela dedicada.
+
+\begin{block}{Identificando Cursos Únicos}
+Podemos usar a cláusula \texttt{GROUP BY} para listar todos os cursos distintos que temos atualmente:
+
+\begin{lstlisting}
+SELECT curso FROM Alunos GROUP BY curso;
+\end{lstlisting}
+
+O resultado será uma lista única que servirá de base para nossa nova tabela:
+
+\begin{center}
+{\tiny
+\begin{tabular}{|l|}
+\hline
+\textbf{curso} \\ \hline
+Direito \\ \hline
+Engenharia de Computação \\ \hline
+Letras \\ \hline
+Medicina \\ \hline
+\end{tabular}
+}
+\end{center}
+\end{block}
+
+\begin{block}{Criando e Populando a Tabela Curso}
+Agora, criamos a tabela \texttt{Curso} e utilizamos o comando \texttt{INSERT INTO ... SELECT} para migrar os dados automaticamente.
+
+\begin{lstlisting}
+-- 1. Criar a nova tabela
+CREATE TABLE Curso (
+  id INTEGER PRIMARY KEY,
+  nome VARCHAR
+);
+
+-- 2. Migrar os dados da tabela Alunos para Curso
+INSERT INTO Curso (nome)
+SELECT curso FROM Alunos GROUP BY curso;
+\end{lstlisting}
+\end{block}
+
+\begin{dica}
+O uso de \texttt{INSERT INTO ... SELECT} é uma técnica poderosa para reestruturar bancos de dados existentes, permitindo que você popule novas tabelas diretamente a partir de consultas em tabelas antigas.
+\end{dica}
+\section{Relacionando as Tabelas (JOIN)}
+
+Com a tabela \texttt{Curso} criada e populada, o próximo passo é descobrir qual o ID numérico correspondente para cada curso textual que está na tabela \texttt{Alunos}. Para isso, utilizamos o comando \texttt{JOIN}.
+
+\begin{block}{Consulta de Relacionamento}
+A consulta abaixo une as duas tabelas comparando o nome do curso na tabela original com o nome na nova tabela de cursos.
+
+\begin{lstlisting}
+SELECT Alunos.id, Curso.id
+FROM Alunos
+JOIN Curso ON Alunos.curso = Curso.nome;
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Resultado do Mapeamento}
+O resultado desta consulta nos mostra a relação entre o ID do aluno e o novo ID do curso:
+
+\begin{center}
+{\tiny
+\begin{longtable}{cc}
+\toprule
+\textbf{id (Aluno)} & \textbf{id (Curso)} \\
+\midrule
+1 & 2 \\
+2 & 2 \\
+4 & 3 \\
+5 & 2 \\
+6 & 1 \\
+7 & 2 \\
+8 & 4 \\
+9 & 1 \\
+10 & 2 \\
+11 & 4 \\
+12 & 2 \\
+13 & 1 \\
+\bottomrule
+\end{longtable}
+}
+\end{center}
+\end{block}
+
+\section{Finalizando a Normalização: A Tabela Associativa}
+
+O passo final para resolver o problema da redundância e da má modelagem é a criação de uma tabela associativa (ou tabela de ligação). Esta tabela ligará os alunos aos seus respectivos cursos através de chaves estrangeiras.
+
+\begin{block}{Criando a Tabela AlunoCurso}
+A tabela \texttt{AlunoCurso} armazena apenas IDs, referenciando as chaves primárias das tabelas \texttt{Alunos} e \texttt{Curso}.
+
+\begin{lstlisting}
+CREATE TABLE AlunoCurso (
+  id INTEGER PRIMARY KEY,
+  aluno_id INTEGER,
+  curso_id INTEGER,
+  FOREIGN KEY (aluno_id) REFERENCES Alunos(id),
+  FOREIGN KEY (curso_id) REFERENCES Curso(id)
+);
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Populando a Tabela Associativa}
+Agora, utilizamos a mesma lógica de \texttt{JOIN} que testamos anteriormente para inserir os dados de forma automatizada:
+
+\begin{lstlisting}
+INSERT INTO AlunoCurso (aluno_id, curso_id)
+SELECT Alunos.id, Curso.id
+FROM Alunos
+JOIN Curso ON Alunos.curso = Curso.nome;
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Verificação Final}
+Para conferir o resultado da nossa normalização, basta consultar a nova tabela:
+
+\begin{lstlisting}
+SELECT * FROM AlunoCurso;
+\end{lstlisting}
+\end{block}
+
+\begin{atencao}
+Agora que os dados estão na tabela \texttt{AlunoCurso}, a coluna \texttt{curso} na tabela original \texttt{Alunos} tornou-se obsoleta e poderia ser removida para completar o processo de limpeza do banco de dados.
+\end{atencao}
+\section{Refatoração de Esquema: O Padrão Rename-Create-Insert}
+
+Em bancos de dados como o SQLite, algumas alterações estruturais (como adicionar chaves estrangeiras a colunas existentes ou remover colunas antigas) não podem ser feitas diretamente com um simples \texttt{ALTER TABLE}. Para isso, utilizamos um padrão profissional de refatoração.
+
+\begin{block}{Passo 1: Atualização com Subquery Correlacionada}
+Antes de mudar a estrutura, precisamos preencher a nova coluna \texttt{curso\_id} com os valores corretos baseados nos nomes dos cursos.
+
+\begin{lstlisting}
+UPDATE Alunos
+SET curso_id = (SELECT Curso.id FROM Curso WHERE Curso.nome = Alunos.curso)
+WHERE curso_id IS NULL;
+\end{lstlisting}
+
+\textit{O que ocorre aqui?} Para cada linha da tabela \texttt{Alunos}, o banco executa uma pequena consulta interna na tabela \texttt{Curso}, encontra o ID que tem o mesmo nome do curso e "traz" esse número para a coluna \texttt{curso\_id}.
+\end{block}
+
+\begin{block}{Passo 2: Reconstrução da Tabela (O Ciclo de Refatoração)}
+Agora que temos os IDs, vamos oficializar a nova estrutura. Como o SQLite não permite adicionar restrições de \texttt{FOREIGN KEY} em tabelas já criadas, seguimos estes 4 passos:
+
+\begin{lstlisting}
+-- 1. Renomear a tabela original para manter os dados seguros
+ALTER TABLE Alunos RENAME TO Alunos_old;
+
+-- 2. Criar a nova tabela Alunos com o esquema perfeito
+CREATE TABLE Alunos (
+  id INTEGER PRIMARY KEY,
+  nome VARCHAR(255) NOT NULL,
+  data_nascimento DATE,
+  curso_id INTEGER,
+  FOREIGN KEY (curso_id) REFERENCES Curso(id)
+);
+
+-- 3. Migrar os dados da tabela temporaria para a nova
+INSERT INTO Alunos (id, nome, data_nascimento, curso_id)
+SELECT id, nome, data_nascimento, curso_id FROM Alunos_old;
+
+-- 4. Excluir a tabela antiga
+DROP TABLE Alunos_old;
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Verificação do Novo Esquema}
+Agora, ao consultar a tabela, veremos que ela está limpa e devidamente relacionada por IDs, não mais por textos:
+\begin{lstlisting}
+SELECT * FROM Alunos;
+\end{lstlisting}
+\end{block}
+
+\begin{dica}
+Este processo de "Rename-Create-Insert-Drop" é a maneira padrão e mais segura de realizar mudanças profundas em esquemas de bancos de dados sem perder dados existentes.
+\end{dica}
+\section{Consultas Avançadas: Múltiplos JOINs e Aliases}
+
+Em um banco de dados normalizado, as informações costumam estar espalhadas por várias tabelas. Para reuni-las em um único relatório, utilizamos múltiplos comandos \texttt{JOIN} em sequência.
+
+\begin{block}{Chaveando com a Tabela Associativa}
+Nesta consulta, ligamos a tabela \texttt{Alunos} à tabela \texttt{AlunoCurso} e, em seguida, ligamos o resultado à tabela \texttt{Curso}. Também utilizamos \textbf{Aliases} (\texttt{AS}) para dar apelidos curtos às tabelas e nomes amigáveis às colunas.
+
+\begin{lstlisting}
+SELECT
+  A.id,
+  A.nome AS NomeDoAluno,
+  A.data_nascimento,
+  C.nome AS NomeDoCurso
+FROM Alunos AS A
+JOIN AlunoCurso AS AC ON A.id = AC.aluno_id
+JOIN Curso AS C ON AC.curso_id = C.id;
+\end{lstlisting}
+\end{block}
+
+\begin{block}{Resultado Final Consolidado}
+O resultado abaixo mostra como o banco de dados reuniu os dados pessoais da primeira tabela com os nomes dos cursos da terceira tabela, passando pela tabela de ligação:
+
+\begin{center}
+{\tiny
+\begin{longtable}{cccc}
+\toprule
+\textbf{id} & \textbf{NomeDoAluno} & \textbf{data\_nascimento} & \textbf{NomeDoCurso} \\
+\midrule
+1  & William  & 2011-10-09 & Engenharia de Computação \\
+2  & João     & 1971-04-24 & Engenharia de Computação \\
+4  & José     & 2023-07-30 & Letras \\
+5  & Ana      & 1985-05-31 & Engenharia de Computação \\
+6  & Pedro    & 1988-01-06 & Direito \\
+7  & Carla    & 1999-01-23 & Engenharia de Computação \\
+8  & Lucas    & 1971-01-29 & Medicina \\
+9  & Sofia    & 2000-03-02 & Direito \\
+10 & Gabriel  & 2024-12-04 & Engenharia de Computação \\
+11 & Isabella & 1986-08-25 & Medicina \\
+12 & Rafael   & 1976-08-07 & Engenharia de Computação \\
+13 & Ana      & 2021-07-27 & Direito \\
+\bottomrule
+\end{longtable}
+}
+\end{center}
+\end{block}
+
+\begin{dica}
+Encadear múltiplos \texttt{JOINs} é a base de quase todos os relatórios complexos em sistemas reais. O uso de apelidos (\texttt{A}, \texttt{AC}, \texttt{C}) é essencial para manter o código legível e evitar confusão entre colunas de nomes iguais.
+\end{dica}
+
+\end{document}

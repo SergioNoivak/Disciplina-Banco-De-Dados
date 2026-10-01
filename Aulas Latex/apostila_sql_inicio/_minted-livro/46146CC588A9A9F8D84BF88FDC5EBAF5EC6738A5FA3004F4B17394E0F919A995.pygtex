@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{cpf}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{pessoa}
+\PYG{k}{ORDER}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{DESC}\PYG{p}{;}
+\end{Verbatim}

@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 3. Testar a query com HAVING}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{categoria}\PYG{p}{,}\PYG{+w}{ }\PYG{k}{SUM}\PYG{p}{(}\PYG{n}{valor}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{AS}\PYG{+w}{ }\PYG{n}{faturamento\PYGZus{}total}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{vendas}
+\PYG{k}{GROUP}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{categoria}
+\PYG{k}{HAVING}\PYG{+w}{ }\PYG{k}{SUM}\PYG{p}{(}\PYG{n}{valor}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{100}\PYG{p}{.}\PYG{l+m+mi}{00}\PYG{p}{;}
+\end{Verbatim}

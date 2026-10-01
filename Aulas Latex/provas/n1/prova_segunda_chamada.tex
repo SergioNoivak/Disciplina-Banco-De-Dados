@@ -1,0 +1,411 @@
+\documentclass[12pt,a4paper]{article}
+
+% ------------------------------------------------
+% Pacotes
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{mathptmx} % Times New Roman
+\usepackage{enumitem}\usepackage{amsfonts}
+\usepackage{amsmath} % Recomendado para o comando \text{}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, calc}
+
+% TikZ Styles for ER Diagrams
+\tikzset{
+    block/.style={rectangle, draw, thick, minimum width=2cm, minimum height=1cm, fill=white},
+    diamond_node/.style={diamond, draw, thick, minimum width=2cm, minimum height=1cm, fill=white, aspect=2},
+    attribute/.style={ellipse, draw, thin, minimum width=1.5cm, minimum height=0.6cm, fill=white, font=\scriptsize},
+    line/.style={draw, thick},
+}
+% ------------------------------------------------ 
+% Configuração de página
+% ------------------------------------------------
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=2cm,
+    bottom=2cm,
+    headheight=15pt % Adicione isso
+}% Caixa para resposta discursiva
+\newcommand{\resposta}[1]{
+\noindent
+\framebox[\textwidth]{
+\begin{minipage}{0.98\textwidth}
+\vspace{#1}
+\end{minipage}
+}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+
+\setlength{\parindent}{0pt}
+
+% ------------------------------------------------
+% Comandos auxiliares
+% ------------------------------------------------
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ------------------------------------------------
+% Documento
+% ------------------------------------------------
+\begin{document}
+
+% ------------------------------------------------
+% Cabeçalho - Corrigido para evitar aninhamento problemático
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{@{} L{4cm} X @{}}
+    \raisebox{-0.5cm}{\includegraphics[width=4cm]{Universidade_de_Rio_Verde.jpg}} &
+    \hfill
+    \begin{tabular}{|>{\centering\arraybackslash}m{10cm}|>{\raggedright\arraybackslash}p{1.8cm}|}
+        \hline
+        \cellcolor{black}\color{white}\rule{0pt}{1.2cm}\textbf{Avaliação N1 (2ª CHAMADA)} 
+        & 
+        \scriptsize Nota \tabularnewline
+        \hline
+    \end{tabular} 
+\end{tabularx}
+\vspace{0.3cm}
+
+% ------------------------------------------------  
+% Tabela principal - Estrutura limpa
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{|X|L{2cm}|}
+\hline
+\textbf{Curso} & \textbf{Campus} \\
+\textit{Engenharia de Software} & \textit{Rio Verde} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Disciplina}} \\  
+\multicolumn{2}{|l|}{ \textit{Banco de dados}} \\
+\hline
+\textbf{Nome do(a) acadêmico(a)} & \textbf{Valor} \\
+\textit{WAYSER HENRIQUE DE FARIA LOPES}& 7,0 \\
+\hline
+\textbf{Professor} & \textbf{Turma} \\
+\textit{ Sergio Souza Novak} & \textit{B} \\
+\hline
+\textbf{Data da Avaliação} & \textbf{Código} \\
+\textit{26/03/2026} & \textit{ESW417} \\
+\hline
+\end{tabularx}
+ 
+% ------------------------------------------------
+% Barra de Atenção
+% ------------------------------------------------
+\vspace{0.2cm}
+
+\begin{tabularx}{\textwidth}{|X|}
+\hline
+\cellcolor{black}\color{white}
+\centering \textbf{ATENÇÃO:} Somente serão passíveis de \textbf{REVISÃO} avaliações resolvidas à \textbf{TINTA}. \tabularnewline
+\hline
+\end{tabularx}
+
+\vspace{0.3cm}
+
+\textbf{ORIENTAÇÕES PARA A RESOLUÇÃO}  
+
+\begin{itemize}
+    \item A avaliação é individual, sem consulta;
+    \item A interpretação de texto faz parte da avaliação;
+\end{itemize}
+
+\vspace{0.5cm}
+
+\begin{center}
+    \rule{\textwidth}{0.4pt}
+    \textbf{QUESTÕES}
+\end{center}
+
+\vspace{0.5cm} 
+
+\begin{enumerate}
+
+ \item (ADAPTADO ENADE 2005) Todo funcionário deve estar alocado a uma única empresa prestadora de serviços. Assinale a opção que representa corretamente, no modelo entidade-relacionamento, a especificação apresentada acima.
+
+\begin{enumerate}[label=\Alph*)]
+    \item \begin{tikzpicture}[baseline=(rel.base), node distance=1cm, every node/.style={scale=0.8}]
+        \node[block] (empresa) {empresa};
+        \node[diamond_node, right=of empresa] (rel) {vínculo};
+        \node[block, right=of rel] (func) {funcionário};
+        \draw[line] (empresa) -- node[above] {(1,0)} node[below] {\scriptsize alocado em} (rel);
+        \draw[line] (rel) -- node[above] {(n,0)} node[below] {\scriptsize possui} (func);
+    \end{tikzpicture}
+    
+    \item \begin{tikzpicture}[baseline=(rel.base), node distance=1cm, every node/.style={scale=0.8}]
+        \node[block] (empresa) {empresa};
+        \node[diamond_node, right=of empresa] (rel) {vínculo};
+        \node[block, right=of rel] (func) {funcionário};
+        \draw[line] (empresa) -- node[above] {(0,1)} node[below] {\scriptsize alocado em} (rel);
+        \draw[line] (rel) -- node[above] {(0,n)} node[below] {\scriptsize possui} (func);
+    \end{tikzpicture}
+    
+    \item \begin{tikzpicture}[baseline=(rel.base), node distance=1cm, every node/.style={scale=0.8}]
+        \node[block] (empresa) {empresa};
+        \node[diamond_node, right=of empresa] (rel) {vínculo};
+        \node[block, right=of rel] (func) {funcionário};
+        \draw[line] (empresa) -- node[above] {(1,1)} node[below] {\scriptsize alocado em} (rel);
+        \draw[line] (rel) -- node[above] {(0,n)} node[below] {\scriptsize possui} (func);
+    \end{tikzpicture}
+    \item \begin{tikzpicture}[baseline=(rel.base), node distance=1cm, every node/.style={scale=0.8}]
+        \node[block] (empresa) {empresa};
+        \node[diamond_node, right=of empresa] (rel) {vínculo};
+        \node[block, right=of rel] (func) {funcionário};
+        \draw[line] (empresa) -- node[above] {(1,n)} node[below] {\scriptsize alocado em} (rel);
+        \draw[line] (rel) -- node[above] {(0,n)} node[below] {\scriptsize possui} (func);
+    \end{tikzpicture}
+     
+    \item \begin{tikzpicture}[baseline=(rel.base), node distance=1cm, every node/.style={scale=0.8}]
+        \node[block] (empresa) {empresa};
+        \node[diamond_node, right=of empresa] (rel) {vínculo};
+        \node[block, right=of rel] (func) {funcionário};
+        \draw[line] (empresa) -- node[above] {(0,n)} node[below] {\scriptsize alocado em} (rel);
+        \draw[line] (rel) -- node[above] {(0,n)} node[below] {\scriptsize possui} (func);
+    \end{tikzpicture}
+    
+\end{enumerate}
+    \item A correta alocação da Chave Estrangeira (FK) é fundamental para evitar a redundância de dados e o excesso de valores nulos (NULL). Com base nas definições de mapeamento lógico e físico (SQL), responda o que se pede. Uma locadora possui Filmes e Diretores. Um diretor pode dirigir vários filmes, mas cada filme é dirigido por apenas um único diretor. Assinale onde a FK deve ser inserida:
+    \begin{enumerate}[label=\Alph*)]
+        \item A FK deve ser inserida na tabela \textbf{Diretor}, pois é a entidade "forte".
+        \item Deve-se criar uma terceira tabela para armazenar o relacionamento, por ser N:N.
+        \item Ambos recebem FK um do outro para garantir a integridade.
+        \item A FK deve ser inserida na tabela \textbf{Filme}, referenciando a Chave Primária de Diretor.
+        \item Não é necessário o uso de FK neste cenário.
+    \end{enumerate}
+
+    \item \textbf{Implementação SQL:} Com base no diagrama lógico abaixo, que representa a tabela \textbf{ENGENHEIRO} em um mapeamento de especialização/generalização (Tabela Única), escreva o código SQL (\texttt{CREATE TABLE}) para criar esta tabela. Utilize um campo \textbf{id} como Chave Primária (SERIAL) e garanta que o campo \textbf{crea} seja único (UNIQUE). Apenas o campo departamento pode ser nulo.
+
+    \begin{center}
+    \begin{tikzpicture}[node distance=0cm, outer sep=0pt, every node/.style={draw, rectangle, minimum height=0.7cm, font=\small, anchor=north west}]
+        \node (header) [fill=gray!20, minimum width=11cm] at (0,0) {\textbf{Tab.: ENGENHEIRO}};
+        
+        \node (col1) [minimum width=2cm] at (0,-0.7cm) {id (PK)};
+        \node (col2) [minimum width=3cm] at (2cm,-0.7cm) {crea (UNIQUE)};
+        \node (col3) [minimum width=3cm] at (5cm,-0.7cm) {nome};
+        \node (col4) [minimum width=3cm] at (8cm,-0.7cm) {departamento};
+        
+        \node (r1c1) [minimum width=2cm] at (0,-1.4cm) {1};
+        \node (r1c2) [minimum width=3cm] at (2cm,-1.4cm) {C-456};
+        \node (r1c3) [minimum width=3cm] at (5cm,-1.4cm) {Eng. Carlos};
+        \node (r1c4) [minimum width=3cm] at (8cm,-1.4cm) {Obras Civis};
+        
+        \node (r2c1) [minimum width=2cm] at (0,-2.1cm) {2};
+        \node (r2c2) [minimum width=3cm] at (2cm,-2.1cm) {D-789};
+        \node (r2c3) [minimum width=3cm] at (5cm,-2.1cm) {Eng. Diana};
+        \node (r2c4) [minimum width=3cm, fill=yellow!10] at (8cm,-2.1cm) {NULL};
+    \end{tikzpicture}
+    \end{center}
+
+    \resposta{5.5cm}
+
+    \item \textbf{Relacionamento de Relacionamentos (Agregação):} O diagrama abaixo apresenta um \textbf{Relacionamento de Relacionamentos} (ou Agregação), onde o relacionamento \textbf{Venda} (entre Cliente e Vendedor) é associado a uma \textbf{Forma de Pagamento}. Realize a conversão desta estrutura para o Modelo Lógico, aplicando uma técnica que \textbf{elimine} a dependência do relacionamento de relacionamentos, transformando-o em uma estrutura de tabelas relacionais clássica (entidades e chaves estrangeiras).
+
+    \begin{center}
+    \begin{tikzpicture}[node distance=2.5cm, every node/.style={scale=0.85}]
+        \node[block] (cli) {Cliente};
+        \node[block, right=4cm of cli] (vend) {Vendedor};
+        \node[diamond_node] (venda) at ($(cli)!0.5!(vend)$) {Venda};
+        \draw[line] (cli) -- node[above] {(1,n)} (venda);
+        \draw[line] (vend) -- node[above] {(1,n)} (venda);
+        
+        \draw[dashed, thick] ($(venda.north west)+(-0.6,0.6)$) rectangle ($(venda.south east)+(0.6,-0.6)$);
+        \node[above=0.7cm of venda, font=\bfseries\small] {Agregação: Atendimento};
+
+        \node[block, below=2.5cm of venda] (pag) {FormaPagto};
+        \node[diamond_node, below=1cm of venda] (rel_pag) {utiliza};
+        
+        \draw[line] (venda) -- node[right] {(1,1)} (rel_pag);
+        \draw[line] (rel_pag) -- node[right] {(1,n)} (pag);
+        
+        \node[attribute, left=0.5cm of cli] (c_pk) {\underline{id\_cli}};
+        \draw (cli) -- (c_pk);
+        \node[attribute, right=0.5cm of vend] (v_pk) {\underline{id\_vend}};
+        \draw (vend) -- (v_pk);
+        \node[attribute, right=0.5cm of pag] (p_pk) {\underline{id\_pg}};
+        \draw (pag) -- (p_pk);
+    \end{tikzpicture}
+    \end{center}
+
+    \resposta{8cm}
+\item Considere o comando de criação da tabela abaixo. Assuma que o SGBD segue rigorosamente o padrão SQL e que nenhuma coluna possui valor padrão definido.
+
+\begin{verbatim}
+CREATE TABLE automoveis (
+    id TEXT,
+    motor DOUBLE PRECISION,
+    portas INTEGER,
+    ano INTEGER,
+    preco NUMERIC,
+    consumo DOUBLE PRECISION,
+    torque DOUBLE PRECISION,
+    potencia INTEGER,
+    cilindrada INTEGER,
+    velocidade_max INTEGER,
+    aceleracao_0_100 DOUBLE PRECISION
+);
+\end{verbatim}
+
+Analise as alternativas a seguir e assinale aquela que apresenta um comando \texttt{INSERT INTO} sintaticamente correto e semanticamente válido, considerando tipos de dados, correspondência de colunas e quantidade de valores.
+
+\begin{enumerate}[label=\Alph*)]
+
+    
+    \item \texttt{INSERT INTO automoveis (id, motor, portas, ano, preco) VALUES ('C2', '2.0', 4, 2022, '75000');}
+    \item \texttt{INSERT INTO automoveis VALUES ('C1', 2.0, 4, 2022, 75000, 12.5, 200, 150, 2000, 220, 8.5);}
+
+    \item \texttt{INSERT INTO automoveis (motor, portas, ano, preco, consumo, torque, potencia, cilindrada, velocidade\_max, aceleracao\_0\_100) VALUES (2.0, 4, 2022, 75000, 12.5, 200, 150, 2000, 220, 8.5);}
+    
+    \item \texttt{INSERT INTO automoveis (id, motor, portas, ano, preco, consumo, torque, potencia, cilindrada, velocidade\_max, aceleracao\_0\_100) VALUES ('C4', 2.0, 4, 2022, 75000, 12.5, 200, 150, 2000, 220);}
+    \item \texttt{INSERT INTO automoveis (id, motor, portas, ano, preco, consumo) VALUES ('C3', 2.0, 4, 2022, 75000, 12.5, 100);}
+
+
+\end{enumerate}
+
+\vspace{0.8cm}
+
+    \item Um Autor pode escrever vários Livros, e um livro pode ser escrito por vários autores. Como este relacionamento é resolvido no modelo lógico?
+    \begin{enumerate}[label=\Alph*)]
+        \item Inserindo a FK de Autor na tabela \textbf{Livro}.
+        \item Inserindo a FK de Livro na tabela \textbf{Autor}.
+        \item Criando uma tabela associativa (ex: \textbf{Escritura}) que contém as FKs de ambas as tabelas originais.
+        \item Mesclando as tabelas Autor e Livro em uma só.
+        \item Transformando uma das entidades em um atributo multivalorado da outra.
+    \end{enumerate}
+
+
+\vspace{0.8cm}
+
+ \item O diagrama a seguir apresenta um relacionamento ternário entre \textbf{Escritório}, \textbf{Analista} e \textbf{Projeto}. Com base nas regras de conversão do modelo conceitual para o modelo lógico, realize a \textbf{eliminação do ternário}, transformando-o em um conjunto de relacionamentos binários ou utilizando uma entidade associativa de forma a manter a integridade das regras de negócio.
+
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm, every node/.style={scale=0.9}]
+    % Entidades
+     \node[block] (escritorio) {Escritório};
+    \node[block, below=of escritorio] (projeto) {Projeto};
+    \node[block, left=of projeto, xshift=-1cm] (analista) {Analista};
+    \node[block, right=of projeto, xshift=1cm] (equipo) {Equipamento};
+
+    \node[attribute, left=0.5cm of escritorio] (esc_pk) {\underline{id\_esc}};
+    \draw (escritorio) -- (esc_pk);
+    
+    \node[attribute, left=0.5cm of projeto] (pro_pk) {\underline{id\_proj}};
+    \node[attribute, below left=0.5cm and 0.2cm of projeto] (pro_nome) {nome};
+    \draw (projeto) -- (pro_pk);
+    \draw (projeto) -- (pro_nome);
+    
+    \node[attribute, above=0.5cm of analista] (ana_pk) {\underline{id\_ana}};
+    \node[attribute, above left=0.5cm and 0.5cm of analista] (ana_nome) {nome};
+    \draw (analista) -- (ana_pk);
+    \draw (analista) -- (ana_nome);
+    
+    \node[attribute, above=0.5cm of equipo] (eq_pk) {\underline{id\_eq}};
+    \node[attribute, above right=0.5cm and 0.5cm of equipo] (eq_mod) {modelo};
+    \draw (equipo) -- (eq_pk);
+    \draw (equipo) -- (eq_mod);
+    
+    % Relacionamentos Binários
+    \node[diamond_node, below=1cm of escritorio, yshift=0.5cm] (rel_local) {pertence};
+    
+    % Relacionamento Ternário
+    \node[diamond_node, below=1.5cm of projeto] (rel_ternario) {alocação};
+    \draw[line, <-] (rel_ternario) -- ++(3,-3) node[left] {Relacionamento Ternário}; 
+    
+    % Linhas e Cardinalidades
+    \draw[line] (escritorio) -- node[right] {(1,1)} (rel_local);
+    \draw[line] (rel_local) -- node[right] {(1,n)} (projeto);
+    
+    % Conexões do Ternário
+    \draw[line] (projeto) -- node[left] {(1,n)} (rel_ternario);
+    \draw[line] (analista) |- node[near start, left, yshift=0.5cm] {(1,n)} (rel_ternario);
+    \draw[line] (equipo) |- node[near start, right, yshift=0.5cm] {(1,n)} (rel_ternario);
+     
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.2cm}
+\resposta{14cm}
+\vspace{0.8cm}
+\item Considere o diagrama lógico abaixo, representado segundo o modelo Entidade-Relacionamento Estendido (EER):
+
+\begin{center}
+\begin{tikzpicture}[node distance=1.2cm, every node/.style={draw, rectangle, minimum height=0.7cm, font=\small, fill=white}]
+    % Superclasse
+    \node (dispos) [minimum width=3cm] {\textbf{Dispositivo}};
+    \node [below=0.1cm of dispos, draw=none, fill=none, font=\tiny] {(Superclasse)};
+    
+    % Símbolo de especialização 
+    \node (circ) [circle, draw, below=1cm of dispos, inner sep=2pt] {S};
+    \draw (dispos) -- (circ);
+    
+    % Subclasses
+    \node (smart) [below left=1.2cm and 0.5cm of circ, minimum width=2.5cm] {\textbf{Smartphone}};
+    \node (tablet) [below right=1.2cm and 0.5cm of circ, minimum width=2.5cm] {\textbf{Tablet}};
+    
+    \draw (circ) -| (smart);
+    \draw (circ) -| (tablet);
+    
+    % Atributos
+    \node (id) [draw, ellipse, above left=0.5cm of dispos] {\underline{id}};
+    \draw (dispos.north west) -- (id);
+    
+    \node (os) [draw, ellipse, left=0.5cm of smart] {sis\_op};
+    \draw (smart) -- (os);
+    
+    \node (tela) [draw, ellipse, right=0.5cm of tablet] {tam\_tela};
+    \draw (tablet) -- (tela);
+\end{tikzpicture}
+\end{center}
+
+Com base no diagrama apresentado, assinale a alternativa que descreve corretamente o conceito de modelagem utilizado \textbf{e} suas possíveis restrições semânticas no modelo EER.
+
+\begin{enumerate}[label=\alph*)]
+
+\item Trata-se de um caso de generalização total e disjunta, no qual toda entidade de \textbf{Dispositivo} deve pertencer exclusivamente a uma das subclasses.
+
+\item Trata-se de uma especialização, podendo ser classificada como total ou parcial e como disjunta ou sobreposta, dependendo das restrições não explicitadas no diagrama.
+
+\item Representa herança múltipla típica da orientação a objetos, na qual uma entidade pode herdar atributos simultaneamente de múltiplas superclasses.
+
+\item Trata-se de um relacionamento identificador, no qual \textbf{Smartphone} e \textbf{Tablet} dependem existencialmente de \textbf{Dispositivo}.
+
+\item Representa um caso de agregação, onde \textbf{Dispositivo} é composto por \textbf{Smartphone} e \textbf{Tablet} como partes integrantes.
+
+\end{enumerate}
+
+    \item Com base no diagrama ER abaixo, que representa um auto-relacionamento (recursivo) na entidade \textbf{Funcionario}, realize o mapeamento para o \textbf{Modelo Lógico Relacional}. Explique como a cardinalidade (1:N) influencia a alocação da Chave Estrangeira (FK) para representar a hierarquia de supervisão.
+
+    \begin{center}
+    \begin{tikzpicture}[node distance=2.5cm, every node/.style={scale=0.9}]
+        \node[block] (func) {Funcionário};
+        \node[diamond_node, right=of func] (ger) {gerencia};
+        
+        \draw[line] (func) -- node[above] {(0,1)} node[below] {\scriptsize supervisor} (ger);
+        \draw[line] (ger) -- ++(0,-1.5) -| node[near start, below] {(0,n)} node[near end, left] {\scriptsize subordinados} (func);
+        
+        \node[attribute, left=1cm of func] (id) {\underline{id\_func}};
+        \node[attribute, above left=0.5cm and 0.5cm of func] (nome) {nome};
+        \draw (func) -- (id);
+        \draw (func) -- (nome);
+    \end{tikzpicture}
+    \end{center}
+
+    \resposta{10cm}
+
+
+\end{enumerate}
+\vspace{0.8cm}
+
+
+\end{document} 

@@ -1,0 +1,286 @@
+\documentclass[12pt,a4paper]{article}
+
+% ------------------------------------------------
+% Pacotes
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{mathptmx} % Times New Roman
+\usepackage{enumitem}\usepackage{amsfonts}
+\usepackage{amsmath} 
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, calc}
+
+% TikZ Styles for ER Diagrams
+\tikzset{
+    block/.style={rectangle, draw, thick, minimum width=2cm, minimum height=1cm, fill=white},
+    diamond_node/.style={diamond, draw, thick, minimum width=2cm, minimum height=1cm, fill=white, aspect=2},
+    attribute/.style={ellipse, draw, thin, minimum width=1.5cm, minimum height=0.6cm, fill=white, font=\scriptsize},
+    line/.style={draw, thick},
+}
+
+% ------------------------------------------------ 
+% Configuração de página
+% ------------------------------------------------
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=2cm,
+    bottom=2cm,
+    headheight=15pt 
+}
+
+% Caixa para resposta discursiva
+\newcommand{\resposta}[1]{
+\noindent
+\framebox[\textwidth]{
+\begin{minipage}{0.98\textwidth}
+\vspace{#1}
+\end{minipage}
+}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+
+\setlength{\parindent}{0pt}
+
+% ------------------------------------------------
+% Comandos auxiliares
+% ------------------------------------------------
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ------------------------------------------------
+% Documento
+% ------------------------------------------------
+\begin{document}
+
+% ------------------------------------------------
+% Cabeçalho
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{@{} L{4cm} X @{}}
+    \raisebox{-0.5cm}{\includegraphics[width=4cm]{Universidade_de_Rio_Verde.jpg}} &
+    \hfill
+    \begin{tabular}{|>{\centering\arraybackslash}m{10cm}|>{\raggedright\arraybackslash}p{1.8cm}|}
+        \hline
+        \cellcolor{black}\color{white}\rule{0pt}{1.2cm}\textbf{LISTA DE REVISÃO - N2} 
+        & 
+        \scriptsize Nota \tabularnewline
+        \hline
+    \end{tabular} 
+\end{tabularx}
+\vspace{0.3cm}
+
+% ------------------------------------------------  
+% Tabela principal
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{|X|L{2cm}|}
+\hline
+\textbf{Curso} & \textbf{Campus} \\
+\textit{Engenharia de Software} & \textit{Rio Verde} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Disciplina}} \\  
+\multicolumn{2}{|l|}{ \textit{Banco de dados}} \\
+\hline
+\textbf{Nome do(a) acadêmico(a)} & \textbf{Valor} \\
+& --- \\
+\hline
+\textbf{Professor} & \textbf{Turma} \\
+\textit{ Sergio Souza Novak} & \textit{B} \\
+\hline
+\textbf{Data de Entrega} & \textbf{Código} \\
+\textit{--/05/2026} & \textit{ESW417} \\
+\hline
+\end{tabularx}
+ 
+\vspace{0.5cm}
+
+\begin{center}
+    \rule{\textwidth}{0.4pt}
+    \textbf{QUESTÕES TEÓRICAS (NORMALIZAÇÃO E CONCEITOS)}
+\end{center}
+
+\begin{enumerate}
+     \item \textbf{Os diagramas de Venn abaixo representam visualmente diferentes operações de JOIN entre duas tabelas, A (esquerda) e B (direita). Analise as áreas sombreadas e assinale a alternativa que identifica corretamente os tipos de JOIN representados nas Figuras I, II e III, respectivamente:}
+    
+    \begin{center}
+        \begin{tikzpicture}[thick, scale=0.8]
+            % Figura I: RIGHT JOIN
+            \begin{scope}
+                \fill[gray!40] (1.2,0) circle (1cm);
+            \end{scope}
+            \draw (0,0) circle (1cm) node[xshift=-0.5cm] {A};
+            \draw (1.2,0) circle (1cm) node[xshift=0.5cm] {B};
+            \node at (0.6, -1.5) {\textbf{Figura I}};
+        \end{tikzpicture}
+        \hspace{1cm}
+        \begin{tikzpicture}[thick, scale=0.8]
+            % Figura II: FULL OUTER JOIN
+            \fill[gray!40] (0,0) circle (1cm);
+            \fill[gray!40] (1.2,0) circle (1cm);
+            \draw (0,0) circle (1cm) node[xshift=-0.5cm] {A};
+            \draw (1.2,0) circle (1cm) node[xshift=0.5cm] {B};
+            \node at (0.6, -1.5) {\textbf{Figura II}};
+        \end{tikzpicture}
+        \hspace{1cm}
+        \begin{tikzpicture}[thick, scale=0.8]
+            % Figura III: LEFT JOIN
+            \fill[gray!40] (0,0) circle (1cm);
+            \begin{scope}
+                \clip (0,0) circle (1cm);
+                \fill[gray!40] (1.2,0) circle (1cm);
+            \end{scope}
+            \draw (0,0) circle (1cm) node[xshift=-0.5cm] {A};
+            \draw (1.2,0) circle (1cm) node[xshift=0.5cm] {B};
+            \node at (0.6, -1.5) {\textbf{Figura III}};
+        \end{tikzpicture}
+    \end{center}
+
+    \begin{enumerate}[label=\Alph*)]
+        \item I: LEFT JOIN; II: FULL JOIN; III: RIGHT JOIN.
+        \item I: RIGHT JOIN; II: FULL JOIN; III: LEFT JOIN.
+        \item I: RIGHT JOIN; II: INNER JOIN; III: LEFT JOIN.
+        \item I: JOIN; II: FULL JOIN; III: LEFT JOIN.
+        \item I: FULL JOIN; II: RIGHT JOIN; III: LEFT JOIN.
+    \end{enumerate}
+
+    \item \textbf{Escolha uma das figuras acima (I, II ou III) e escreva a sintaxe SQL básica que realizaria tal operação entre as tabelas \texttt{Clientes} (A) e \texttt{Pedidos} (B), utilizando o campo \texttt{id} como critério de junção. (Exemplo: para um \texttt{INNER JOIN}, a sintaxe seria \texttt{SELECT * FROM A INNER JOIN B ON A.id = B.id})}\\
+    \resposta{2.5cm}
+    \item \textbf{Sobre os conceitos fundamentais de Banco de Dados Relacionais, analise as afirmações abaixo:}
+    \begin{enumerate}[label=\Roman*.]
+        \item Uma Chave Estrangeira (FK) pode aceitar valores nulos, a menos que faça parte da chave primária da tabela onde está inserida.
+        \item A dependência funcional transitiva ocorre quando um atributo não-chave depende de outro atributo não-chave, que por sua vez depende da chave primária.
+        \item Para uma tabela estar na Segunda Forma Normal (2FN), ela deve obrigatoriamente estar na 1FN e não possuir dependências parciais.
+        \item A Terceira Forma Normal (3FN) elimina redundâncias causadas por atributos multivalorados.
+    \end{enumerate}
+    Estão corretas apenas:
+    \begin{enumerate}[label=\Alph*)]
+        \item I e II.
+        \item II e III.
+        \item I, II e III.
+        \item I, III e IV.
+        \item Todas estão corretas.
+    \end{enumerate}
+
+    \item \textbf{Considere a tabela abaixo que armazena informações de Projetos e seus respectivos participantes. A tabela viola a 1FN.}
+    
+    \begin{center}
+        \begin{tabularx}{\textwidth}{|c|c|X|}
+            \hline
+            \cellcolor{gray!20}\textbf{Cod\_Proj} & \cellcolor{gray!20}\textbf{Nome\_Projeto} & \cellcolor{gray!20}\textbf{Equipe (Membros)} \\ \hline
+            P01 & Alpha & Ricardo (Dev), Julia (Design) \\ \hline
+            P02 & Beta & Marcos (QA) \\ \hline
+            P03 & Gamma & Paulo (Dev), Silvia (Dev), Ana (PO) \\ \hline
+            P04 & Delta & Fabio (Front), Carla (UX) \\ \hline
+            P05 & Epsilon & Renato (Back) \\ \hline
+            P06 & Zeta & Lucas (Dev), Maria (Dev), Jose (PM) \\ \hline
+            P07 & Eta & Bruno (Dev), Alice (Design) \\ \hline
+            P08 & Theta & Igor (QA), Gabi (Dev) \\ \hline
+            P09 & Iota & Samuel (Dev), Debora (Dev) \\ \hline
+        \end{tabularx}
+    \end{center}
+    \begin{enumerate}[label=(\Alph*)]
+        \item Explique por que a tabela viola a Primeira Forma Normal (1FN).\\
+        \resposta{2cm}
+        \item Apresente a tabela resultante após a normalização para a 1FN.\\
+        \resposta{5cm}
+    \end{enumerate}
+
+    \item \textbf{Dada a tabela abaixo de MATRÍCULAS, identifique as dependências funcionais e determine em qual Forma Normal a tabela se encontra. Justifique sua resposta.}
+    
+    \textit{Chave Primária Composta: \textbf{\{Cod\_Aluno, Cod\_Curso\}}}
+    
+    \begin{center}
+        \begin{tabularx}{\textwidth}{|c|c|c|X|c|}
+            \hline
+            \cellcolor{gray!20}\textbf{Cod\_Alu} & \cellcolor{gray!20}\textbf{Cod\_Cur} & \cellcolor{gray!20}\textbf{Data\_Insc} & \cellcolor{gray!20}\textbf{Nome\_Curso} & \cellcolor{gray!20}\textbf{Carga} \\ \hline
+            100 & C1 & 10/02 & SQL Básico & 40h \\ \hline
+            100 & C2 & 15/02 & Python & 60h \\ \hline
+            200 & C1 & 11/02 & SQL Básico & 40h \\ \hline
+            200 & C2 & 16/02 & Python & 60h \\ \hline
+            300 & C3 & 20/02 & Java Advanced & 80h \\ \hline
+            300 & C1 & 12/02 & SQL Básico & 40h \\ \hline
+            400 & C4 & 25/02 & Docker & 30h \\ \hline
+            400 & C2 & 17/02 & Python & 60h \\ \hline
+            500 & C3 & 21/02 & Java Advanced & 80h \\ \hline
+        \end{tabularx}
+    \end{center}
+    \resposta{4cm}
+
+    \item \textbf{A Quarta Forma Normal (4FN) lida com Dependências Multivaloradas. Considere o cenário onde um Professor pode ministrar várias Disciplinas e orientar vários Projetos de Pesquisa. As disciplinas e os projetos são totalmente independentes.}
+    
+    Decomponha a tabela abaixo para atingir a 4FN:
+    
+    \begin{center}
+        \begin{tabularx}{\textwidth}{|X|X|X|}
+            \hline
+            \cellcolor{gray!20}\textbf{Professor (PK)} & \cellcolor{gray!20}\textbf{Disciplina (PK)} & \cellcolor{gray!20}\textbf{Projeto\_Pesquisa (PK)} \\ \hline
+            Novak & Banco de Dados & IA Generativa \\ \hline
+            Novak & Banco de Dados & Redes Neurais \\ \hline
+            Novak & Banco de Dados & NLP \\ \hline
+            Novak & Programação & IA Generativa \\ \hline
+            Novak & Programação & Redes Neurais \\ \hline
+            Novak & Programação & NLP \\ \hline
+            Novak & Eng. Requisitos & IA Generativa \\ \hline
+            Novak & Eng. Requisitos & Redes Neurais \\ \hline
+            Novak & Eng. Requisitos & NLP \\ \hline
+            Novak & Algoritmos & IA Generativa \\ \hline
+            Novak & Algoritmos & Redes Neurais \\ \hline
+            Novak & Algoritmos & NLP \\ \hline
+        \end{tabularx}
+    \end{center}
+    \resposta{6cm}
+
+   
+\end{enumerate}
+
+\newpage
+\begin{center}
+    \rule{\textwidth}{0.4pt}
+    \textbf{QUESTÕES PRÁTICAS (SQL)}
+\end{center}
+
+\textbf{Cenário:} Uma livraria deseja organizar seu estoque e vendas. O esquema lógico é:
+\begin{itemize}[label={}]
+    \item \textbf{tbAutor} (\underline{id\_autor}, nome\_autor, nacionalidade)
+    \item \textbf{tbLivro} (\underline{id\_livro}, titulo, ano\_publicacao, preco, id\_autor)
+    \item \textit{id\_autor referencia tbAutor}
+    \item \textbf{tbVenda} (\underline{id\_venda}, data\_venda, id\_livro, qtd)
+    \item \textit{id\_livro referencia tbLivro}
+\end{itemize}
+
+\begin{enumerate}
+    \item Escreva o comando \textbf{DDL} para criar as tabelas \textbf{tbAutor} e \textbf{tbLivro}, garantindo as chaves primárias e a integridade\\
+    \resposta{7cm}
+
+    \item Insira \textbf{3 registros} na tabela \textbf{tbAutor} e \textbf{2 registros} na tabela \textbf{tbLivro}.\\
+    \resposta{5cm}
+
+    \item Escreva um comando SQL para aumentar o preço de todos os livros publicados antes de 2020 em 10\%.\\
+    \resposta{3cm}
+
+    \item Realize uma consulta (\textbf{SELECT}) que retorne o título do livro, o nome do autor e o preço, apenas para livros que custam mais de R\$ 50,00, ordenados pelo título.\\
+    \resposta{4cm}
+
+    \item Utilizando \textbf{JOIN}, liste todos os livros (título) e a quantidade vendida de cada um (da tabela \texttt{tbVenda}). Se um livro nunca foi vendido, ele ainda deve aparecer na lista com a quantidade nula ou zero.\\
+    \resposta{4cm}
+
+    \item Escreva uma consulta SQL que retorne o nome do autor, o título do livro e a data da venda para todas as vendas registradas no sistema. (Dica: conecte as três tabelas: \texttt{tbAutor}, \texttt{tbLivro} e \texttt{tbVenda}).\\
+    \resposta{4cm}
+
+    \item Utilizando \textbf{JOIN} e a função de agregação \texttt{SUM()}, calcule o valor total arrecadado por cada autor (soma de \texttt{preco * qtd}). O resultado deve exibir o nome do autor e o valor total.\\
+    \resposta{4cm}
+\end{enumerate}
+
+\end{document}

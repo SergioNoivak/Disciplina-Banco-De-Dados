@@ -1,0 +1,9 @@
+-- Insercao especificando as colunas
+INSERT INTO pessoa (nome, cpf, email, data_nascimento)
+VALUES ('Ana Souza', '12345678910', 'ana@email.com', '1992-08-24');
+
+-- Insercao de multiplos registros em um unico comando
+INSERT INTO pessoa (nome, cpf, email)
+VALUES
+    ('Carlos Luz', '98765432100', 'carlos@email.com'),
+    ('Beatriz Vaz', '55544433322', 'beatriz@email.com');

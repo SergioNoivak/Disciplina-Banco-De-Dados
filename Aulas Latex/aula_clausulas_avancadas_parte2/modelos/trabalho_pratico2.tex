@@ -1,0 +1,801 @@
+\documentclass[12pt,a4paper]{article}
+
+% ------------------------------------------------
+% Pacotes Fundamentais
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{mathptmx} % Times New Roman
+\usepackage{enumitem} 
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, calc}
+
+% Cores Institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+
+% ------------------------------------------------
+% Estilos TikZ para Diagramas ER, Lógicos e Wireframes CRUD
+% ------------------------------------------------
+\tikzset{
+    block/.style={rectangle, draw=forestgreen, thick, minimum width=2.5cm, minimum height=0.9cm, fill=white, align=center, font=\small\bfseries},
+    diamond_node/.style={diamond, draw=forestgreen, thick, minimum width=1.8cm, minimum height=0.9cm, fill=white, aspect=2, align=center, font=\small},
+    attribute/.style={ellipse, draw=forestgreen, thin, minimum width=1.6cm, minimum height=0.6cm, fill=white, align=center, font=\scriptsize},
+    line/.style={draw, thick, -},
+    table_block/.style={
+        rectangle, 
+        draw=forestgreen, 
+        thick, 
+        rounded corners=4pt, 
+        minimum width=4.5cm, 
+        fill=green!2, 
+        align=left, 
+        font=\small\ttfamily, 
+        inner sep=8pt
+    },
+    screen/.style={draw=forestgreen, thick, rectangle, rounded corners=8pt, minimum width=8.5cm, minimum height=7.0cm, fill=white},
+    screen_title/.style={fill=forestgreen, text=white, minimum width=8.3cm, minimum height=0.6cm, font=\footnotesize\bfseries\sffamily, align=center},
+    btn/.style={draw=forestgreen, fill=green!10, rounded corners=3pt, font=\tiny\sffamily, inner sep=3pt},
+    btn_danger/.style={draw=red, fill=red!10, rounded corners=3pt, font=\tiny\sffamily, inner sep=3pt, text=red},
+    input_field/.style={draw=gray!50, fill=gray!2, rectangle, minimum width=7.5cm, minimum height=0.55cm, font=\tiny\sffamily, align=left, inner sep=4pt}
+}
+
+% ------------------------------------------------ 
+% Configuração de Página e Margens
+% ------------------------------------------------
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=2cm,
+    bottom=2cm,
+    headheight=15pt
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\parindent}{0pt}
+
+% ------------------------------------------------
+% Macros Customizadas (Caixa de Resposta e Alinhamento)
+% ------------------------------------------------
+\newcommand{\resposta}[1]{}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ------------------------------------------------
+% Configurações de Caixas Decorativas (tcolorbox)
+% ------------------------------------------------
+\usepackage[most]{tcolorbox}
+\newtcolorbox{blockbox}[1]{%
+  colback=green!5,
+  colframe=forestgreen,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=8pt,
+  right=8pt,
+  top=8pt,
+  bottom=8pt
+}
+
+% ------------------------------------------------
+% Configurações de Código (Listings SQL)
+% ------------------------------------------------
+\usepackage{listings}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.94}
+
+\lstdefinestyle{sqlstyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegray},
+    keywordstyle=\color{forestgreen}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=none,                    
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=SQL,
+    morekeywords={REFERENCES, ON, CASCADE, SET, NULL, NO, ACTION, RESTRICT, OFFSET, LIMIT, DISTINCT},
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {â}{{\^a}}1 {à}{{\`a}}1 {é}{{\'e}}1 {ê}{{\^e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ô}{{\^o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {Â}{{\^A}}1 {À}{{\`A}}1 {É}{{\'E}}1 {Ê}{{\^E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ô}{{\^O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1
+}
+\lstset{style=sqlstyle}
+
+% ================================================
+\begin{document}
+% ================================================
+
+% ------------------------------------------------
+% Cabeçalho Institucional Oficial da UniRV
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{@{} L{4.5cm} X @{}}
+    \raisebox{-0.5cm}{\includegraphics[width=4.5cm]{Universidade_de_Rio_Verde.jpg}} &
+    \hfill
+    \begin{tabular}{|>{\centering\arraybackslash}m{11.6cm}|}
+        \hline
+        \cellcolor{forestgreen}\color{white}\rule{0pt}{1.2cm}\textbf{TRABALHO DA N3} \tabularnewline
+        \hline
+    \end{tabular} 
+\end{tabularx}
+\vspace{0.3cm}
+
+\begin{tabularx}{\textwidth}{|X|L{2.5cm}|}
+\hline
+\textbf{Curso} & \textbf{Campus} \\
+\textit{Engenharia de Software} & \textit{Rio Verde} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Disciplina}} \\  
+\multicolumn{2}{|l|}{ \textit{Banco de Dados I}} \\
+\hline
+\textbf{Professor} & \textbf{Turma} \\
+\textit{Sergio Souza Novak} & \textit{A / B} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Código da Atividade}} \\
+\multicolumn{2}{|l|}{\textit{ESW417}} \\
+\hline
+\end{tabularx}
+
+\vspace{0.5cm}
+
+
+    \textbf{Contexto:} Uma empresa de produção de alevinos (AquaFarm) necessita implementar um sistema completo (Backend via API REST, Frontend Web e banco de dados obrigatoriamente em \textbf{PostgreSQL}). A regra de negócio determina que:
+    \begin{itemize}[leftmargin=*, noitemsep]
+        \item Cada lote pertence a um único tanque, mas um tanque possui múltiplos lotes (\textbf{N:1}).
+        \item Cada lote possui um certificado sanitário exclusivo e intransferível (\textbf{1:1}).
+        \item Um lote pode atuar em múltiplos vacinas simultaneamente, assim como um vacina conta com múltiplos lotes alocados (\textbf{N:N}).
+        \item A hierarquia da empresa exige que cada lote possa ter um supervisor direto, que também é um lote da mesma empresa (\textbf{Autorelacionamento}).
+    \end{itemize}
+
+O Frontend web consumirá a API REST para prover as listagens paginadas para o RH corporativo.
+
+\vspace{0.3cm}
+\begin{center}
+    \textbf{Modelo Conceitual (Diagrama Entidade-Relacionamento)} \\[0.2cm]
+    \begin{tikzpicture}[node distance=1cm, >=stealth, thick, scale=0.85, every node/.style={transform shape}]
+        % Entidades
+        \node[block] (lote) {Lote};
+        \node[block, left=5cm of lote] (tanque) {Tanque};
+        \node[block, right=5cm of lote] (vacina) {Vacina};
+        \node[block, below=5cm of lote] (certificado) {Certificado};
+        
+        % Relacionamentos
+        \node[diamond_node, left=1.5cm of lote] (pertence) {Pertence};
+        \node[diamond_node, right=1.5cm of lote] (trabalha) {Atua};
+        \node[diamond_node, below=1.5cm of lote] (possui) {Possui};
+        
+        % Ligações Depto <-> Func
+        \path[line] (tanque) -- (pertence);
+        \path[line] (pertence) -- (lote);
+        
+        % Ligações Func <-> Vacina
+        \path[line] (lote) -- (trabalha);
+        \path[line] (trabalha) -- (vacina);
+        
+        % Ligações Func <-> Certificado
+        \path[line] (lote) -- (possui);
+        \path[line] (possui) -- (certificado);
+        
+        % Autorelacionamento Supervisor
+        \node[diamond_node, above=1cm of lote] (superv) {Supervisiona};
+        \draw[line] (lote.north west) -- (superv.south west);
+        \draw[line] (superv.south east) -- (lote.north east);
+        
+        % Cardinalidades
+        \node[above, font=\small\bfseries] at ($(tanque.east)!0.3!(pertence.west)$) {1};
+        \node[above, font=\small\bfseries] at ($(lote.west)!0.3!(pertence.east)$) {N};
+        
+        \node[above, font=\small\bfseries] at ($(lote.east)!0.3!(trabalha.west)$) {N};
+        \node[above, font=\small\bfseries] at ($(vacina.west)!0.3!(trabalha.east)$) {N};
+        
+        \node[left, font=\small\bfseries] at ($(lote.south)!0.3!(possui.north)$) {1};
+        \node[left, font=\small\bfseries] at ($(certificado.north)!0.3!(possui.south)$) {1};
+    \end{tikzpicture}
+\end{center}
+
+\begin{center}
+    \textbf{Modelo Lógico (Relacional)} \\[0.2cm]
+    \begin{tikzpicture}[node distance=2.5cm, >=stealth, thick]
+        % Tabelas
+        \node[table_block] (tanque_tbl) at (0,0) {
+            \textbf{tbTanque} \\
+            \rule{4.1cm}{0.4pt} \\
+            \underline{id\_tanque} (PK) \\
+            nome\_tanque: TEXT \\
+            capacidade\_litros: REAL
+        };
+        
+        \node[table_block] (lote_tbl) at (6,0) {
+            \textbf{tbLote} \\
+            \rule{4.1cm}{0.4pt} \\
+            \underline{id\_lote} (PK) \\
+            especie: TEXT \\
+            quantidade: INTEGER \\
+            id\_tanque (FK) \\
+            id\_supervisor (FK)
+        };
+        
+        \node[table_block] (vacina_tbl) at (12,0) {
+            \textbf{tbVacina} \\
+            \rule{4.1cm}{0.4pt} \\
+            \underline{id\_vacina} (PK) \\
+            nome\_vacina: TEXT \\
+            data\_fabricacao: TEXT
+        };
+        
+        \node[table_block] (certificado_tbl) at (3,-4.5) {
+            \textbf{tbCertificado} \\
+            \rule{4.1cm}{0.4pt} \\
+            \underline{id\_certificado} (PK) \\
+            codigo\_inspecao: TEXT \\
+            status\_aprovado: INTEGER \\
+            id\_lote (FK, UNIQUE)
+        };
+        
+        \node[table_block] (aplicacao_tbl) at (9,-4.5) {
+            \textbf{tbLoteVacina} \\
+            \rule{4.1cm}{0.4pt} \\
+            \underline{id\_lote} (PK, FK) \\
+            \underline{id\_vacina} (PK, FK) \\
+            dosagem\_ml: INTEGER
+        };
+        
+        % Linhas FK
+        \draw[->, color=forestgreen, ultra thick] (lote_tbl.west) -- (tanque_tbl.east) 
+            node[midway, above, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_tanque};
+            
+        \draw[->, color=forestgreen, ultra thick] (lote_tbl.north) .. controls +(1.5,1.5) and +(-1.5,1.5) .. (lote_tbl.north)
+            node[above, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_supervisor};
+            
+        \draw[->, color=forestgreen, ultra thick] (certificado_tbl.north) -- (lote_tbl.south west)
+            node[midway, left, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_lote};
+            
+        \draw[->, color=forestgreen, ultra thick] (aplicacao_tbl.north west) -- (lote_tbl.south east)
+            node[midway, left, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_lote};
+            
+        \draw[->, color=forestgreen, ultra thick] (aplicacao_tbl.north east) -- (vacina_tbl.south west)
+            node[midway, right, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_vacina};
+    \end{tikzpicture}
+\end{center}
+
+\vspace{0.4cm}
+
+\begin{center}
+    \textbf{Protótipos Wireframe do CRUD Completo (Sistema Web)} \\[0.3cm]
+    
+    % =================================================================
+    % 1. TANQUE
+    % =================================================================
+    \textbf{1. Entidade: Tanque} \\[0.2cm]
+    
+    % --- READ ---
+    \resizebox{11cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (r_scr) at (0,0) {};
+      \node[screen_title, below=0.1cm of r_scr.north] (r_title) {Tanques - Listagem (R)};
+      \node[btn, below=0.2cm of r_title, xshift=-2.2cm] (btn_novo) {+ Novo Tanque};
+      
+      \node[draw=gray!30, fill=white, minimum width=8.1cm, minimum height=0.8cm, below=0.8cm of r_title] (item1) {};
+      \node at (item1.west) [anchor=west, xshift=0.2cm, font=\footnotesize\sffamily] {\textbf{1 - Berçário A} | Orçamento: R\$ 500.000};
+      \node[btn, right=0.2cm of item1.east, anchor=east, xshift=-0.6cm] (edit1) {Editar};
+      \node[btn_danger, right=0.2cm of item1.east, anchor=east, xshift=-0.2cm] (del1) {x};
+      
+      \node[draw=gray!30, fill=white, minimum width=8.1cm, minimum height=0.8cm, below=0.15cm of item1] (item2) {};
+      \node at (item2.west) [anchor=west, xshift=0.2cm, font=\footnotesize\sffamily] {\textbf{2 - RH} | Orçamento: R\$ 200.000};
+      \node[btn, right=0.2cm of item2.east, anchor=east, xshift=-0.6cm] (edit2) {Editar};
+      \node[btn_danger, right=0.2cm of item2.east, anchor=east, xshift=-0.2cm] (del2) {x};
+      
+      \node[draw, fill=forestgreen, text=white, circle, inner sep=2pt, font=\scriptsize, above=0.4cm of r_scr.south, xshift=-1.2cm] (p1) {1};
+      \node[draw, circle, inner sep=2pt, font=\scriptsize, right=0.25cm of p1] (p2) {2};
+      \node[font=\scriptsize, right=0.25cm of p2] (next) {Próxima >>};
+    \end{tikzpicture}%
+    }
+    \\[0.5cm]
+    
+    % --- CREATE/UPDATE ---
+    \resizebox{11cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (cu_scr) at (0,0) {};
+      \node[screen_title] at (0, 3.1) {Tanque - Cadastro (C/U)};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, 2.0) {Nome do Tanque:};
+      \node[input_field, anchor=center] at (0, 1.55) {Tanque de Berçário A};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, 0.85) {Capacidade (Litros):};
+      \node[input_field, anchor=center] at (0, 0.4) {500000.00};
+      
+      \node[btn, anchor=center, minimum width=2.5cm, minimum height=0.6cm] at (-1.5, -2.8) {Salvar};
+      \node[btn_danger, anchor=center, minimum width=2.0cm, minimum height=0.6cm] at (1.3, -2.8) {Cancelar};
+    \end{tikzpicture}%
+    }
+    \\[0.5cm]
+    
+    % --- DELETE ---
+    \resizebox{11cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (d_scr) at (0,0) {};
+      \node[screen_title, below=0.1cm of d_scr.north] (d_title) {Tanque - Excluir (D)};
+      
+      \node[draw=red!30, fill=red!5, rounded corners=6pt, minimum width=8.1cm, minimum height=3.5cm, below=0.8cm of d_title] (alert_box) {};
+      \node[text=red, font=\footnotesize\bfseries\sffamily, align=center, yshift=1.2cm] at (alert_box) {CONFIRMAÇÃO DE EXCLUSÃO};
+      \node[font=\footnotesize\sffamily, align=center, text width=7.5cm, yshift=0.3cm] at (alert_box) {Deseja excluir o Tanque \textbf{Tanque de Berçário A}?};
+      \node[font=\tiny\sffamily, align=center, text=red, text width=7.5cm, yshift=-0.6cm] at (alert_box) {\textbf{Aviso de Integridade:} Não é possível excluir tanques que ainda possuem lotes vinculados!};
+      
+      \node[btn_danger, above=0.35cm of d_scr.south, xshift=-1.35cm, minimum width=2.2cm, minimum height=0.5cm] {Excluir};
+      \node[btn, above=0.35cm of d_scr.south, xshift=1.35cm, minimum width=2.2cm, minimum height=0.5cm] {Cancelar};
+    \end{tikzpicture}%
+    }
+    
+    \vspace{0.6cm}
+    % =================================================================
+    % 2. LOTE DE ALEVINOS
+    % =================================================================
+    \textbf{2. Entidade: Lote de Alevinos} \\[0.2cm]
+    
+    % --- READ ---
+    \resizebox{14cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (r_scr) at (0,0) {};
+      \node[screen_title, below=0.1cm of r_scr.north] (r_title) {Lotes - Listagem (R)};
+      \node[btn, below=0.2cm of r_title, xshift=-2.8cm] (btn_novo) {+ Novo Lote};
+      
+      \node[draw=gray!30, fill=white, minimum width=8.1cm, minimum height=3.0cm, below=0.8cm of r_title] (tbl_grid) {};
+      \node[draw=forestgreen!20, fill=forestgreen!5, minimum width=8.1cm, minimum height=0.6cm, below=0.8cm of r_title] (th) {};
+      \node at (th.west) [anchor=west, xshift=0.2cm, font=\tiny\bfseries\sffamily] {Espécie \hspace{1.2cm} Quantidade \hspace{0.5cm} Tanque \hspace{0.5cm} Ações};
+      
+      \node[draw=gray!10, fill=white, minimum width=8.1cm, minimum height=0.6cm, below=0.0cm of th] (r1) {};
+      \node at (r1.west) [anchor=west, xshift=0.2cm, font=\tiny\sffamily] {Tilápia \hspace{1.4cm} 5000 \hspace{1.3cm} Berçário A \hspace{1.0cm} [Editar] [X]};
+      
+      \node[draw=gray!10, fill=gray!2, minimum width=8.1cm, minimum height=0.6cm, below=0.0cm of r1] (r2) {};
+      \node at (r2.west) [anchor=west, xshift=0.2cm, font=\tiny\sffamily] {Tambaqui \hspace{1.0cm} 3000 \hspace{1.3cm} Berçário A \hspace{1.0cm} [Editar] [X]};
+      
+      \node[draw, fill=forestgreen, text=white, circle, inner sep=2pt, font=\scriptsize, above=0.4cm of r_scr.south, xshift=-1.2cm] (p1) {1};
+      \node[draw, circle, inner sep=2pt, font=\scriptsize, right=0.25cm of p1] (p2) {2};
+      \node[font=\scriptsize, right=0.25cm of p2] (next) {Próxima >>};
+    \end{tikzpicture}%
+    }
+    \\[0.5cm]
+    
+    % --- CREATE/UPDATE ---
+    \resizebox{11cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (cu_scr) at (0,0) {};
+      \node[screen_title] at (0, 3.1) {Lote - Cadastro (C/U)};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, 2.2) {Espécie do Alevino:};
+      \node[input_field, anchor=center] at (0, 1.78) {Carlos Lima};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, 1.1) {Quantidade:};
+      \node[input_field, anchor=center] at (0, 0.68) {Analista Pleno};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, 0.0) {Tanque (FK):};
+      \node[input_field, anchor=center] at (0, -0.42) {1 - Berçário A};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, -1.1) {Lote Matriz (Autorelacionamento):};
+      \node[input_field, anchor=center] at (0, -1.52) {1 - Tilápia Matriz};
+      
+      \node[btn, anchor=center, minimum width=2.5cm, minimum height=0.6cm] at (-1.5, -2.8) {Salvar};
+      \node[btn_danger, anchor=center, minimum width=2.0cm, minimum height=0.6cm] at (1.3, -2.8) {Cancelar};
+    \end{tikzpicture}%
+    }
+    \\[0.5cm]
+    
+    % --- DELETE ---
+    \resizebox{11cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (d_scr) at (0,0) {};
+      \node[screen_title, below=0.1cm of d_scr.north] (d_title) {Lote - Excluir (D)};
+      
+      \node[draw=red!30, fill=red!5, rounded corners=6pt, minimum width=8.1cm, minimum height=3.5cm, below=0.8cm of d_title] (alert_box) {};
+      \node[text=red, font=\footnotesize\bfseries\sffamily, align=center, yshift=1.2cm] at (alert_box) {CONFIRMAÇÃO DE EXCLUSÃO};
+      \node[font=\footnotesize\sffamily, align=center, text width=7.5cm, yshift=0.3cm] at (alert_box) {Deseja excluir o Lote \textbf{Tambaqui}?};
+      \node[font=\tiny\sffamily, align=center, text=red, text width=7.5cm, yshift=-0.6cm] at (alert_box) {\textbf{Aviso de Integridade:} Ao excluir, suas alocações em vacinas e seu certificado (CASCADE) serão removidos. Se ele for lote matriz, as ninhadas ficarão órfãos!};
+      
+      \node[btn_danger, above=0.35cm of d_scr.south, xshift=-1.35cm, minimum width=2.2cm, minimum height=0.5cm] {Excluir};
+      \node[btn, above=0.35cm of d_scr.south, xshift=1.35cm, minimum width=2.2cm, minimum height=0.5cm] {Cancelar};
+    \end{tikzpicture}%
+    }
+    
+    \vspace{0.6cm}
+    % =================================================================
+    % 3. VACINA
+    % =================================================================
+    \textbf{3. Entidade: Vacina} \\[0.2cm]
+    
+    % --- READ ---
+    \resizebox{11cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (r_scr) at (0,0) {};
+      \node[screen_title, below=0.1cm of r_scr.north] (r_title) {Vacinas - Listagem (R)};
+      \node[btn, below=0.2cm of r_title, xshift=-2.6cm] (btn_novo) {+ Novo Vacina};
+      
+      \node[draw=gray!30, fill=white, minimum width=8.1cm, minimum height=0.8cm, below=0.8cm of r_title] (item1) {};
+      \node at (item1.west) [anchor=west, xshift=0.2cm, font=\footnotesize\sffamily] {\textbf{Aeromonas} | Fab: 01/01/26};
+      \node[btn, right=0.2cm of item1.east, anchor=east, xshift=-0.6cm] (edit1) {Editar};
+      \node[btn_danger, right=0.2cm of item1.east, anchor=east, xshift=-0.2cm] (del1) {x};
+      
+      \node[draw=gray!30, fill=white, minimum width=8.1cm, minimum height=0.8cm, below=0.15cm of item1] (item2) {};
+      \node at (item2.west) [anchor=west, xshift=0.2cm, font=\footnotesize\sffamily] {\textbf{Streptococcus} | Fab: 15/02/26};
+      \node[btn, right=0.2cm of item2.east, anchor=east, xshift=-0.6cm] (edit2) {Editar};
+      \node[btn_danger, right=0.2cm of item2.east, anchor=east, xshift=-0.2cm] (del2) {x};
+      
+      \node[draw, fill=forestgreen, text=white, circle, inner sep=2pt, font=\scriptsize, above=0.4cm of r_scr.south, xshift=-1.2cm] (p1) {1};
+      \node[draw, circle, inner sep=2pt, font=\scriptsize, right=0.25cm of p1] (p2) {2};
+      \node[font=\scriptsize, right=0.25cm of p2] (next) {Próxima >>};
+    \end{tikzpicture}%
+    }
+    \\[0.5cm]
+    
+    % --- CREATE/UPDATE ---
+    \resizebox{11cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (cu_scr) at (0,0) {};
+      \node[screen_title] at (0, 3.1) {Vacina - Cadastro (C/U)};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, 2.0) {Nome do Vacina:};
+      \node[input_field, anchor=center] at (0, 1.55) {Alpha};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, 0.85) {Data de Fabricação:};
+      \node[input_field, anchor=center] at (0, 0.4) {01/01/2026};
+      
+      \node[btn, anchor=center, minimum width=2.5cm, minimum height=0.6cm] at (-1.5, -2.8) {Salvar};
+      \node[btn_danger, anchor=center, minimum width=2.0cm, minimum height=0.6cm] at (1.3, -2.8) {Cancelar};
+    \end{tikzpicture}%
+    }
+    \\[0.5cm]
+    
+    % --- DELETE ---
+    \resizebox{11cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (d_scr) at (0,0) {};
+      \node[screen_title, below=0.1cm of d_scr.north] (d_title) {Vacina - Excluir (D)};
+      
+      \node[draw=red!30, fill=red!5, rounded corners=6pt, minimum width=8.1cm, minimum height=3.5cm, below=0.8cm of d_title] (alert_box) {};
+      \node[text=red, font=\footnotesize\bfseries\sffamily, align=center, yshift=1.2cm] at (alert_box) {CONFIRMAÇÃO DE EXCLUSÃO};
+      \node[font=\footnotesize\sffamily, align=center, text width=7.5cm, yshift=0.3cm] at (alert_box) {Deseja excluir o Vacina \textbf{Alpha}?};
+      \node[font=\tiny\sffamily, align=center, text=red, text width=7.5cm, yshift=-0.6cm] at (alert_box) {\textbf{Aviso de Integridade:} Isso removerá os vínculos na tabela N:N (LoteVacina).};
+      
+      \node[btn_danger, above=0.35cm of d_scr.south, xshift=-1.35cm, minimum width=2.2cm, minimum height=0.5cm] {Excluir};
+      \node[btn, above=0.35cm of d_scr.south, xshift=1.35cm, minimum width=2.2cm, minimum height=0.5cm] {Cancelar};
+    \end{tikzpicture}%
+    }
+    
+    \vspace{0.6cm}
+    % =================================================================
+    % 4. CERTIFICADO SANITÁRIO
+    % =================================================================
+    \textbf{4. Entidade: Certificado Sanitário (1:1)} \\[0.2cm]
+    
+    % --- READ ---
+    \resizebox{11cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (r_scr) at (0,0) {};
+      \node[screen_title, below=0.1cm of r_scr.north] (r_title) {Certificados - Listagem (R)};
+      \node[btn, below=0.2cm of r_title, xshift=-2.6cm] (btn_novo) {+ Novo Certificado};
+      
+      \node[draw=gray!30, fill=white, minimum width=8.1cm, minimum height=0.8cm, below=0.8cm of r_title] (item1) {};
+      \node at (item1.west) [anchor=west, xshift=0.2cm, font=\footnotesize\sffamily] {\textbf{CERT-01} | Lote: Tilápia | Status: Aprovado};
+      \node[btn, right=0.2cm of item1.east, anchor=east, xshift=-0.6cm] (edit1) {Editar};
+      \node[btn_danger, right=0.2cm of item1.east, anchor=east, xshift=-0.2cm] (del1) {x};
+      
+      \node[draw, fill=forestgreen, text=white, circle, inner sep=2pt, font=\scriptsize, above=0.4cm of r_scr.south, xshift=-1.2cm] (p1) {1};
+      \node[draw, circle, inner sep=2pt, font=\scriptsize, right=0.25cm of p1] (p2) {2};
+      \node[font=\scriptsize, right=0.25cm of p2] (next) {Próxima >>};
+    \end{tikzpicture}%
+    }
+    \\[0.5cm]
+    
+    % --- CREATE/UPDATE ---
+    \resizebox{11cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (cu_scr) at (0,0) {};
+      \node[screen_title] at (0, 3.1) {Certificado - Cadastro (C/U)};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, 2.0) {Código de Inspeção:};
+      \node[input_field, anchor=center] at (0, 1.55) {X99};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, 0.85) {Status Aprovado (1=Sim):};
+      \node[input_field, anchor=center] at (0, 0.4) {5};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, -0.3) {Lote Vinculado (FK):};
+      \node[input_field, anchor=center] at (0, -0.75) {1 - Tilápia};
+      
+      \node[btn, anchor=center, minimum width=2.5cm, minimum height=0.6cm] at (-1.5, -2.8) {Salvar};
+      \node[btn_danger, anchor=center, minimum width=2.0cm, minimum height=0.6cm] at (1.3, -2.8) {Cancelar};
+    \end{tikzpicture}%
+    }
+    \\[0.5cm]
+    
+    % --- DELETE ---
+    \resizebox{11cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (d_scr) at (0,0) {};
+      \node[screen_title, below=0.1cm of d_scr.north] (d_title) {Certificado - Inativar (D)};
+      
+      \node[draw=red!30, fill=red!5, rounded corners=6pt, minimum width=8.1cm, minimum height=3.5cm, below=0.8cm of d_title] (alert_box) {};
+      \node[text=red, font=\footnotesize\bfseries\sffamily, align=center, yshift=1.2cm] at (alert_box) {CONFIRMAÇÃO DE INATIVAÇÃO};
+      \node[font=\footnotesize\sffamily, align=center, text width=7.5cm, yshift=0.3cm] at (alert_box) {Deseja inutilizar o certificado \textbf{X99}?};
+      \node[font=\tiny\sffamily, align=center, text=red, text width=7.5cm, yshift=-0.6cm] at (alert_box) {\textbf{Aviso de Integridade:} O lote Ana Souza perderá o acesso físico temporariamente até novo vínculo.};
+      
+      \node[btn_danger, above=0.35cm of d_scr.south, xshift=-1.35cm, minimum width=2.2cm, minimum height=0.5cm] {Excluir};
+      \node[btn, above=0.35cm of d_scr.south, xshift=1.35cm, minimum width=2.2cm, minimum height=0.5cm] {Cancelar};
+    \end{tikzpicture}%
+    }
+    
+    \vspace{0.6cm}
+    % =================================================================
+    % 5. ALOCAÇÃO (LoteVacina)
+    % =================================================================
+    \textbf{5. Entidade Associativa: Alocação (N:N)} \\[0.2cm]
+    
+    % --- READ ---
+    \resizebox{14cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (r_scr) at (0,0) {};
+      \node[screen_title, below=0.1cm of r_scr.north] (r_title) {Alocações de Vacinas - Listagem (R)};
+      \node[btn, below=0.2cm of r_title, xshift=-2.8cm] (btn_novo) {+ Nova Aplicação};
+      
+      \node[draw=gray!30, fill=white, minimum width=8.1cm, minimum height=3.0cm, below=0.8cm of r_title] (tbl_grid) {};
+      \node[draw=forestgreen!20, fill=forestgreen!5, minimum width=8.1cm, minimum height=0.6cm, below=0.8cm of r_title] (th) {};
+      \node at (th.west) [anchor=west, xshift=0.2cm, font=\tiny\bfseries\sffamily] {Lote \hspace{1.5cm} Vacina \hspace{1.0cm} Horas \hspace{0.5cm} Ações};
+      
+      \node[draw=gray!10, fill=white, minimum width=8.1cm, minimum height=0.6cm, below=0.0cm of th] (r1) {};
+      \node at (r1.west) [anchor=west, xshift=0.2cm, font=\tiny\sffamily] {Tambaqui \hspace{1.1cm} Aeromonas \hspace{0.5cm} 5ml \hspace{1.0cm} [Editar] [X]};
+      
+      \node[draw=gray!10, fill=gray!2, minimum width=8.1cm, minimum height=0.6cm, below=0.0cm of r1] (r2) {};
+      \node at (r2.west) [anchor=west, xshift=0.2cm, font=\tiny\sffamily] {Tambaqui \hspace{1.1cm} Streptococ \hspace{0.5cm} 5ml \hspace{1.0cm} [Editar] [X]};
+      
+      \node[draw, fill=forestgreen, text=white, circle, inner sep=2pt, font=\scriptsize, above=0.4cm of r_scr.south, xshift=-1.2cm] (p1) {1};
+      \node[draw, circle, inner sep=2pt, font=\scriptsize, right=0.25cm of p1] (p2) {2};
+      \node[font=\scriptsize, right=0.25cm of p2] (next) {Próxima >>};
+    \end{tikzpicture}%
+    }
+    \\[0.5cm]
+    
+    % --- CREATE/UPDATE ---
+    \resizebox{11cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (cu_scr) at (0,0) {};
+      \node[screen_title] at (0, 3.1) {Aplicação - Cadastro (C/U)};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, 2.0) {Lote (FK id\_lote):};
+      \node[input_field, anchor=center] at (0, 1.55) {2 - Tambaqui};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, 0.85) {Vacina (FK id\_vacina):};
+      \node[input_field, anchor=center] at (0, 0.4) {1 - Aeromonas};
+      
+      \node[font=\footnotesize\bfseries\sffamily, anchor=west] at (-3.75, -0.3) {Dosagem (ml):};
+      \node[input_field, anchor=center] at (0, -0.75) {20};
+      
+      \node[btn, anchor=center, minimum width=2.5cm, minimum height=0.6cm] at (-1.5, -2.8) {Salvar};
+      \node[btn_danger, anchor=center, minimum width=2.0cm, minimum height=0.6cm] at (1.3, -2.8) {Cancelar};
+    \end{tikzpicture}%
+    }
+    \\[0.5cm]
+    
+    % --- DELETE ---
+    \resizebox{11cm}{!}{%
+    \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+      \node[screen] (d_scr) at (0,0) {};
+      \node[screen_title, below=0.1cm of d_scr.north] (d_title) {Aplicação - Desvincular (D)};
+      
+      \node[draw=red!30, fill=red!5, rounded corners=6pt, minimum width=8.1cm, minimum height=3.5cm, below=0.8cm of d_title] (alert_box) {};
+      \node[text=red, font=\footnotesize\bfseries\sffamily, align=center, yshift=1.2cm] at (alert_box) {CONFIRMAÇÃO DE DESVÍNCULO};
+      \node[font=\footnotesize\sffamily, align=center, text width=7.5cm, yshift=0.3cm] at (alert_box) {Deseja desalocar \textbf{Lote 2 - Tambaqui} do Vacina \textbf{Alpha}?};
+      \node[font=\tiny\sffamily, align=center, text=red, text width=7.5cm, yshift=-0.6cm] at (alert_box) {\textbf{Aviso de Integridade:} Essa ação exclui o relacionamento. Lote e Vacina permanecem intactos no banco.};
+      
+      \node[btn_danger, above=0.35cm of d_scr.south, xshift=-1.35cm, minimum width=2.2cm, minimum height=0.5cm] {Desvincular};
+      \node[btn, above=0.35cm of d_scr.south, xshift=1.35cm, minimum width=2.2cm, minimum height=0.5cm] {Cancelar};
+    \end{tikzpicture}%
+    }  
+\end{center}
+
+
+\vspace{0.4cm}
+\section*{Enunciado do Vacina Final}
+
+O objetivo deste trabalho prático é a \textbf{implementação completa (Full-Stack)} do sistema de gestão corporativa da TechCorp, baseando-se nos modelos conceitual, lógico e nos protótipos de interface (wireframes) fornecidos nas páginas anteriores. 
+
+Os requisitos obrigatórios para a aprovação são:
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item \textbf{Banco de Dados (Obrigatório PostgreSQL):} A estrutura física do banco deve ser implementada de forma relacional utilizando obrigatoriamente o PostgreSQL. O aluno deverá escrever e entregar o script DDL contendo a criação das tabelas, definição das chaves primárias e as restrições de chaves estrangeiras apropriadas (incluindo tratamento de exclusões em \texttt{CASCADE} ou \texttt{RESTRICT} conforme os alertas nos wireframes).
+    \item \textbf{Backend (API REST):} Desenvolvimento de um servidor backend (em linguagem de escolha livre: Node.js, Python FastAPI, Java Spring, C\#, PHP, etc.) que conecte ao PostgreSQL e proveja as rotas (endpoints) para as operações de CRUD. As consultas de listagem na API devem, obrigatoriamente, suportar \textbf{Paginação} no banco via parâmetros na rota (utilizando as cláusulas \texttt{LIMIT} e \texttt{OFFSET}).
+    \item \textbf{Frontend Web:} Implementação das telas e navegação do sistema web. A interface deve ser fiel à arquitetura de informações e fluxos propostos nos protótipos wireframe deste documento. O Frontend deve consumir a API REST assincronamente e tratar os retornos e erros do sistema de forma adequada para o usuário.
+\end{itemize}
+
+\vspace{0.4cm}
+\begin{blockbox}{Critérios e Etapas de Entrega}
+O trabalho prático pode ser realizado individualmente ou em \textbf{duplas}. A avaliação será dividida obrigatoriamente em duas etapas:
+
+\textbf{Etapa 1: Submissão Digital (Google Classroom)}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item \textbf{Ambos} os integrantes da dupla devem realizar a submissão da atividade no Classroom.
+    \item A entrega deve conter todo o código-fonte integrado dos componentes do sistema (Backend API, Frontend Web e script \texttt{.sql} do PostgreSQL).
+    \item Um \textbf{vídeo gravado} (com duração de 10 a 15 minutos) demonstrando o sistema em pleno funcionamento. O vídeo deve provar, na prática, o funcionamento das 4 operações de CRUD (Create, Read, Update, Delete) para todas as entidades e exibir a implementação bem-sucedida da paginação de listagens.
+\end{itemize}
+
+\textbf{Etapa 2: Apresentação Presencial (UniRV)}
+\begin{itemize}[leftmargin=*, noitemsep]
+    \item A nota final será validada através da demonstração presencial do vacina executando na carteira do aluno na Universidade de Rio Verde. A avaliação e arguição direta serão realizadas por uma \textbf{banca avaliadora} composta pelo \textbf{Professor} da disciplina e um \textbf{Discente} (aluno da turma) escolhido previamente pelo professor.
+\end{itemize}
+\end{blockbox}
+
+\newpage
+\begin{center}
+    {\huge \textbf{\textcolor{forestgreen}{Ficha Trabalho Prático}}} \\[0.3cm]
+    {\large \textbf{Avaliação Geral de Implementação e Apresentação}} \\[0.8cm]
+\end{center}
+
+Esta ficha de avaliação oficial balizará o cálculo da nota final do acadêmico, cuja composição considera tanto a qualidade do código entregue (itens 1 a 7) quanto o desempenho individual durante a arguição (item 8). A lógica avaliativa estabelece que a nota base do vacina (o somatório obtido nos itens de 1 a 7) terá 60\% de seu valor total garantido mediante a correta implementação e submissão do sistema no formato estipulado.
+
+Os 40\% restantes dessa nota base ficam expressamente condicionados ao desempenho prático do acadêmico diante da banca. Durante a arguição, será atribuída uma nota individual de 0 a 100 que atuará como rendimento ponderado sobre essa fatia de 40\% do vacina. Em suma, o sistema aplica a fórmula matemática: \textbf{Nota Final = Nota Base $\times$ 0,6 + $\Big($Nota Base $\times$ 0,4 $\times \frac{\text{Nota da Banca}}{100}\Big)$}. Esse formato rigoroso assegura que a pontuação do trabalho só seja integralizada caso o aluno comprove pleno domínio arquitetural e lógico sobre o código-fonte desenvolvido.
+\vspace{0.5cm}
+
+\begin{center}
+    
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabularx}{\textwidth}{|c|X|c|c|}
+        \hline
+        \rowcolor{forestgreen}\textcolor{white}{\textbf{Item}} & \textcolor{white}{\textbf{Critério de Avaliação}} & \textcolor{white}{\textbf{Peso}} & \textcolor{white}{\textbf{Nota}} \\
+        \hline
+        1 & \textbf{Banco de Dados - Estrutura Física:} Scripts DDL consistentes, tabelas e chaves primárias/estrangeiras (PK/FK) em PostgreSQL. & 2.5 & \\
+        \hline
+        2 & \textbf{Banco de Dados - Integridade:} Definição correta das regras de exclusão (CASCADE/RESTRICT) e validação do autorelacionamento. & 2.5 & \\
+        \hline
+        3 & \textbf{Backend - Arquitetura e Rotas:} Implementação da API REST com rotas organizadas e métodos HTTP corretos (GET, POST, PUT, DELETE). & 1.5 & \\
+        \hline
+        4 & \textbf{Backend - Paginação:} Lógica SQL via API garantindo a aplicação de \texttt{LIMIT/OFFSET} para listagens paginadas com performance. & 1.5 & \\
+        \hline
+        5 & \textbf{Frontend - UI e UX:} Interface amigável e fidedigna aos protótipos de wireframes contidos no escopo do trabalho. & 0.5 & \\
+        \hline
+        6 & \textbf{Frontend - Integração REST:} Consumo assíncrono da API com sucesso, preenchimento dinâmico de tabelas e exibição de alertas de erro. & 0.5 & \\
+        \hline
+        7 & \textbf{Entrega (Classroom e Vídeo):} Envio do código-fonte integrado no prazo mais a demonstração gravada com qualidade (vídeo de 10 a 15 min). & 1.0 & \\
+        \hline
+        \rowcolor{gray!10}
+        8 & \textbf{Arguição Presencial (Nota da Banca):} Média da avaliação sobre o domínio profundo do código-fonte e respostas às perguntas (Professor e Discente convidado). & \textbf{0 a 100} & \\
+        \hline
+        \multicolumn{2}{|r|}{\textbf{NOTA FINAL: Soma [1 a 7] $\times$ 0,6 + $\Big($Soma [1 a 7] $\times$ 0,4 $\times \frac{\text{Nota Banca [8]}}{100}\Big)$}} & \textbf{10.0} & \\
+        \hline
+    \end{tabularx}
+\end{center}
+
+\vspace{0.4cm}
+\begin{center}
+    \textcolor{forestgreen}{\textbf{\Large $\star$ Bônus de Desempenho $\star$}} \\[0.2cm]
+    \textbf{Atenção:} As \textbf{3 melhores duplas} avaliadas na entrega e arguição deste trabalho receberão uma bonificação de \textbf{15 pontos extras } do total de 100 pontos na média final da avaliação N3!
+\end{center}
+% =========================================================
+% FOLHA 1 - AVALIADOR 1
+% =========================================================
+\newpage
+\thispagestyle{empty}
+
+\begin{center}
+    {\huge \textbf{\textcolor{forestgreen}{Ficha de Arguição Presencial}}} \\[0.3cm]
+    {\large \textbf{Avaliação Individual de Implementação e Apresentação}} \\[0.8cm]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=forestgreen, title=\textbf{Identificação da Avaliação}, fonttitle=\bfseries]
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{p{0.95\textwidth}}
+         \textbf{Membro da Banca:} [~~] Professor \hspace{1cm} [~~] Discente Convidado \\
+         \textbf{Nome do Avaliador:} \underline{\hspace{10cm}} \\
+         \textbf{Dupla Avaliada (Tema/Vacina):} \underline{\hspace{8.5cm}} \\
+         \textbf{Acadêmico 1 (A1):} \underline{\hspace{12cm}} \\
+         \textbf{Acadêmico 2 (A2):} \underline{\hspace{12cm}} \\
+    \end{tabular}
+\end{tcolorbox}
+
+\vspace{0.8cm}
+
+\begin{center}
+    \renewcommand{\arraystretch}{2.2}
+    \begin{tabularx}{\textwidth}{|X|c|c|}
+        \hline
+        \rowcolor{forestgreen}\textcolor{white}{\textbf{Critérios Avaliados na Arguição (Atribua uma nota de 0 a 100)}} & \textcolor{white}{\textbf{Acadêmico 1}} & \textcolor{white}{\textbf{Acadêmico 2}} \\
+        \hline
+        \multicolumn{3}{|c|}{\cellcolor{gray!20}\textbf{Aspectos de Implementação (Domínio do Código)}} \\
+        \hline
+        1. \textbf{Banco de Dados:} Demonstrou conhecimento sobre o esquema físico, DDL, PKs, FKs e restrições de integridade desenvolvidos? & & \\
+        \hline
+        2. \textbf{Backend:} Explicou com clareza o funcionamento da lógica da API REST e como a paginação foi construída no SQL? & & \\
+        \hline
+        3. \textbf{Frontend e Integração:} Sabe explicar o consumo dos endpoints, a construção da interface e validações tratadas? & & \\
+        \hline
+        \multicolumn{3}{|c|}{\cellcolor{gray!20}\textbf{Aspectos de Apresentação e Postura}} \\
+        \hline
+        4. \textbf{Desenvoltura Técnica:} Respondeu aos questionamentos de forma assertiva e com vocabulário técnico adequado? & & \\
+        \hline
+        5. \textbf{Divisão de Tarefas:} Participação equilibrada na arguição e conhecimento da estrutura geral (full-stack) da aplicação? & & \\
+        \hline
+        \rowcolor{gray!10}
+        \multicolumn{1}{|r|}{\textbf{NOTA FINAL DO ALUNO (0 a 100):}} & & \\
+        \hline
+    \end{tabularx}
+\end{center}
+
+\vspace{2cm}
+\begin{center}
+    \underline{\hspace{8cm}} \\
+    \textbf{Assinatura do Avaliador}
+\end{center}
+
+% =========================================================
+% FOLHA 2 - AVALIADOR 2
+% =========================================================
+\newpage
+\thispagestyle{empty}
+
+\begin{center}
+    {\huge \textbf{\textcolor{forestgreen}{Ficha de Arguição Presencial}}} \\[0.3cm]
+    {\large \textbf{Avaliação Individual de Implementação e Apresentação}} \\[0.8cm]
+\end{center}
+
+\begin{tcolorbox}[colback=white, colframe=forestgreen, title=\textbf{Identificação da Avaliação}, fonttitle=\bfseries]
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{p{0.95\textwidth}}
+         \textbf{Membro da Banca:} [~~] Professor \hspace{1cm} [~~] Discente Convidado \\
+         \textbf{Nome do Avaliador:} \underline{\hspace{10cm}} \\
+         \textbf{Dupla Avaliada (Tema/Vacina):} \underline{\hspace{8.5cm}} \\
+         \textbf{Acadêmico 1 (A1):} \underline{\hspace{12cm}} \\
+         \textbf{Acadêmico 2 (A2):} \underline{\hspace{12cm}} \\
+    \end{tabular}
+\end{tcolorbox}
+
+\vspace{0.8cm}
+
+\begin{center}
+    \renewcommand{\arraystretch}{2.2}
+    \begin{tabularx}{\textwidth}{|X|c|c|}
+        \hline
+        \rowcolor{forestgreen}\textcolor{white}{\textbf{Critérios Avaliados na Arguição (Atribua o multiplicador de 0.0 a 1.0)}} & \textcolor{white}{\textbf{Acadêmico 1}} & \textcolor{white}{\textbf{Acadêmico 2}} \\
+        \hline
+        \multicolumn{3}{|c|}{\cellcolor{gray!20}\textbf{Aspectos de Implementação (Domínio do Código)}} \\
+        \hline
+        1. \textbf{Banco de Dados:} Demonstrou conhecimento sobre o esquema físico, DDL, PKs, FKs e restrições de integridade desenvolvidos? & & \\
+        \hline
+        2. \textbf{Backend:} Explicou com clareza o funcionamento da lógica da API REST e como a paginação foi construída no SQL? & & \\
+        \hline
+        3. \textbf{Frontend e Integração:} Sabe explicar o consumo dos endpoints, a construção da interface e validações tratadas? & & \\
+        \hline
+        \multicolumn{3}{|c|}{\cellcolor{gray!20}\textbf{Aspectos de Apresentação e Postura}} \\
+        \hline
+        4. \textbf{Desenvoltura Técnica:} Respondeu aos questionamentos de forma assertiva e com vocabulário técnico adequado? & & \\
+        \hline
+        5. \textbf{Divisão de Tarefas:} Participação equilibrada na arguição e conhecimento da estrutura geral (full-stack) da aplicação? & & \\
+        \hline
+        \rowcolor{gray!10}
+        \multicolumn{1}{|r|}{\textbf{MÉDIA MULTIPLICADORA DO ALUNO (0.0 a 1.0):}} & & \\
+        \hline
+    \end{tabularx}
+\end{center}
+
+\vspace{2cm}
+\begin{center}
+    \underline{\hspace{8cm}} \\
+    \textbf{Assinatura do Avaliador}
+\end{center}
+
+\end{document}

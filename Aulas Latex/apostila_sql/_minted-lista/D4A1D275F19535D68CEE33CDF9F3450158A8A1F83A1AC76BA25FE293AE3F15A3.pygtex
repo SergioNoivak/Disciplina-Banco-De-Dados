@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Traz os 3 registros mais novos}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{criado\PYGZus{}em}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{pessoa}
+\PYG{k}{ORDER}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{criado\PYGZus{}em}\PYG{+w}{ }\PYG{k}{DESC}
+\PYG{k}{LIMIT}\PYG{+w}{ }\PYG{l+m+mi}{3}\PYG{p}{;}
+\end{Verbatim}

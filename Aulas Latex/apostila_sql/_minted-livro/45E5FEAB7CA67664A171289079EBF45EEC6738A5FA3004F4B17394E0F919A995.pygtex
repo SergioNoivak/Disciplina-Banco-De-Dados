@@ -1,0 +1,9 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{SELECT}\PYG{+w}{  }\PYG{p}{[}\PYG{k}{DISTINCT}\PYG{p}{]}\PYG{+w}{ }\PYG{n}{colunas}\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} O que mostrar (colunas)}
+\PYG{k}{FROM}\PYG{+w}{    }\PYG{n}{tabela}\PYG{+w}{                }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} De onde buscar (tabelas)}
+\PYG{k}{WHERE}\PYG{+w}{   }\PYG{n}{condicao}\PYG{+w}{              }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Filtro de linhas (registros)}
+\PYG{k}{GROUP}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{coluna}\PYG{+w}{               }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Agrupamento}
+\PYG{k}{HAVING}\PYG{+w}{  }\PYG{n}{condicao\PYGZus{}grupo}\PYG{+w}{        }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Filtro sobre grupos}
+\PYG{k}{ORDER}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{coluna}\PYG{+w}{ }\PYG{p}{[}\PYG{k}{ASC}\PYG{o}{|}\PYG{k}{DESC}\PYG{p}{]}\PYG{+w}{    }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Ordem de exibição}
+\PYG{k}{LIMIT}\PYG{+w}{   }\PYG{n}{quantidade}\PYG{p}{;}\PYG{+w}{           }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Limite de linhas retornadas}
+\end{Verbatim}

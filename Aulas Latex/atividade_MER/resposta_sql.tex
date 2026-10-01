@@ -1,0 +1,197 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática e listas
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais e personalizadas
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+\definecolor{bgsql}{RGB}{245, 245, 245}
+\definecolor{verdeuni}{RGB}{0, 100, 0}
+\definecolor{blueuni}{RGB}{0, 0, 128}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{minted}
+
+\newtcblisting{sqlcode}{
+    listing engine=minted,
+    minted language=sql,
+    colback=bgsql,
+    colframe=verdeuni,
+    listing only,
+    title=Gabarito SQL,
+    fonttitle=\bfseries\color{white},
+    coltitle=white, 
+    colbacktitle=verdeuni
+}
+
+\geometry{margin=2.5cm}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+\setlength{\headheight}{52pt}
+
+\fancyhead[L]{\textbf{UniRV}}
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{\small \textbf{Gabarito - Lista Complementar}\\Me.~Sergio Souza Novak\\\textit{Banco de Dados}}
+}
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+
+\begin{document}
+
+\section*{Gabarito Oficial – Criação, Manipulação e Análise}
+
+\hrulefill
+
+\section*{Exercício 1 – Gestão de Estoque}
+
+
+
+\begin{sqlcode}
+-- 1. Criação da Tabela
+CREATE TABLE produto (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao TEXT,
+    preco DECIMAL(10,2) NOT NULL,
+    estoque INTEGER DEFAULT 0,
+    sku CHAR(8) UNIQUE NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Inserção de Dados
+INSERT INTO produto (nome, preco, estoque, sku) VALUES
+('Teclado Mecânico', 250.00, 15, 'TEC12345'),
+('Mouse Gamer', 150.00, 5, 'MOU55443'),
+('Monitor 24pol', 890.00, 0, 'MON88776');
+
+-- 3. Consulta DQL
+SELECT nome, preco 
+FROM produto 
+WHERE estoque > 0 
+ORDER BY preco DESC;
+\end{sqlcode}
+
+\hrulefill
+
+\section*{Exercício 2 – Relatório de Vendas}
+
+
+
+\begin{sqlcode}
+-- 1. Quantidade de vendas por vendedor
+SELECT vendedor_id, COUNT(id) AS total_vendas
+FROM venda
+GROUP BY vendedor_id;
+
+-- 2. Filtro com HAVING
+SELECT vendedor_id, COUNT(id) AS total_vendas
+FROM venda
+GROUP BY vendedor_id
+HAVING COUNT(id) > 10;
+\end{sqlcode}
+
+\hrulefill
+
+\section*{Exercício 3 – Status de Clientes}
+
+
+
+\begin{sqlcode}
+-- 1. Criação e Inserção
+CREATE TABLE cliente (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf CHAR(11) UNIQUE NOT NULL,
+    email VARCHAR(150) UNIQUE,
+    ativo BOOLEAN DEFAULT TRUE
+);
+
+INSERT INTO cliente (nome, cpf, ativo) VALUES 
+('Ana', '11122233344', true),
+('Bob', '55566677788', true),
+('Eva', '99900011122', false);
+
+-- 2. Contagem por status
+SELECT ativo, COUNT(id) 
+FROM cliente 
+GROUP BY ativo;
+
+-- 3. Filtro de grupo (menos de 2 clientes)
+SELECT ativo, COUNT(id) 
+FROM cliente 
+GROUP BY ativo
+HAVING COUNT(id) < 2;
+\end{sqlcode}
+\textbf{Justificativa:} Usamos \texttt{HAVING} porque o filtro é aplicado sobre o resultado de uma função agregada (\texttt{COUNT}), o que ocorre após o agrupamento dos dados.
+
+\hrulefill
+
+\section*{Exercício 4 – Filtros Compostos em Frota}
+
+
+
+\begin{sqlcode}
+-- 1. Contagem específica com WHERE
+SELECT COUNT(id) 
+FROM carro 
+WHERE marca = 'Toyota' AND ano > 2020;
+
+-- 2. Agrupamento e Ordenação
+SELECT marca, COUNT(id) AS total
+FROM carro
+GROUP BY marca
+ORDER BY marca ASC;
+\end{sqlcode}
+
+\hrulefill
+
+\section*{Exercício 5 – Folha de Pagamento}
+
+
+
+\begin{sqlcode}
+-- 1. Soma total de funcionários ativos
+SELECT SUM(salario) AS custo_total_folha
+FROM empregado
+WHERE ativo = TRUE;
+\end{sqlcode}
+\textbf{Resposta 2:} Usamos \texttt{SUM} para somar os valores monetários contidos na coluna salário. O \texttt{COUNT} apenas contaria quantas linhas existem, ignorando o valor do salário de cada funcionário.
+
+\hrulefill
+
+\section*{Desafio de Lógica – Correção de Sintaxe}
+
+
+
+\begin{sqlcode}
+-- Código Corrigido
+SELECT departamento, COUNT(id)
+FROM funcionarios
+WHERE salario > 2000
+GROUP BY departamento
+HAVING COUNT(id) > 5;
+\end{sqlcode}
+
+\textbf{Explicação:} O \texttt{WHERE} deve vir antes do \texttt{GROUP BY} porque ele atua como um filtro de linhas individuais (reduzindo o volume de dados a ser processado). Somente após esse filtro o banco de dados organiza o que sobrou em grupos para então aplicar o \texttt{HAVING}.
+
+\end{document}

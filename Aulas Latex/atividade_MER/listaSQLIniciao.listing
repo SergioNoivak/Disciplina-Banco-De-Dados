@@ -1,0 +1,5 @@
+SELECT departamento, COUNT(id)
+FROM funcionarios
+HAVING COUNT(id) > 5
+WHERE salario > 2000
+GROUP BY departamento;

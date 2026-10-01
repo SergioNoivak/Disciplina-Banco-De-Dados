@@ -1,0 +1,49 @@
+@startuml
+left to right direction
+skinparam linetype ortho
+
+' Configurações de Estilo para seguir o seu padrão
+skinparam usecase {
+    BackgroundColor white
+    BorderColor black
+}
+skinparam rectangle {
+    BackgroundColor white
+    BorderColor black
+}
+skinparam diamond {
+    BackgroundColor white
+    BorderColor black
+}
+
+' Entidade Principal
+rectangle "PESSOA" as Pessoa
+
+' Atributos da Pessoa
+usecase "<u>id</u>" as p1
+usecase "nome" as p2
+usecase "<u>cpf</u>" as p3
+usecase "email" as p4
+usecase "data_nascimento" as p5
+usecase "ativo" as p6
+usecase "criado_em" as p7
+
+' Conexões dos Atributos
+Pessoa -- p1
+Pessoa -- p2
+Pessoa -- p3
+Pessoa -- p4
+Pessoa -- p5
+Pessoa -- p6
+Pessoa -- p7
+
+' Exemplo de Relacionamento (Caso queira expandir depois)
+' Se Pessoa possui, por exemplo, um Telefone
+' rectangle "TELEFONE" as Tel
+' usecase "<u>id_tel</u>" as t1
+' diamond "Possui" as Rel1
+' Tel -- t1
+' Pessoa "1" -- Rel1
+' Rel1 "N" -- Tel
+
+@enduml

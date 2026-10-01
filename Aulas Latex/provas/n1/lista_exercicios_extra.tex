@@ -1,0 +1,174 @@
+\documentclass[12pt,a4paper]{article}
+
+% ------------------------------------------------
+% Pacotes
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{fancyhdr} 
+\usepackage{mathptmx} % Times New Roman 
+\usepackage{enumitem}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric}
+
+% TikZ Styles for ER Diagrams
+\tikzset{
+    block/.style={rectangle, draw, thick, minimum width=2cm, minimum height=1cm, fill=white},
+    diamond_node/.style={diamond, draw, thick, minimum width=2cm, minimum height=1cm, fill=white, aspect=2},
+    attribute/.style={ellipse, draw, thin, minimum width=1.5cm, minimum height=0.6cm, fill=white, font=\scriptsize},
+    line/.style={draw, thick},
+    specialization/.style={draw, circle, inner sep=1pt, font=\tiny, fill=white}
+}
+
+% ------------------------------------------------ 
+% Configuração de página
+% ------------------------------------------------
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=2cm,
+    bottom=2cm,
+    headheight=15pt
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\parindent}{0pt}
+
+% Caixa para resposta
+\newcommand{\resposta}[1]{
+\noindent
+\framebox[\textwidth]{
+\begin{minipage}{0.98\textwidth}
+\vspace{#1}
+\end{minipage}
+}
+}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% ------------------------------------------------
+% Documento
+% ------------------------------------------------
+\begin{document}
+
+% ------------------------------------------------
+% Cabeçalho
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{@{} L{4cm} X @{}}
+    \raisebox{-0.5cm}{\includegraphics[width=4cm]{Universidade_de_Rio_Verde.jpg}} &
+    \hfill
+    \begin{tabular}{|>{\centering\arraybackslash}m{10cm}|>{\raggedright\arraybackslash}p{1.8cm}|}
+        \hline
+        \cellcolor{black}\color{white}\rule{0pt}{1.2cm}\textbf{LISTA DE EXERCÍCIOS: MODELAGEM DE DADOS} 
+        & 
+        \scriptsize Nota \tabularnewline
+        \hline
+    \end{tabular} 
+\end{tabularx}
+\vspace{0.3cm}
+
+\begin{tabularx}{\textwidth}{|X|L{2cm}|}
+\hline
+\textbf{Curso} & \textbf{Campus} \\
+\textit{Engenharia de Software} & \textit{Rio Verde} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Disciplina}} \\  
+\multicolumn{2}{|l|}{ \textit{Banco de Dados I}} \\
+\hline
+\textbf{Nome do(a) acadêmico(a)} & \textbf{Valor} \\
+& - \\
+\hline
+\textbf{Professor} & \textbf{Turma} \\
+\textit{ Sergio Souza Novak} & \textit{A/B} \\
+\hline
+\textbf{Data} & \textbf{Código} \\
+\textit{17/03/2026} & \textit{ESW} \\
+\hline
+\end{tabularx}
+
+\vspace{0.5cm}
+
+\textbf{Instruções:} Para cada um dos cenários abaixo, você deve:
+\begin{enumerate}[label=\alph*)]
+    \item Desenhar o \textbf{Diagrama Entidade-Relacionamento (Conceitual)}, contendo as 8 entidades, atributos principais e cardinalidades.
+    \item Apresentar o \textbf{Esquema Relacional (Lógico)}, indicando Chaves Primárias (PK) e Chaves Estrangeiras (FK).
+\end{enumerate}
+
+\vspace{0.3cm}
+\rule{\textwidth}{0.4pt}
+\vspace{0.3cm}
+
+% ------------------------------------------------
+% EXERCÍCIO 1: E-COMMERCE
+% ------------------------------------------------
+\section*{Exercício 1: MarketplaceRV (E-commerce)}
+
+Um novo marketplace precisa organizar suas vendas online. As regras de negócio são:
+\begin{itemize}
+    \item \textbf{Clientes e Pedidos:} O sistema registra Clientes (CPF, nome, email). Um cliente pode realizar vários Pedidos, mas cada pedido pertence a um único cliente.
+    \item \textbf{Vendedores e Produtos:} Vendedores (CNPJ, nome\_loja) vendem diversos Produtos (ID, nome, preço). Um produto é vendido por apenas um vendedor.
+    \item \textbf{Categorias:} Cada Produto obrigatoriamente pertence a uma única Categoria (ID, descrição), que pode agrupar vários produtos.
+    \item \textbf{Itens de Pedido:} Um Pedido é composto por vários Produtos, e um Produto pode estar presente em vários pedidos diferentes. Deve-se registrar a quantidade e o preço unitário no momento da compra.
+    \item \textbf{Pagamentos:} Cada Pedido gera exatamente um registro de Pagamento (ID, data, forma\_pgto, valor).
+    \item \textbf{Cupons de Desconto:} O sistema possui Cupons (código, valor\_desconto). Um Cupom pode ser aplicado em vários Pedidos, mas cada pedido aceita no máximo um cupom.
+\end{itemize}
+
+\textbf{Entidades (8):} Cliente, Vendedor, Produto, Categoria, Pedido, Item\_Pedido, Pagamento, Cupom.
+
+\resposta{10cm}
+
+\newpage
+
+% ------------------------------------------------
+% EXERCÍCIO 2: BIBLIOTECA
+% ------------------------------------------------
+\section*{Exercício 2: BiblioRV (Gestão de Biblioteca)}
+
+A biblioteca universitária deseja automatizar seu controle de acervo e empréstimos:
+\begin{itemize}
+    \item \textbf{Livros e Autores:} Livros (ISBN, título, ano) são escritos por um ou mais Autores (ID, nome, nacionalidade). Um autor pode ter escrito vários livros.
+    \item \textbf{Editoras e Categorias:} Cada Livro é publicado por uma única Editora (ID, nome, cidade) e pertence a uma Categoria (ID, gênero) literária.
+    \item \textbf{Exemplares:} Para cada Livro, a biblioteca possui vários Exemplares físicos (código\_de\_barras, estado\_conservação). Um exemplar refere-se a apenas um livro.
+    \item \textbf{Leitores e Empréstimos:} Leitores (Matrícula, nome, tipo) podem realizar diversos Empréstimos de exemplares ao longo do semestre.
+    \item \textbf{Registro de Empréstimo:} Cada Empréstimo registra a data de saída e a data prevista de devolução. Um empréstimo envolve exatamente um leitor e um único exemplar por vez.
+    \item \textbf{Reservas:} Caso um Livro não tenha exemplares disponíveis, um Leitor pode fazer uma Reserva (ID, data\_reserva) para aquele livro. Um livro pode ter várias reservas na fila.
+\end{itemize}
+
+\textbf{Entidades (8):} Livro, Autor, Editora, Categoria, Exemplar, Leitor, Empréstimo, Reserva.
+
+\resposta{12cm}
+
+\newpage
+
+% ------------------------------------------------
+% EXERCÍCIO 3: ACADEMIA
+% ------------------------------------------------
+\section*{Exercício 3: FitRV (Gestão de Academia)}
+
+Uma academia de ginástica precisa de um sistema para gerenciar treinos e mensalidades:
+\begin{itemize}
+    \item \textbf{Alunos e Planos:} Alunos (ID, nome, data\_nasc) matriculam-se em um único Plano (ID, nome\_plano, valor\_mensal) por vez. Um plano pode ter muitos alunos.
+    \item \textbf{Instrutores e Modalidades:} Instrutores (CPF, nome, especialidade) ministram diversas Modalidades (ID, nome\_modalidade, sala). Cada modalidade tem um instrutor responsável.
+    \item \textbf{Avaliações Físicas:} Um Aluno realiza várias Avaliações Físicas (ID, data, peso, \%\_gordura) periodicamente. Cada avaliação pertence a apenas um aluno.
+    \item \textbf{Treinos e Exercícios:} Um Instrutor prescreve diversos Treinos (ID, objetivo, data\_inicio) para os alunos. Cada treino é composto por vários Exercícios (ID, nome\_exercicio, grupo\_muscular).
+    \item \textbf{Montagem de Treino:} Um Exercício pode estar presente em vários treinos diferentes de alunos distintos. Deve-se registrar o número de séries e repetições para cada exercício no treino.
+    \item \textbf{Equipamentos:} Exercícios utilizam Equipamentos (ID, nome\_equip, data\_manutenção). Um exercício pode exigir um equipamento, mas um equipamento pode ser usado em vários exercícios.
+\end{itemize}
+
+\textbf{Entidades (8):} Aluno, Plano, Instrutor, Modalidade, Avaliação, Treino, Exercício, Equipamento.
+
+\resposta{12cm}
+
+\end{document}

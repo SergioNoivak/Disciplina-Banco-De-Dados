@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Pessoas da família \PYGZsq{}Lima\PYGZsq{} (não importa o que vem antes ou depois)}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{aluno}\PYG{+w}{ }\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{LIKE}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}\PYGZpc{}Lima\PYGZpc{}\PYGZsq{}}\PYG{p}{;}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Nomes iniciados com a letra B}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{aluno}\PYG{+w}{ }\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{LIKE}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}B\PYGZpc{}\PYGZsq{}}\PYG{p}{;}
+\end{Verbatim}

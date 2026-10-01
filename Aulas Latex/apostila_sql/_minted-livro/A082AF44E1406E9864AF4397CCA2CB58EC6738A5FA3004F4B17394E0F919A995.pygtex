@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Detecção de cadastro com pendência de e\PYGZhy{}mail (em branco/nulo absoluto)}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{aluno}\PYG{+w}{ }\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{email}\PYG{+w}{ }\PYG{k}{IS}\PYG{+w}{ }\PYG{k}{NULL}\PYG{p}{;}
+\end{Verbatim}

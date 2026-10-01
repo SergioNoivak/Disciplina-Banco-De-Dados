@@ -1,0 +1,1059 @@
+\documentclass[9pt]{beamer}
+\mode<presentation>
+
+% Theme choice:
+\usetheme{Madrid}%Darmstadt 
+
+\usecolortheme[RGB={0,100,50}]{structure}
+ \usefonttheme{structurebold} 
+\setbeamercovered{invisible}
+%\setbeamertemplate{navigation symbols}{}
+\usepackage{dynblocks}
+\usepackage{textpos}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\newtheorem{teorema}{Teorema}\usepackage{mathtools}
+\renewcommand{\proofname}{Prova}
+\usepackage[portuguese]{babel}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\uselanguage{Portuguese}
+\languagepath{Portuguese}
+
+\deftranslation[to=Portuguese]{Theorem}{Teorema}
+\deftranslation[to=Portuguese]{Lemma}{Lema}
+\deftranslation[to=Portuguese]{Corollary}{Corolário}
+\deftranslation[to=Portuguese]{Proof}{Prova}
+
+\usepackage{dutchcal}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm}
+
+
+\usepackage[affil-it]{authblk} 
+\usepackage{etoolbox}
+\usepackage{lmodern}
+\usepackage[normalem]{ulem}
+
+% TikZ configuration for diagrams
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, shapes.misc, arrows, positioning, calc, decorations.pathreplacing, babel}
+\tikzset{smartphone/.style={draw, rectangle, rounded corners=3pt, minimum width=1.2cm, minimum height=2.2cm, fill=white, thick}}
+
+% SQL Syntax Highlighting
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{sqlstyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegray},
+    keywordstyle=\color{structure},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=none,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=SQL,
+    morekeywords={REFERENCES, ON, CASCADE, SET, NULL, NO, ACTION, RESTRICT, OFFSET, LIMIT, DISTINCT},
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {â}{{\^a}}1 {à}{{\`a}}1 {é}{{\'e}}1 {ê}{{\^e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ô}{{\^o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {Â}{{\^A}}1 {À}{{\`A}}1 {É}{{\'E}}1 {Ê}{{\^E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ô}{{\^O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1
+}
+
+\lstset{style=sqlstyle}
+
+\makeatletter
+\patchcmd{\@maketitle}{\LARGE \@title}{\fontsize{18}{19.2}\selectfont\@title}{}{}
+\makeatother
+
+\renewcommand\Authfont{\fontsize{12}{14.4}\selectfont}
+\renewcommand\Affilfont{\fontsize{9}{10.8}\itshape}
+
+% Title page details: 
+\title[Presentation]{Banco de Dados} %add title
+
+
+\institute[UniRV]{\textbf{\large  \textcolor{structure}{\textbf{\large
+Cláusulas Avançadas, Integridade Referencial e Paginação
+}} %add name 
+% \hspace{0.5pt}
+\\ \qquad
+\\Professor: Me. Sergio Souza Novak 
+\\Faculdade de Engenharia de Software}
+} 
+% \titlegraphic{\includegraphics[width=5cm]{msu.eps}}
+\titlegraphic{\includegraphics[width=5cm]{Universidade_de_Rio_Verde.jpg}}
+\date{}
+
+% Logo only on title page
+%\logo{\includegraphics[width=1cm,keepaspectratio]{Logo.png}}
+\usepackage[pscoord]{eso-pic}
+
+
+\begin{document}
+\shorthandoff{"}
+
+% Title page frame
+\frame[plain]{\titlepage}
+%logo
+\AddToShipoutPictureFG{
+    \put(\LenToUnit{.92\paperwidth},
+    \LenToUnit{.185\paperheight})
+    {\vtop{{\null}
+    \makebox{\includegraphics[width=.8cm,keepaspectratio]{Universidade_de_Rio_Verde.jpg}}}}}
+
+
+
+\begin{frame}{Configuração: Google Colab}
+    \begin{alertblock}{Nota Importante}
+        Ao utilizar o Google Colab com SQLite, é necessário habilitar manualmente o suporte a chaves estrangeiras executando a seguinte cláusula:
+    \end{alertblock}
+    \vspace{0.5cm}
+    \begin{exampleblock}{Habilitar Foreign Keys}
+        \centering
+        \large \texttt{\%sql PRAGMA foreign\_keys = ON;}
+    \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Sumário}
+  \tableofcontents
+\end{frame}
+
+\section{Integridade Referencial}
+
+\begin{frame}{O que é Integridade Referencial? (Teoria)}
+  \begin{block}{Definição}
+    É um conjunto de regras que garante que a relação entre registros de tabelas diferentes permaneça válida e consistente. No modelo relacional, isso significa que uma referência de uma tabela para outra deve sempre apontar para um dado existente.
+  \end{block}
+  \vspace{0.4cm}
+  \begin{itemize}
+    \item \textbf{Consistência}: Garante que não existam referências a dados inexistentes.
+    \item \textbf{Confiabilidade}: O banco de dados impede ações que quebrem esses vínculos.
+    \item \textbf{Automação}: O SGDB cuida da fiscalização, poupando o trabalho da aplicação.
+  \end{itemize} 
+\end{frame}
+
+\begin{frame}{O Papel da Chave Estrangeira (Teoria)}
+  \begin{itemize}
+    \item A \textbf{Chave Estrangeira (Foreign Key)} é o instrumento técnico da integridade referencial.
+    \item Ela é uma coluna (ou conjunto de colunas) em uma tabela que armazena a \textbf{Chave Primária} de outra tabela.
+  \end{itemize}
+  \vspace{0.3cm}
+  \centering
+  \begin{tikzpicture}[node distance=1cm, font=\small\sffamily]
+    \node (parent) [draw, rectangle, fill=blue!10, text width=3cm, align=center, thick] {
+      \textbf{PAI} \\ \rule{2.8cm}{0.4pt} \\
+      \underline{PK (ID)}
+    };
+    \node (child) [draw, rectangle, fill=green!10, text width=3cm, align=center, right=2cm of parent, thick] {
+      \textbf{FILHO} \\ \rule{2.8cm}{0.4pt} \\
+      FK (ID\_PAI)
+    };
+    \draw[->, >=stealth, ultra thick, structure] (child.west) -- (parent.east) node[midway, above] {Aponte para};
+  \end{tikzpicture}
+  \vspace{0.3cm}
+  \begin{alertblock}{Regra de Ouro}
+    O valor na FK deve existir na PK da tabela referenciada ou ser nulo (se a regra do negócio permitir).
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Restrições no Modelo Relacional (Teoria)}
+  \begin{block}{O Papel das Constraints}
+    As restrições de integridade referencial funcionam como "guardiões" do banco de dados, impedindo que qualquer operação (Manual ou via Aplicação) deixe os dados em um estado inconsistente.
+  \end{block}
+  \vspace{0.4cm}
+  \begin{itemize}
+    \item Elas são verificadas \textbf{instantaneamente} pelo SGDB no momento da execução do comando.
+    \item Se a regra for violada, a transação é abortada e o erro é retornado.
+    \item Garante que a "verdade" dos dados seja mantida sem depender da lógica do programador.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Restrição de Inserção (Prática)}
+  \small
+  Não é permitido criar um registro "filho" que aponte para um "pai" inexistente.
+  \vspace{0.3cm}
+  \centering
+  \begin{tikzpicture}[font=\scriptsize\sffamily]
+    \node (p) [draw, fill=blue!10, text width=2cm, align=center] {\textbf{Clientes}\\ID: 1\\ID: 2};
+    \node (f) [draw, fill=green!10, text width=3cm, align=center, right=2cm of p] {\textbf{Novo Pedido}\\ID\_Cliente: \color{red}999};
+    
+    \draw[->, ultra thick, red] (f.west) -- (p.east) node[midway, above] {ID não existe!};
+    \node at ($(p.east)!0.5!(f.west)$) [draw, circle, red, ultra thick, cross out, minimum size=0.5cm] {};
+  \end{tikzpicture}\\
+  \centering\scriptsize
+  \textbf{Clientes}(\underline{id}, nome) \quad \textbf{Pedidos}(\underline{id}, \color{red}id\_cliente\color{black}, valor) \\
+  \textit{id\_cliente referencia Clientes}
+  \vspace{0.2cm}
+  \begin{exampleblock}{Tentativa de SQL}
+\begin{lstlisting}
+-- O Cliente 999 não existe na tabela Clientes
+INSERT INTO Pedidos (id, valor, id_cliente)
+VALUES (101, 250.00, 999);
+\end{lstlisting}
+    \vspace{0.1cm}
+    \color{red}\textit{Erro: insert or update on table "pedidos" violates foreign key constraint...}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Restrição de Exclusão (Prática)}
+  \small
+  Não é permitido excluir um "pai" enquanto ele possuir "filhos" (sem tratamento de cascata).
+  \vspace{0.3cm}
+  \centering
+  \begin{tikzpicture}[font=\scriptsize\sffamily]
+    \node (p) [draw, fill=blue!10, text width=2.5cm, align=center] {\textbf{Cliente: Sergio}\\ID: 1};
+    \node (f) [draw, fill=green!10, text width=2.5cm, align=center, below=1cm of p] {\textbf{Pedido \#50}\\FK\_Cliente: 1};
+    
+    \draw[<-] (p) -- (f);
+    \node (del) [left=0.5cm of p, red, font=\bfseries] {DELETE};
+    \draw[->, ultra thick, red] (del) -- (p);
+    \node at (p) [draw, circle, red, ultra thick, cross out, minimum size=1cm] {};
+  \end{tikzpicture}
+  \centering\scriptsize
+  \textbf{Clientes}(\underline{id}, nome) \quad \textbf{Pedidos}(\underline{id}, \color{red}id\_cliente\color{black}, valor) \\
+  \textit{id\_cliente referencia Clientes}
+  \vspace{0.2cm}
+  \begin{exampleblock}{Tentativa de SQL}
+\begin{lstlisting}
+-- Tentar deletar um cliente que já tem compras
+DELETE FROM Clientes WHERE id = 1;
+\end{lstlisting}
+    \vspace{0.1cm}
+    \color{red}\textit{Erro: update or delete on table "clientes" violates foreign key constraint...}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Restrição de Alteração (Prática)}
+  \small
+  Alterar a Chave Primária do pai "quebraria" o vínculo com os filhos já existentes.
+  \vspace{0.3cm}
+  \centering
+  \begin{tikzpicture}[font=\scriptsize\sffamily]
+    \node (p) [draw, fill=blue!10, text width=2.5cm, align=center] {\textbf{Produto: Teclado}\\PK: 'T100'};
+    \node (f) [draw, fill=green!10, text width=2.5cm, align=center, right=2cm of p] {\textbf{Item\_Venda}\\FK\_Prod: 'T100'};
+    
+    \draw[->] (f) -- (p);
+    \node (upd) [above=0.3cm of p, structure, font=\bfseries] {UPDATE PK para 'T200'};
+    \draw[->, bend right, red, ultra thick] (upd) -- (p);
+    
+    \node at ($(p.east)!0.5!(f.west)$) [draw, circle, red, ultra thick, cross out, minimum size=0.5cm] {};
+  \end{tikzpicture}
+  \centering\scriptsize
+  \textbf{Produtos}(\underline{id}, nome) \quad \textbf{Item\_Venda}(\underline{id}, \color{red}id\_prod\color{black}) \\
+  \textit{id\_prod referencia Produtos}
+  \vspace{0.2cm}
+  \begin{exampleblock}{Tentativa de SQL}
+\begin{lstlisting}
+-- Tentar mudar o código do produto que já foi vendido
+UPDATE Produtos SET id = 'T200' WHERE id = 'T100';
+\end{lstlisting}
+    \vspace{0.1cm}
+    \color{red}\textit{Erro: update or delete on table "produtos" violates foreign key constraint...}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Consistência de Domínios e Tipos (Teoria)}
+  \begin{itemize}
+    \item Para que a integridade funcione, o \textbf{Domínio} (tipo de dado) da FK deve ser idêntico ao da PK.
+    \item Se a PK é \texttt{INT}, a FK deve ser \texttt{INT}.
+    \item Se a PK é \texttt{UUID}, a FK deve ser \texttt{UUID}.
+  \end{itemize}
+  \vspace{0.4cm}
+  \begin{block}{Por que isso importa?}
+    Tipos incompatíveis impedem que o SGDB realize as verificações de igualdade necessárias para validar o vínculo, além de causarem erros graves de performance em \textit{JOINs}.
+  \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Problema 1: Registros Órfãos (Integridade)}
+  \small
+  Um registro órfão ocorre quando um "filho" referencia um "pai" que não existe mais.
+  \vspace{0.2cm}
+  \centering
+  \begin{tikzpicture}[font=\tiny\sffamily, node distance=1.5cm]
+    \node (p) [draw, fill=blue!10, text width=2cm, align=center] {\textbf{Clientes}\\ID: 1\\ID: 2\\ \color{gray}...};
+    \node (f) [draw, fill=green!10, text width=2cm, align=center, right=2.5cm of p] {\textbf{Pedidos}\\ID: 101, FK: 1\\ID: 102, FK: \textbf{\color{red}500}};
+    
+    \draw[->, thick] (f.west |- 0,-0.1) -- (p.east |- 0,-0.1);
+    \draw[->, thick, red, dashed] (f.west |- 0,-0.4) -- +( -1.5,0) node[above] {Cadê o 500?};
+    \node at (p.east) [xshift=1.2cm, yshift=-0.4cm, red, font=\huge] {?};
+  \end{tikzpicture}
+  \centering\scriptsize
+  \textbf{Clientes}(\underline{id}, nome) \quad \textbf{Pedidos}(\underline{id}, \color{red}id\_cliente\color{black}, valor) \\
+  \textit{id\_cliente referencia Clientes}
+  \vspace{0.1cm}
+  \begin{exampleblock}{Como detectar órfãos (SQL)}
+\begin{lstlisting}
+SELECT p.id, p.id_cliente FROM Pedidos p
+LEFT JOIN Clientes c ON p.id_cliente = c.id
+WHERE c.id IS NULL;
+\end{lstlisting}
+  \end{exampleblock}
+  \begin{alertblock}{Consequências}
+    Relatórios de vendas inconsistentes, erros de \textit{NullPointer} na aplicação e perda da integridade lógica do negócio.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Problema 2: Inconsistência em Exclusões (Integridade)}
+  \small
+  Ao excluir um registro pai sem proteção, os filhos perdem a referência e tornam-se inválidos.
+  \vspace{0.2cm}
+  \centering
+  \begin{tikzpicture}[font=\tiny\sffamily]
+    \node (p) [draw, fill=red!20, text width=2cm, align=center] {\textbf{Clientes}\\ \sout{ID: 1}\\ID: 2};
+    \node (f) [draw, fill=green!10, text width=2.5cm, align=center, right=2cm of p] {\textbf{Pedidos}\\ID: 101, FK: \textbf{\color{red}1} $\leftarrow$ ?\\ID: 102, FK: 2};
+    
+    \draw[->, red, thick, dashed] (f.west |- 0,0.1) -- (p.east |- 0,0.1);
+    \node at (p) [draw, circle, red, ultra thick, cross out, minimum size=0.8cm] {};
+  \end{tikzpicture}
+  \centering\scriptsize
+  \textbf{Clientes}(\underline{id}, nome) \quad \textbf{Pedidos}(\underline{id}, \color{red}id\_cliente\color{black}, valor) \\
+  \textit{id\_cliente referencia Clientes}
+  \vspace{0.1cm}
+  \begin{exampleblock}{Exemplo SQL (Sem Constraints)}
+\begin{lstlisting}
+DELETE FROM Clientes WHERE id = 1;
+-- Agora a consulta abaixo retorna dados sem sentido:
+SELECT * FROM Pedidos WHERE id_cliente = 1;
+\end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Problema 3: Inconsistência em Atualizações (Integridade)}
+  \small
+  Alterar a Chave Primária de um pai invalida instantaneamente todos os filhos.
+  \vspace{0.2cm}
+  \centering
+  \begin{tikzpicture}[font=\tiny\sffamily]
+    \node (p) [draw, fill=blue!10, text width=2.5cm, align=center] {\textbf{Produtos}\\ID: 'P1' $\rightarrow$ \textbf{'P99'}};
+    \node (f) [draw, fill=green!10, text width=2.5cm, align=center, right=2cm of p] {\textbf{Estoque}\\Prod\_ID: 'P1' \textbf{\color{red}(Quebrado)}};
+    
+    \draw[->, red, thick, dashed] (f.west) -- (p.east);
+    \node at ($(p.east)!0.5!(f.west)$) [draw, circle, red, ultra thick, cross out, minimum size=0.5cm] {};
+  \end{tikzpicture}
+  \centering\scriptsize
+  \textbf{Produtos}(\underline{id}, nome) \quad \textbf{Estoque}(\underline{id\_prod}, qtd) \\
+  \textit{id\_prod referencia Produtos}
+  \vspace{0.1cm}
+  \begin{exampleblock}{Exemplo SQL (Sem ON UPDATE CASCADE)}
+\begin{lstlisting}
+UPDATE Produtos SET id = 'P99' WHERE id = 'P1';
+-- Os registros de estoque continuam apontando para 'P1',
+-- que não existe mais na tabela de produtos.
+\end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Problema 4: Dependências Circulares (Integridade)}
+  \small
+  Ocorre quando duas tabelas dependem uma da outra para existir.
+  \vspace{0.4cm}
+  \centering
+  \begin{tikzpicture}[node distance=2cm, font=\tiny\sffamily]
+    \node (a) [draw, rectangle, fill=blue!10, text width=2cm, align=center] {\textbf{Tabela A}\\FK\_B (NOT NULL)};
+    \node (b) [draw, rectangle, fill=green!10, right=of a, text width=2cm, align=center] {\textbf{Tabela B}\\FK\_A (NOT NULL)};
+    
+    \draw[->, bend left, thick, red] (a) edge node[above] {Precisa de B} (b);
+    \draw[->, bend left, thick, red] (b) edge node[below] {Precisa de A} (a);
+  \end{tikzpicture}
+  \centering\scriptsize
+  \textbf{Tabela\_A}(\underline{id}, \color{red}fk\_b\color{black}) \quad \textbf{Tabela\_B}(\underline{id}, \color{red}fk\_a\color{black}) \\
+  \textit{fk\_b referencia B} \quad \textit{fk\_a referencia A}
+  \vspace{0.2cm}
+  \begin{exampleblock}{O Impasse do SQL}
+\begin{lstlisting}
+INSERT INTO A (id, fk_b) VALUES (1, 10);
+-- Erro: B 10 não existe!
+INSERT INTO B (id, fk_a) VALUES (10, 1);
+-- Erro: A 1 não existe!
+\end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Solução 1: Permitindo Nulos e Atualização Tardia}
+  \small
+  A maneira mais simples de resolver o impasse é permitir que uma das chaves estrangeiras aceite valores \textbf{NULL} temporariamente, quebrando a obrigatoriedade inicial.
+  \vspace{0.2cm}
+  \begin{exampleblock}{Passo a Passo da Inserção}
+\begin{lstlisting}
+-- 1. Inserir na Tabela A deixando a FK nula (fk_b deve ser NULL)
+INSERT INTO A (id, fk_b) VALUES (1, NULL);
+
+-- 2. Inserir na Tabela B referenciando o ID de A
+INSERT INTO B (id, fk_a) VALUES (10, 1);
+
+-- 3. Atualizar a Tabela A com o ID de B recém-criado
+UPDATE A SET fk_b = 10 WHERE id = 1;
+\end{lstlisting}
+  \end{exampleblock}
+  \begin{alertblock}{Vantagem}
+    É a solução mais compatível entre diferentes SGDBs e fácil de entender logicamente.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Solução 2: Restrições Postergáveis (DEFERRABLE)}
+  \small
+  Alguns bancos (PostgreSQL, Oracle, SQLite) permitem configurar a restrição para ser verificada apenas no \textbf{COMMIT} da transação.
+  \vspace{0.2cm}
+  \begin{exampleblock}{Configuração e Uso (Exemplo Conceitual)}
+\begin{lstlisting}
+-- Definir a FK como postergável na criação da tabela
+CREATE TABLE A (
+  id INT PRIMARY KEY,
+  fk_b INT REFERENCES B(id) DEFERRABLE INITIALLY DEFERRED
+);
+
+-- Realizar as inserções dentro de uma transação
+BEGIN TRANSACTION;
+  INSERT INTO A (id, fk_b) VALUES (1, 10);
+  INSERT INTO B (id, fk_a) VALUES (10, 1);
+COMMIT; -- O banco valida tudo somente neste momento!
+\end{lstlisting}
+  \end{exampleblock}
+  \textit{*Nota: No SQLite, use \texttt{PRAGMA defer\_foreign\_keys = ON;} dentro da transação.}
+\end{frame}
+
+\begin{frame}[fragile]{Solução 2: Exemplo Prático no SQLite}
+  \small
+  No SQLite, podemos adiar a verificação mesmo que a tabela não tenha sido criada com a cláusula \texttt{DEFERRABLE}, usando um \textbf{PRAGMA} especial.
+  \vspace{0.2cm}
+  \begin{exampleblock}{Uso do PRAGMA defer\_foreign\_keys}
+\begin{lstlisting}
+-- 1. Garante que as chaves estrangeiras estao ativas
+PRAGMA foreign_keys = ON;
+
+BEGIN TRANSACTION;
+  -- 2. Forca o adiamento das verificacoes nesta transacao
+  PRAGMA defer_foreign_keys = ON; 
+
+  INSERT INTO Tabela_A (id, fk_b) VALUES (1, 10); -- Sem erro!
+  INSERT INTO Tabela_B (id, fk_a) VALUES (10, 1);
+COMMIT; -- A integridade e validada aqui.
+\end{lstlisting}
+  \end{exampleblock}
+  \begin{alertblock}{Dica}
+    O \texttt{PRAGMA defer\_foreign\_keys} é redefinido automaticamente para \texttt{OFF} assim que a transação termina (\texttt{COMMIT} ou \texttt{ROLLBACK}).
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Problema 5: Performance e Índices (Integridade)}
+  \small
+  Verificar a integridade em tabelas gigantescas sem índices causa lentidão extrema.
+  \vspace{0.2cm}
+  \centering
+  \begin{tikzpicture}[font=\tiny\sffamily]
+    \node (table) [draw, fill=gray!10, text width=4cm, align=center] {Tabela Pedidos\\(10 Milhões de Linhas)};
+    \node (scan) [below=0.5cm of table, red] {Busca Sequencial Lenta...};
+    \foreach \x in {0.1,0.3,...,3.9} \draw[red] (\x-2,-0.1) -- (\x-2,-0.4);
+    
+    \node (sol) [right=1.5cm of table, draw, fill=green!20, text width=3cm, align=center] {Busca via Índice\\(Instantânea)};
+    \draw[->, structure, ultra thick] (table) -- (sol);
+  \end{tikzpicture}
+  \vspace{0.4cm}
+  \begin{exampleblock}{Solução SQL}
+\begin{lstlisting}
+-- Sempre indexar as chaves estrangeiras:
+CREATE INDEX idx_pedidos_cliente ON Pedidos(id_cliente);
+\end{lstlisting}
+  \end{exampleblock}
+  \centering\scriptsize
+  \textbf{Pedidos}(\underline{id}, \color{red}id\_cliente\color{black}, valor) \quad \textit{id\_cliente referencia Clientes}
+  \vspace{0.2cm}
+  \begin{itemize}
+    \item \textbf{Dica}: A maioria dos bancos não cria índices automáticos para FKs!
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Ações Referenciais: ON DELETE e ON UPDATE (Teoria)}
+  \begin{block}{O que são?}
+    São gatilhos automáticos definidos na criação da Tabela que determinam como o banco de dados deve reagir quando um registro referenciado (Pai) sofre uma alteração ou exclusão.
+  \end{block}
+  \vspace{0.3cm}
+  \begin{itemize}
+    \item \textbf{ON DELETE}: Define o comportamento na exclusão do pai.
+    \item \textbf{ON UPDATE}: Define o comportamento na alteração da PK do pai.
+  \end{itemize}
+  \vspace{0.3cm}
+  \begin{exampleblock}{Ações Possíveis}
+    \lstinline|CASCADE, SET NULL, SET DEFAULT, RESTRICT, NO ACTION|
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{Ações Referenciais: CASCADE (Prática)}
+  \small
+  A ação \textbf{CASCADE} propaga a alteração do pai para todos os filhos vinculados.
+  \vspace{0.3cm}
+  \begin{exampleblock}{Implementação em SQL}
+\begin{lstlisting}
+CREATE TABLE Pedidos (
+  id_pedido INT PRIMARY KEY,
+  id_cliente INT,
+  FOREIGN KEY (id_cliente) REFERENCES Clientes(id)
+  ON DELETE CASCADE
+  ON UPDATE CASCADE
+);
+\end{lstlisting}
+  \end{exampleblock}
+  \vspace{0.3cm}
+  \centering
+  \begin{tikzpicture}[font=\tiny\sffamily, node distance=1.5cm]
+    \node (p) [draw, fill=red!10] {Cliente ID: 10 (DELETE)};
+    \node (f) [draw, fill=red!30, below=0.6cm of p] {Todos os Pedidos do ID 10 sumirão!};
+    \draw[->, ultra thick, red] (p) -- (f) node[midway, right] {Cascata};
+  \end{tikzpicture}
+  \centering\scriptsize
+  \textbf{Clientes}(\underline{id}, nome) \quad \textbf{Pedidos}(\underline{id}, \color{red}id\_cliente\color{black}, valor) \\
+  \textit{id\_cliente referencia Clientes}
+\end{frame}
+
+\begin{frame}[fragile]{Ação SET NULL: Preservando Registros Filhos}
+  \begin{exampleblock}{Exemplo de Implementação: SET NULL}
+\begin{lstlisting}
+CREATE TABLE Produtos (
+  id_produto INT PRIMARY KEY,
+  id_categoria INT NULL,
+  FOREIGN KEY (id_categoria) REFERENCES Categorias(id)
+  ON DELETE SET NULL
+);
+\end{lstlisting}
+  \end{exampleblock}
+  \vspace{0.2cm}
+  \centering
+  \begin{tikzpicture}[font=\scriptsize\sffamily]
+    \node (cat) [draw, fill=orange!20] {Categoria: "Eletrônicos" (ID: 1)};
+    \node (prod) [draw, fill=green!10, below=0.8cm of cat] {Produto: "Celular" (Cat: 1)};
+    
+    \draw[->] (prod) -- (cat);
+    
+    \node (action) [right=1.5cm of cat, red, font=\bfseries] {DELETE};
+    \draw[->, thick, red] (action) -- (cat);
+    
+    \node (res) [draw, fill=green!10, right=4cm of prod] {Produto: "Celular" (Cat: \textbf{NULL})};
+    \draw[->, dashed] (prod) -- (res) node[midway, above] {SET NULL};
+  \end{tikzpicture}
+  \centering\scriptsize
+  \textbf{Categorias}(\underline{id}, nome) \quad \textbf{Produtos}(\underline{id}, \color{red}id\_cat\color{black}, nome) \\
+  \textit{id\_cat referencia Categorias}
+\end{frame}
+
+\begin{frame}{Exercício 1: Integridade em Vendas (Desafio)}
+  \begin{block}{Enunciado}
+    Crie a estrutura de tabelas para um sistema de vendas. Ao excluir um \textbf{Cliente}, todos os seus \textbf{Pedidos} devem ser removidos automaticamente para evitar registros órfãos.
+  \end{block}
+  \vspace{0.4cm}
+  \centering
+  \begin{tikzpicture}[node distance=1cm, font=\small\sffamily]
+    \node (c) [draw, rounded corners, fill=blue!10, inner sep=5pt] {
+      \textbf{Clientes}(\underline{id}, nome)
+    };
+    \node (p) [draw, rounded corners, fill=green!10, below=1cm of c, inner sep=5pt] {
+      \textbf{Pedidos}(\underline{id}, \color{red}id\_cliente\color{black}, valor)
+    };
+    \draw[->, >=stealth, ultra thick, structure] (p) -- (c) 
+      node[midway, right] {\scriptsize \textbf{id\_cliente} REFERENCES \textbf{Clientes}(id)};
+  \end{tikzpicture}
+  
+  \vspace{0.3cm}
+  \centering
+  \small
+  \textbf{Clientes} (\underline{id}, nome) \\
+  \textbf{Pedidos} (\underline{id}, id\_cliente, valor) \\
+  \textit{id\_cliente referencia Clientes}
+\end{frame}
+
+\begin{frame}[fragile]{Resolução do Exercício 1}
+  \begin{exampleblock}{Solução SQL}
+\begin{lstlisting}
+-- Tabela de Clientes
+CREATE TABLE Clientes (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100)
+);
+
+-- Tabela de Pedidos com CASCADE
+CREATE TABLE Pedidos (
+    id INT PRIMARY KEY,
+    id_cliente INT,
+    valor DECIMAL(10,2),
+    FOREIGN KEY (id_cliente) REFERENCES Clientes(id)
+    ON DELETE CASCADE
+);
+\end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Exercício 2: Gestão de Estoque (Desafio)}
+  \begin{block}{Enunciado}
+    Modele as tabelas \textbf{Fornecedores} e \textbf{Produtos}. Se um fornecedor for removido do sistema, os produtos vinculados a ele \textbf{não} devem ser excluídos, mas devem ficar sem fornecedor definido.
+  \end{block}
+  \vspace{0.4cm}
+  \centering
+  \begin{tikzpicture}[node distance=1cm, font=\small\sffamily]
+    \node (f) [draw, rounded corners, fill=blue!10, inner sep=5pt] {
+      \textbf{Fornecedores}(\underline{id}, empresa)
+    };
+    \node (prod) [draw, rounded corners, fill=green!10, below=1cm of f, inner sep=5pt] {
+      \textbf{Produtos}(\underline{id}, \color{red}id\_forn\color{black}, nome)
+    };
+    \draw[->, >=stealth, ultra thick, structure] (prod) -- (f) 
+      node[midway, right] {\scriptsize \textbf{id\_forn} REFERENCES \textbf{Fornecedores}(id)};
+  \end{tikzpicture}
+
+  \vspace{0.3cm}
+  \centering
+  \small
+  \textbf{Fornecedores} (\underline{id}, empresa) \\
+  \textbf{Produtos} (\underline{id}, id\_forn, nome) \\
+  \textit{id\_forn referencia Fornecedores}
+\end{frame}
+
+\begin{frame}[fragile]{Resolução do Exercício 2}
+  \begin{exampleblock}{Solução SQL}
+\begin{lstlisting}
+-- Tabela de Fornecedores
+CREATE TABLE Fornecedores (
+    id INT PRIMARY KEY,
+    empresa VARCHAR(100)
+);
+
+-- Tabela de Produtos com SET NULL
+CREATE TABLE Produtos (
+    id INT PRIMARY KEY,
+    id_forn INT NULL, -- Deve permitir nulo!
+    nome VARCHAR(100),
+    FOREIGN KEY (id_forn) REFERENCES Fornecedores(id)
+    ON DELETE SET NULL
+);
+\end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Exercício 3: Restrição de Segurança (Desafio)}
+  \begin{block}{Enunciado}
+    Crie a relação entre \textbf{Cursos} e \textbf{Matrículas}. O sistema deve \textbf{impedir} a exclusão de um curso caso existam alunos matriculados nele.
+  \end{block}
+  \vspace{0.4cm}
+  \centering
+  \begin{tikzpicture}[node distance=1cm, font=\small\sffamily]
+    \node (cur) [draw, rounded corners, fill=blue!10, inner sep=5pt] {
+      \textbf{Cursos}(\underline{id}, nome)
+    };
+    \node (mat) [draw, rounded corners, fill=green!10, below=1cm of cur, inner sep=5pt] {
+      \textbf{Matrículas}(\underline{id}, \color{red}id\_curso\color{black}, aluno)
+    };
+    \draw[->, >=stealth, ultra thick, structure] (mat) -- (cur) 
+      node[midway, right] {\scriptsize \textbf{id\_curso} REFERENCES \textbf{Cursos}(id)};
+  \end{tikzpicture}
+
+  \vspace{0.3cm}
+  \centering
+  \small
+  \textbf{Cursos} (\underline{id}, nome) \\
+  \textbf{Matrículas} (\underline{id}, id\_curso, aluno) \\
+  \textit{id\_curso referencia Cursos}
+\end{frame}
+
+\begin{frame}[fragile]{Resolução do Exercício 3}
+  \begin{exampleblock}{Solução SQL}
+\begin{lstlisting}
+-- Tabela de Cursos
+CREATE TABLE Cursos (
+    id INT PRIMARY KEY,
+    nome VARCHAR(100)
+);
+
+-- Tabela de Matriculas com RESTRICT
+CREATE TABLE Matriculas (
+    id INT PRIMARY KEY,
+    id_curso INT,
+    aluno VARCHAR(100),
+    FOREIGN KEY (id_curso) REFERENCES Cursos(id)
+    ON DELETE RESTRICT -- Ou NO ACTION
+);
+\end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+\section{Cláusulas Avançadas de Consulta}
+
+\begin{frame}[fragile]{DISTINCT: Filtrando Valores Únicos}
+  \centering
+  \begin{tikzpicture}[node distance=0.5cm, font=\footnotesize\sffamily]
+    \node (orig) [draw, fill=gray!10, align=center] {
+        \textbf{Dados Originais} \\
+        Goiânia \\ Goiânia \\ Rio Verde \\ Goiânia \\ Rio Verde
+    };
+    
+    \node (arrow) [right=1cm of orig, structure, font=\huge] {$\rightarrow$};
+    \node (dist) [right=1cm of arrow, draw, fill=green!20, align=center] {
+        \textbf{DISTINCT} \\
+        Goiânia \\ Rio Verde
+    };
+  \end{tikzpicture}
+  \vspace{0.4cm}
+  \begin{exampleblock}{Exemplos SQL}
+\begin{lstlisting}
+-- Lista de cidades onde temos clientes
+SELECT DISTINCT cidade FROM clientes;
+
+-- Combinacao unica de cidade e estado
+SELECT DISTINCT cidade, estado FROM clientes;
+\end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{ORDER BY: Ordenando a Bagunça}
+  \centering
+  \begin{tikzpicture}[font=\tiny\sffamily, node distance=0.3cm]
+    \node (u) [label=above:\textbf{Sem Ordem}] {
+        \begin{tabular}{|c|c|} \hline B & 50 \\ \hline A & 10 \\ \hline C & 30 \\ \hline \end{tabular}
+    };
+    \node (arrow) [right=1.5cm of u, structure, font=\Large] {$\Rightarrow$};
+    \node (o) [right=1.5cm of arrow, label=above:\textbf{ORDER BY Letra ASC}] {
+        \begin{tabular}{|c|c|} \hline A & 10 \\ \hline B & 50 \\ \hline C & 30 \\ \hline \end{tabular}
+    };
+  \end{tikzpicture}
+  \vspace{0.4cm}
+  \begin{exampleblock}{Exemplos SQL}
+\begin{lstlisting}
+-- Ordenar por salario do maior para o menor
+SELECT nome, salario FROM funcionarios ORDER BY salario DESC;
+
+-- Ordenar por departamento (A-Z) e depois por nome
+SELECT * FROM funcionarios ORDER BY depto ASC, nome ASC;
+\end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}[fragile]{HAVING: O "WHERE" dos Grupos}
+  \centering
+  \begin{tikzpicture}[font=\scriptsize\sffamily]
+    \node (grp) [draw, ellipse, fill=blue!5, text width=2cm, align=center] {Grupo: RH\\Total: 1500};
+    \node (grp2) [draw, ellipse, fill=green!10, right=0.5cm of grp, text width=2cm, align=center] {Grupo: TI\\Total: 8000};
+    \node (grp3) [draw, ellipse, fill=blue!5, right=0.5cm of grp2, text width=2cm, align=center] {Grupo: Vendas\\Total: 4000};
+    
+    \node (filter) [below=1cm of grp2, red, draw, cross out, ultra thick, minimum size=1cm] {};
+    \node at (filter) [below=0.5cm, red] {HAVING Total > 3000};
+    
+    \draw[->, red, thick] (filter) -- (grp);
+    \draw[->, green!60!black, ultra thick] (filter) -- (grp2);
+    \draw[->, green!60!black, ultra thick] (filter) -- (grp3);
+  \end{tikzpicture}
+  \vspace{0.3cm}
+  \begin{exampleblock}{Exemplo SQL Real}
+\begin{lstlisting}
+SELECT depto, SUM(vendas) AS total
+FROM vendedores
+GROUP BY depto
+HAVING SUM(vendas) > 100000;
+\end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+\section{Paginação de Dados (LIMIT e OFFSET)}
+
+\begin{frame}{LIMIT: Definindo a Quantidade (Teoria)}
+  \begin{block}{O Sinal de Parada}
+    O \textbf{LIMIT} diz ao banco de dados: "Não importa quantos registros você encontre, pare de me entregar dados assim que atingir o número $X$".
+  \end{block}
+  \vspace{0.4cm}
+  \begin{itemize}
+    \item \textbf{Analogie}: É como pedir apenas as 3 primeiras fatias de uma pizza, mesmo que ela tenha 8.
+    \item \textbf{Controle}: Essencial para criar listas de "Top 10" ou destaques na tela inicial de um site.
+    \item \textbf{Eficiência}: Economiza memória do servidor e banda de rede.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{LIMIT: O "Corte" nos Dados (Prática)}
+  \centering
+  \begin{tikzpicture}[font=\tiny\sffamily]
+    \foreach \i in {1,...,8} {
+        \node (r\i) [draw, minimum width=3cm, fill=\ifnum\i<5 structure!20 \else gray!5 \fi] at (0, -\i*0.4) {Registro \i};
+    }
+    
+    \draw[ultra thick, red, dashed] (-2,-1.8) -- (2,-1.8) node[right] {CORTE AQUI (LIMIT 4)};
+    \node [right=1.8cm of r2, text width=3cm, font=\footnotesize, structure] {$\leftarrow$ Estes são entregues.};
+    \node [right=1.8cm of r7, text width=3cm, font=\footnotesize, gray] {$\leftarrow$ Estes são ignorados.};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{OFFSET: Definindo o Ponto de Partida (Teoria)}
+  \begin{block}{O Sinal de Salto}
+    O \textbf{OFFSET} diz ao banco de dados: "Ignore os primeiros $X$ registros que você encontrar e comece a me entregar a partir do próximo".
+  \end{block}
+  \vspace{0.4cm}
+  \begin{itemize}
+    \item \textbf{Analogie}: É como começar a ler um livro a partir da página 50, ignorando as 49 anteriores.
+    \item \textbf{Importância}: Sem o OFFSET, você estaria sempre preso na primeira página de resultados.
+    \item \textbf{Regra}: O OFFSET sempre "pula" os dados antes de o LIMIT "cortar" os dados.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{OFFSET: O "Salto" sobre os Dados (Prática)}
+  \centering
+  \begin{tikzpicture}[font=\tiny\sffamily]
+    \foreach \i in {1,...,8} {
+        \node (r\i) [draw, minimum width=3cm, fill=\ifnum\i<4 red!10 \else structure!10 \fi] at (0, -\i*0.4) {Registro \i};
+    }
+    
+    \draw[->, >=stealth, ultra thick, red, bend left=45] (-1.8, -0.2) to node[midway, left, font=\bfseries] {SALTO (OFFSET 3)} (-1.8, -1.4);
+    
+    \node [right=1.8cm of r2, text width=3cm, font=\footnotesize, red] {$\leftarrow$ Ignorados (Pulados).};
+    \node [right=1.8cm of r6, text width=3cm, font=\footnotesize, structure] {$\leftarrow$ Entrega começa aqui.};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{A Matemática da Paginação (Teoria)}
+  \begin{block}{Como calcular as páginas?}
+    Para implementar uma paginação (como no Google ou em uma loja virtual), usamos uma fórmula simples para calcular os valores de cada cláusula:
+  \end{block}
+  \vspace{0.4cm}
+  \centering
+  \large
+  \textbf{LIMIT} = Itens por página \\
+  \textbf{OFFSET} = (Página Desejada - 1) $\times$ Itens por página
+  
+  \vspace{0.6cm}
+  \small
+  \begin{itemize}
+    \item \textbf{Página 1}: $(1-1) \times 10 = \mathbf{OFFSET\ 0}$
+    \item \textbf{Página 2}: $(2-1) \times 10 = \mathbf{OFFSET\ 10}$
+    \item \textbf{Página 3}: $(3-1) \times 10 = \mathbf{OFFSET\ 20}$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Paginação na Vida Real (SQL)}
+  \small
+  Imagine um sistema com 10 produtos por página:
+  \vspace{0.3cm}
+  \begin{exampleblock}{Consultas para cada Página}
+\begin{lstlisting}
+-- Pagina 1 (Produtos 1 ao 10)
+SELECT * FROM produtos LIMIT 10 OFFSET 0;
+
+-- Pagina 2 (Produtos 11 ao 20)
+SELECT * FROM produtos LIMIT 10 OFFSET 10;
+
+-- Pagina 3 (Produtos 21 ao 30)
+SELECT * FROM produtos LIMIT 10 OFFSET 20;
+\end{lstlisting}
+  \end{exampleblock}
+  \vspace{0.2cm}
+  \begin{alertblock}{Aviso Importante}
+    Sempre use \textbf{ORDER BY} com paginação! Sem ordem, o banco pode pular registros diferentes a cada consulta, bagunçando a lista.
+  \end{alertblock}
+\end{frame}
+
+\section{Estudo de Caso: Sensores de Solo}
+
+\begin{frame}{Contexto: Monitoramento de Solo (IoT)}
+  \begin{itemize}
+    \item Imagine uma fazenda inteligente com sensores de umidade espalhados.
+    \item Cada sensor envia uma leitura a cada \textbf{10 segundos}.
+    \item Em um dia, temos \textbf{8.640 leituras} por sensor!
+  \end{itemize}
+  \vspace{0.4cm}
+  \begin{alertblock}{O Problema}
+    Como mostrar esses dados em um aplicativo de celular sem travar o dispositivo ou gastar todo o plano de dados do produtor?
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Wireframe: Visualizando a Paginação no App}
+  \centering
+  \begin{tikzpicture}[font=\tiny\sffamily]
+    % Smartphone shell
+    \node (phone) [smartphone, minimum width=3cm, minimum height=5.5cm] {};
+    
+    % Header
+    \node (head) [fill=structure, text=white, minimum width=2.8cm, minimum height=0.5cm, xshift=1.5cm, yshift=-0.4cm] at (phone.north west) {Monitoramento de Solo};
+    
+    % Readings List
+    \foreach \i in {1,...,5} {
+        \node (item\i) [draw=gray!30, fill=white, minimum width=2.6cm, minimum height=0.6cm, below=\i*0.7cm-0.4cm of head] {};
+        \node at (item\i.west) [anchor=west, xshift=0.1cm] {Leitura \#\i};
+        \node at (item\i.east) [anchor=east, xshift=-0.1cm, structure] {45\% Ur};
+    }
+    
+    % Pagination Controls
+    \node (p1) [draw, fill=structure, text=white, circle, inner sep=1pt, below=4.5cm of head, xshift=-0.6cm] {1};
+    \node (p2) [draw, circle, inner sep=1pt, right=0.2cm of p1] {2};
+    \node (p3) [draw, circle, inner sep=1pt, right=0.2cm of p2] {3};
+    \node (next) [right=0.2cm of p3] {Próx $\rightarrow$};
+    
+    % Callouts
+    \node (call1) [right=2cm of item3, text width=3cm, font=\footnotesize, structure] {$\leftarrow$ \textbf{LIMIT 5}: Mostra apenas 5 registros.};
+    \node (call2) [right=2cm of p1, text width=3cm, font=\footnotesize, red] {$\leftarrow$ \textbf{OFFSET}: Calcula qual página exibir.};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{A Tabela: \texttt{LeiturasSensor}}
+  \small
+  Nossa estrutura de dados para o exemplo:
+  \vspace{0.3cm}
+  \begin{exampleblock}{Schema da Tabela}
+\begin{lstlisting}
+CREATE TABLE LeiturasSensor (
+  id SERIAL PRIMARY KEY,
+  data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  umidade DECIMAL(5,2),
+  sensor_id INT
+);
+\end{lstlisting}
+  \end{exampleblock}
+  \vspace{0.3cm}
+  \begin{itemize}
+    \item \textbf{Umidade}: Valor em porcentagem (0 a 100).
+    \item \textbf{Data\_Hora}: Crucial para a ordenação.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{O Desafio do Volume}
+  \centering
+  \begin{tikzpicture}
+    \node (db) [draw, cylinder, cylinder uses custom fill, cylinder body fill=gray!10, cylinder end fill=gray!40, shape border rotate=90, minimum width=2cm, minimum height=2.5cm] {Banco de Dados};
+    \node (app) [smartphone, right=3cm of db] {App};
+    
+    \draw[->, ultra thick, red] (db) -- (app) node[midway, above, text width=2cm, align=center] {8.000+ linhas de uma vez? \textbf{\color{red}CRASH!}};
+  \end{tikzpicture}
+  \vspace{0.4cm}
+  \begin{block}{A Solução: Paginação}
+    Dividir as leituras em "pedaços" gerenciáveis (ex: 5 leituras por vez).
+  \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Página 1: As 5 Leituras Mais Recentes}
+  \begin{itemize}
+    \item \textbf{Objetivo}: Mostrar o estado atual do solo.
+    \item \textbf{Lógica}: Ordenar pelo tempo (descendente) e pegar as primeiras 5.
+  \end{itemize}
+  \vspace{0.4cm}
+  \begin{exampleblock}{SQL da Página 1}
+\begin{lstlisting}
+SELECT * FROM LeiturasSensor
+ORDER BY data_hora DESC
+LIMIT 5 OFFSET 0;
+\end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Página 1 (Visualização)}
+  \centering
+  \begin{tikzpicture}[font=\tiny\sffamily]
+    \node (t) [draw, fill=structure!10, minimum width=5cm] {Timeline de Leituras (Recentes $\rightarrow$ Antigas)};
+    \foreach \i in {1,...,10} {
+        \node (r\i) [draw, minimum width=4cm, fill=\ifnum\i<6 structure!20 \else gray!5 \fi] at (0, -\i*0.35) {Leitura \i \quad (Umidade: 45\%)};
+    }
+    \draw [decorate, decoration={brace, amplitude=5pt}, xshift=2.2cm] 
+        (r1.north) -- (r5.south) node [midway, right=8pt, font=\bfseries] {PÁGINA 1};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}[fragile]{Página 2: Olhando um Pouco para o Passado}
+  \begin{itemize}
+    \item \textbf{Objetivo}: Ver o que aconteceu logo antes das últimas 5 leituras.
+    \item \textbf{Lógica}: Pular as 5 mais recentes e pegar as próximas 5.
+  \end{itemize}
+  \vspace{0.4cm}
+  \begin{exampleblock}{SQL da Página 2}
+\begin{lstlisting}
+SELECT * FROM LeiturasSensor
+ORDER BY data_hora DESC
+LIMIT 5 OFFSET 5;
+\end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Página 2 (Visualização)}
+  \centering
+  \begin{tikzpicture}[font=\tiny\sffamily]
+    \foreach \i in {1,...,10} {
+        \node (r\i) [draw, minimum width=4cm, fill=\ifnum\i<6 \ifnum\i>5 structure!20 \else red!10 \fi \else \ifnum\i<11 structure!20 \else gray!5 \fi \fi] at (0, -\i*0.35) {Leitura \i};
+    }
+    % Fix fill logic above: i from 6 to 10 should be green
+    \foreach \i in {6,...,10} { \node at (0, -\i*0.35) [draw, minimum width=4cm, fill=structure!20] {Leitura \i}; }
+    
+    \draw [decorate, decoration={brace, amplitude=5pt}, xshift=-2.2cm] 
+        (r1.north) -- (r5.south) node [midway, left=8pt, red] {OFFSET 5 (Pula)};
+        
+    \draw [decorate, decoration={brace, amplitude=5pt}, xshift=2.2cm] 
+        (r6.north) -- (r10.south) node [midway, right=8pt, structure] {PÁGINA 2};
+  \end{tikzpicture}
+\end{frame}
+
+
+
+\begin{frame}{Página 3 (Visualização)}
+  \centering
+  \begin{tikzpicture}[font=\tiny\sffamily]
+    \draw[gray!30, fill=gray!10] (-2, -0.2) rectangle (2, -1.8) node[midway, gray] {OFFSET 10 (Leituras 1 a 10)};
+    \foreach \i in {11,...,15} {
+        \node (r\i) [draw, minimum width=4cm, fill=structure!20] at (0, -\i*0.35+3.5) {Leitura \i};
+    }
+    \draw [decorate, decoration={brace, amplitude=5pt}, xshift=2.2cm] 
+        (r11.north) -- (r15.south) node [midway, right=8pt, structure] {PÁGINA 3};
+  \end{tikzpicture}
+\end{frame}
+\begin{frame}[fragile]{Página 3: Aprofundando no Histórico}
+  \begin{itemize}
+    \item \textbf{Objetivo}: Ver as leituras de alguns minutos atrás.
+    \item \textbf{Lógica}: Pular 10 registros e pegar os próximos 5.
+  \end{itemize}
+  \vspace{0.4cm}
+  \begin{exampleblock}{SQL da Página 3}
+\begin{lstlisting}
+SELECT * FROM LeiturasSensor
+ORDER BY data_hora DESC
+LIMIT 5 OFFSET 10;
+\end{lstlisting}
+  \end{exampleblock}
+\end{frame}
+\begin{frame}{Resumo: Por que \textbf{ORDER BY} é Vital?}
+  \begin{alertblock}{Sem Ordem = Caos}
+    Sensores geram dados contínuos. Se você não usar \texttt{ORDER BY data\_hora DESC}, o banco pode devolver os dados em qualquer ordem:
+  \end{alertblock}
+  \vspace{0.4cm}
+  \begin{itemize}
+    \item Você pode ver uma leitura de ontem na Página 1 e a mesma leitura na Página 2.
+    \item Registros podem "sumir" entre as páginas.
+    \item \textbf{Conclusão}: Paginação sem ordenação explícita é um erro grave de desenvolvimento.
+  \end{itemize}
+\end{frame}
+
+\section{Conclusão e Prática}
+
+\begin{frame}[fragile]{Grande Exemplo Final: Unindo Tudo}
+  \begin{exampleblock}{Consulta Complexa}
+\begin{lstlisting}
+SELECT DISTINCT c.cidade, AVG(p.valor) as media
+FROM clientes c
+JOIN pedidos p ON c.id = p.id_cliente
+WHERE p.data > '2023-01-01'
+GROUP BY c.cidade
+HAVING AVG(p.valor) > 500
+ORDER BY media DESC
+LIMIT 10 OFFSET 0;
+\end{lstlisting}
+  \end{exampleblock}
+  \vspace{0.2cm}
+  \begin{itemize}
+    \item \textbf{Explicação}: Busca as cidades com média de pedidos acima de 500 reais, feitas este ano, ordenando pelas cidades que mais gastam, mostrando os top 10.
+  \end{itemize}
+\end{frame}
+
+\end{document}

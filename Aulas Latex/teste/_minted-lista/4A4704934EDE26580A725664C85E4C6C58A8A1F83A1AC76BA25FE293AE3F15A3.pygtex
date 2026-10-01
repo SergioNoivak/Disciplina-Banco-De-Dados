@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{salario}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{funcionarios}
+\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{salario}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{30020}
+\PYG{k}{ORDER}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{salario}\PYG{+w}{ }\PYG{k}{DESC}\PYG{p}{;}
+\end{Verbatim}

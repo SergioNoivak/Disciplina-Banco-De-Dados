@@ -1,0 +1,270 @@
+\documentclass[12pt,a4paper]{article}
+
+% ------------------------------------------------
+% Pacotes
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{mathptmx} % Times New Roman
+\usepackage{enumitem}\usepackage{amsfonts}
+\usepackage{amsmath} % Recomendado para o comando \text{}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, arrows.meta}
+
+% TikZ Styles for ER and Logical Diagrams
+\tikzset{
+    block/.style={rectangle, draw, thick, minimum width=2.5cm, minimum height=1cm, fill=white, align=center},
+    diamond_node/.style={diamond, draw, thick, minimum width=2cm, minimum height=1cm, fill=white, aspect=2},
+    attribute/.style={ellipse, draw, thin, minimum width=1.5cm, minimum height=0.6cm, fill=white, font=\scriptsize},
+    line/.style={draw, thick},
+    table_node/.style={rectangle, draw, thick, minimum width=3cm, minimum height=0.8cm, fill=gray!10, font=\bfseries, align=center},
+    column_node/.style={rectangle, draw, thin, minimum width=3cm, minimum height=0.6cm, fill=white, font=\small, align=left}
+}
+
+% ------------------------------------------------ 
+% Configuração de página
+% ------------------------------------------------
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=2cm,
+    bottom=2cm,
+    headheight=15pt
+}
+
+% Caixa para resposta discursiva
+\newcommand{\resposta}[1]{
+\noindent
+\framebox[\textwidth]{
+\begin{minipage}{0.98\textwidth}
+\vspace{#1}
+\end{minipage}
+}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+
+\setlength{\parindent}{0pt}
+
+% ------------------------------------------------
+% Comandos auxiliares
+% ------------------------------------------------
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ------------------------------------------------
+% Documento
+% ------------------------------------------------
+\begin{document}
+
+% ------------------------------------------------
+% Cabeçalho
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{@{} L{4cm} X @{}}
+    \raisebox{-0.5cm}{\includegraphics[width=4cm]{Universidade_de_Rio_Verde.jpg}} &
+    \hfill
+    \begin{tabular}{|>{\centering\arraybackslash}m{10cm}|>{\raggedright\arraybackslash}p{1.8cm}|}
+        \hline
+        \cellcolor{black}\color{white}\rule{0pt}{1.2cm}\textbf{AVALIAÇÃO 2 - SEGUNDA CHAMADA} 
+        & 
+        \scriptsize Nota \tabularnewline
+        \hline
+    \end{tabular} 
+\end{tabularx}
+\vspace{0.3cm}
+
+% ------------------------------------------------  
+% Tabela principal
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{|X|L{2cm}|}
+\hline
+\textbf{Curso} & \textbf{Campus} \\
+\textit{Engenharia de Software} & \textit{Rio Verde} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Disciplina}} \\  
+\multicolumn{2}{|l|}{ \textit{Banco de dados}} \\
+\hline
+\textbf{Nome do(a) acadêmico(a)} & \textbf{Valor} \\
+ISABELLE CRUVINEL SANTOS OLIVEIRA & 7,0 \\
+\hline
+\textbf{Professor} & \textbf{Turma} \\
+\textit{ Sergio Souza Novak} & \textit{B} \\
+\hline
+\textbf{Data da Avaliação} & \textbf{Código} \\
+\textit{18/05/2026} & \textit{ESW417} \\
+\hline
+\end{tabularx}
+ 
+\vspace{0.2cm}
+
+\begin{tabularx}{\textwidth}{|X|}
+\hline
+\cellcolor{black}\color{white}
+\centering \textbf{ATENÇÃO:} Somente serão passíveis de \textbf{REVISÃO} avaliações resolvidas à \textbf{TINTA}. \tabularnewline
+\hline
+\end{tabularx}
+
+\vspace{0.3cm}
+
+\textbf{ORIENTAÇÕES PARA A RESOLUÇÃO}  
+\begin{itemize}
+    \item A avaliação é individual, sem consulta;
+    \item A interpretação de texto faz parte da avaliação;
+\end{itemize}
+
+\vspace{0.5cm}
+
+\begin{center}
+    \rule{\textwidth}{0.4pt}
+    \textbf{QUESTÕES DISCURSIVAS}
+\end{center}
+
+\vspace{0.2cm}
+
+\textbf{INSTRUÇÕES:} Esta seção contém \textbf{10 exercícios discursivos}. Recomenda-se reservar \textbf{100 minutos} para sua resolução.
+
+\vspace{0.3cm}
+
+\begin{enumerate}
+    \item \textbf{(BCNF)} Analise o cenário de orientação acadêmica abaixo:
+    \begin{center}
+        \begin{tikzpicture}[node distance=1.5cm, every node/.style={font=\small}]
+            \node[block] (aluno) {Aluno};
+            \node[block, right=5cm of aluno] (prof) {Professor};
+            \node[diamond_node, right=1.2cm of aluno] (orient) {Orientação};
+            \node[attribute, above=0.6cm of orient] (disc) {Disciplina};
+            \node[attribute, above=0.6cm of prof] (email) {Email};
+            \draw[line] (aluno) -- (orient); \draw[line] (prof) -- (orient);
+            \draw[line] (orient) -- (disc); \draw[line] (prof) -- (email);
+        \end{tikzpicture}
+    \end{center}
+    \textbf{Modelo Lógico:} \texttt{ORIENTACAO (Aluno, Professor, Disciplina, Email)} \\
+    \textbf{Regras:} Cada professor tem um \textbf{Email} único e leciona apenas uma \textbf{Disciplina}. Para cada disciplina, o aluno tem um único orientador. Explique a violação da BCNF e normalize.
+    \resposta{5cm}
+
+    \item Realize a normalização para a 1FN da tabela abaixo, explicando o motivo técnico:
+    \begin{center}
+        \small
+        \begin{tabular}{|c|c|L{7cm}|}
+            \hline
+            \cellcolor{gray!20}\textbf{ID} & \cellcolor{gray!20}\textbf{Funcionário} & \cellcolor{gray!20}\textbf{Dependentes} \\ \hline
+            101 & João Silva & Maria (Filha), Pedro (Filho) \\ \hline
+            102 & Fernanda Lima & Lucas (Filho) \\ \hline
+        \end{tabular}
+    \end{center}
+    \resposta{4cm}
+
+    \item Analise o modelo lógico da tabela \textbf{PEDIDOS} abaixo e identifique as dependências funcionais existentes (parciais ou transitivas). Em seguida, realize a decomposição necessária para que o modelo atinja a \textbf{Terceira Forma Normal (3FN)}:
+    \begin{center}
+        \begin{tikzpicture}[node distance=0cm, outer sep=0pt]
+            \node[table_node] (ped) {PEDIDOS};
+            \node[column_node, below=of ped] (c1) {\underline{ID\_Pedido}};
+            \node[column_node, below=0.6cm of ped] (c2) {Data};
+            \node[column_node, below=1.2cm of ped] (c3) {Cod\_Livro};
+            \node[column_node, below=1.8cm of ped] (c4) {Titulo};
+            \node[column_node, below=2.4cm of ped] (c5) {Preco};
+        \end{tikzpicture}
+    \end{center}
+    \resposta{4cm}
+
+    \item Analise o modelo lógico da tabela \textbf{ACADEMICO} abaixo. Explique o conceito de Dependência de Valores Múltiplos (MVD) e realize a decomposição necessária para que o modelo atinja a \textbf{Quarta Forma Normal (4FN)}, considerando que as disciplinas e os projetos são independentes:
+    \begin{center}
+        \begin{tikzpicture}[node distance=0cm, outer sep=0pt]
+            \node[table_node] (acad) {ACADEMICO};
+            \node[column_node, below=of acad] (a1) {\underline{Professor}};
+            \node[column_node, below=0.6cm of acad] (a2) {\underline{Disciplina}};
+            \node[column_node, below=1.2cm of acad] (a3) {\underline{Projeto\_Pesquisa}};
+        \end{tikzpicture}
+    \end{center}
+    \resposta{4cm}
+
+    \item Para cada diagrama de Venn, identifique o \textbf{JOIN} e escreva um parágrafo relacionando a figura ao comando SQL correspondente entre as tabelas \textbf{A} e \textbf{B} do modelo abaixo:\\
+    \begin{center}
+        \begin{tikzpicture}[scale=0.5]
+            \begin{scope} \clip (0,0) circle (1cm); \fill[gray!40] (1.2,0) circle (1cm); \end{scope}
+            \draw (0,0) circle (1cm) node {A}; \draw (1.2,0) circle (1cm) node {B}; \node at (0.6, -1.5) {Fig I};
+        \end{tikzpicture} \hspace{0.5cm}
+        \begin{tikzpicture}[scale=0.5]
+            \fill[gray!40] (0,0) circle (1cm); \draw (0,0) circle (1cm) node {A}; \draw (1.2,0) circle (1cm) node {B}; \node at (0.6, -1.5) {Fig II};
+        \end{tikzpicture} \hspace{0.5cm}
+        \begin{tikzpicture}[scale=0.5]
+            \fill[gray!40] (1.2,0) circle (1cm); \draw (0,0) circle (1cm) node {A}; \draw (1.2,0) circle (1cm) node {B}; \node at (0.6, -1.5) {Fig III};
+        \end{tikzpicture} \hspace{0.5cm}
+        \begin{tikzpicture}[scale=0.5]
+            \fill[gray!40] (0,0) circle (1cm); \fill[gray!40] (1.2,0) circle (1cm); \draw (0,0) circle (1cm) node {A}; \draw (1.2,0) circle (1cm) node {B}; \node at (0.6, -1.5) {Fig IV};
+        \end{tikzpicture}
+    \end{center}
+    \begin{center}
+        \begin{tikzpicture}[node distance=0cm]
+            \node[table_node] (tabA) {Tabela A};
+            \node[column_node, below=of tabA] {id\_a (PK)};
+            \node[column_node, below=0.6cm of tabA] {nome\_a};
+            \node[table_node, right=2cm of tabA] (tabB) {Tabela B};
+            \node[column_node, below=of tabB] {id\_b (PK)};
+            \node[column_node, below=0.6cm of tabB] {fk\_a (FK)};
+        \end{tikzpicture}
+    \end{center}
+    \resposta{4cm}
+
+    \newpage
+
+    \textbf{CONTEXTO PARA AS QUESTÕES 6 A 10:} Considere o modelo lógico de um sistema de vendas abaixo:
+    \begin{center}
+        \begin{tikzpicture}[node distance=0cm, outer sep=0pt]
+            \node[table_node] (prod) {Produtos};
+            \node[column_node, below=of prod] (p1) {\underline{id\_prod}};
+            \node[column_node, below=0.6cm of prod] (p2) {nome\_produto};
+            \node[column_node, below=1.2cm of prod] (p3) {categoria};
+            \node[column_node, below=1.8cm of prod] (p4) {preco};
+            
+            \node[table_node, right=3cm of prod] (ped) {Pedidos};
+            \node[column_node, below=of ped] (pe1) {\underline{id\_pedido}};
+            \node[column_node, below=0.6cm of ped] (pe2) {data\_pedido};
+            \node[column_node, below=1.2cm of ped] (pe3) {quantidade};
+            \node[column_node, below=1.8cm of ped] (pe4) {fk\_prod (FK)};
+        \end{tikzpicture}
+    \end{center}
+
+    \item Escreva o comando SQL (\textbf{INSERT}) para adicionar um novo produto na tabela \texttt{Produtos}. O produto é um 'Monitor Gamer' da categoria 'Eletrônicos' com o preço de R\$ 1.200,00 (Assuma \texttt{id\_prod} = 50).\\
+    \resposta{3cm}
+
+    \item Elabore uma consulta SQL (\textbf{SELECT}) que liste o nome e o preço de todos os produtos da categoria 'Eletrônicos', ordenando os resultados do maior para o menor preço (\textbf{ORDER BY}).\\
+    \resposta{3cm}
+
+    \item Qual consulta SQL utiliza corretamente a função de agregação para calcular a média de preços de todos os produtos cadastrados na tabela \texttt{Produtos}?
+    \begin{enumerate}[label=\Alph*)]
+        \item \texttt{SELECT MEAN(preco) FROM Produtos;}
+        \item \texttt{SELECT AVERAGE(preco) FROM Produtos;}
+        \item \texttt{SELECT AVG(preco) FROM Produtos;}
+        \item \texttt{SELECT SUM(preco) FROM Produtos;}
+        \item \texttt{SELECT COUNT(preco) FROM Produtos;}
+    \end{enumerate}
+
+    \item Com base no modelo lógico apresentado, julgue as afirmativas abaixo sobre a junção de tabelas como Verdadeiras (\textbf{V}) ou Falsas (\textbf{F}):
+    \begin{enumerate}[label=( \quad )]
+        \item O comando \texttt{SELECT * FROM Produtos INNER JOIN Pedidos;} sem a utilização da cláusula \texttt{ON} ou \texttt{WHERE} para igualar as chaves resultará em um Produto Cartesiano entre as tabelas.
+        \item A consulta \texttt{SELECT p.nome\_produto, pe.quantidade FROM Produtos p INNER JOIN Pedidos pe ON p.id\_prod = pe.fk\_prod;} retorna corretamente o nome do produto e a quantidade vendida para cada pedido realizado.
+    \end{enumerate}
+
+    \item Com base no modelo lógico apresentado, julgue as afirmativas abaixo sobre funções de agregação e agrupamento como Verdadeiras (\textbf{V}) ou Falsas (\textbf{F}):
+    \begin{enumerate}[label=( \quad )]
+        \item A cláusula \texttt{WHERE} pode ser utilizada para filtrar o resultado de uma função de agregação como \texttt{AVG()}, desde que esteja posicionada antes do \texttt{GROUP BY}.
+        \item A consulta \texttt{SELECT categoria, AVG(preco) FROM Produtos GROUP BY categoria HAVING AVG(preco) > 100;} apresenta a média de preços por categoria, exibindo apenas as que possuem média superior a R\$ 100,00.
+    \end{enumerate}
+
+\end{enumerate}
+
+\vspace{0.5cm} 
+
+\end{document} 

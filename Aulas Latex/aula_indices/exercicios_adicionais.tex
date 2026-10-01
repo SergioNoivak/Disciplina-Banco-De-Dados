@@ -1,0 +1,288 @@
+% ------------------------------------------------
+% EXERCÍCIO 5
+% ------------------------------------------------
+\section*{Exercício 5}
+
+\textbf{Contexto:} Uma universidade gerencia o empréstimo de equipamentos de laboratório para professores e pesquisadores. Cada equipamento pode ser emprestado a um responsável, mas também pode ficar disponível no estoque sem estar emprestado. Quando um professor deixa a universidade, seus empréstimos ativos devem ser cancelados (os equipamentos retornam ao estoque), mas o registro do empréstimo deve ser mantido para histórico. Além disso, se o código de identificação de um equipamento for atualizado no sistema, todos os registros de empréstimo associados devem refletir essa mudança.
+
+\begin{center}
+    \textbf{Modelo Lógico (Relacional)} \\[0.2cm]
+    \begin{tikzpicture}[node distance=2cm, >=stealth, thick]
+        \node[table_block] (prof_tbl) at (0,0) {
+            \textbf{tbProfessor} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_prof} (PK) \\
+            nome: TEXT \\
+            departamento: TEXT \\
+            email: TEXT
+        };
+        
+        \node[table_block] (equip_tbl) at (4,0) {
+            \textbf{tbEquipamento} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_equip} (PK) \\
+            nome\_equip: TEXT \\
+            numero\_serie: TEXT \\
+            data\_aquisicao: TEXT
+        };
+        
+        \node[table_block] (emprest_tbl) at (8,0) {
+            \textbf{tbEmprestimo} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_emprest} (PK) \\
+            data\_emprestimo: TEXT \\
+            data\_devolucao: TEXT \\ 
+            id\_prof (FK) \\
+            id\_equip (FK)
+        };
+        
+        \draw[->, color=forestgreen, ultra thick] (emprest_tbl.west) -- (prof_tbl.east) 
+            node[midway, above, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_prof};
+        \draw[->, color=forestgreen, ultra thick] (emprest_tbl.east) -- (equip_tbl.west) 
+            node[midway, above, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_equip};
+    \end{tikzpicture}
+\end{center} 
+
+\begin{enumerate}[label=\textbf{\alph*)}]
+    \item Escreva o script DDL completo para criar as três tabelas com as chaves primárias e estrangeiras apropriadas.
+    \resposta{4cm}
+    
+    \item \textbf{Regra de Negócio (Integridade Referencial):} 
+    \begin{enumerate}[label=\arabic*.]
+        \item Quando um professor deixa a universidade e é removido do sistema, o que deve acontecer com os empréstimos ativos associados a esse professor para manter o histórico, mas liberar os equipamentos? Identifique a cláusula referencial adequada.
+        \item Quando o código de identificação de um equipamento é atualizado no sistema, o que deve acontecer com as referências nesse código na tabela de empréstimos? Identifique a cláusula referencial adequada.
+    \end{enumerate}
+    \resposta{3cm}
+    
+    \item Escreva o script DDL das restrições de chave estrangeira na tabela \textbf{tbEmprestimo} que implementam o comportamento descrito no item (b).
+    \resposta{3cm}
+\end{enumerate}
+
+% ------------------------------------------------
+% EXERCÍCIO 6
+% ------------------------------------------------
+\section*{Exercício 6}
+
+\textbf{Contexto:} Uma empresa de tecnologia gerencia seu quadro de funcionários, onde cada funcionário pode ter um gestor direto (que também é um funcionário da mesma empresa). Quando um funcionário gestor deixa a empresa, seus subordinados diretos devem passar a reportar-se ao nível superior da hierarquia (ou ficar sem gestor atribuído temporariamente). Além disso, se o código de identificação de um funcionário for alterado no sistema devido a uma padronização de registros, todas as referências a esse código como gestor devem ser atualizadas automaticamente.
+
+\begin{center}
+    \textbf{Modelo Lógico (Relacional)} \\[0.2cm]
+    \begin{tikzpicture}[node distance=2cm, >=stealth, thick]
+        \node[table_block] (func_tbl) at (0,0) {
+            \textbf{tbFuncionario} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_func} (PK) \\
+            nome: TEXT \\
+            cargo: TEXT \\
+            salario: REAL \\
+            id\_func\_gerente (FK)
+        };
+        
+        \draw[->, color=forestgreen, ultra thick] (func_tbl.east) -- ++(2,0) |- (func_tbl.west) 
+            node[midway, above, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_func\_gerente $\rightarrow$ tbFuncionario(id\_func)};
+    \end{tikzpicture}
+\end{center}
+
+\begin{enumerate}[label=\textbf{\alph*)}]
+    \item Escreva o script DDL completo para criar a tabela \textbf{tbFuncionario} com a chave primária e a chave estrangeira autorreferencial apropriada.
+    \resposta{4cm}
+    
+    \item \textbf{Regra de Negócio (Integridade Referencial):} 
+    \begin{enumerate}[label=\arabic*.]
+        \item Quando um funcionário gestor deixa a empresa e é removido do sistema, o que deve acontecer com a referência ao seu ID na coluna \texttt{id\_func\_gerente} dos subordinados diretos? Identifique a cláusula referencial adequada.
+        \item Quando o código de identificação de um funcionário é alterado no sistema, o que deve acontecer com as referências nesse código na coluna \texttt{id\_func\_gerente}? Identifique a cláusula referencial adequada.
+    \end{enumerate}
+    \resposta{3cm}
+    
+    \item Escreva o script DDL da restrição de chave estrangeira na tabela \textbf{tbFuncionario} que implementam o comportamento descrito no item (b).
+    \resposta{3cm}
+\end{enumerate}
+
+% ------------------------------------------------
+% EXERCÍCIO 7
+% ------------------------------------------------
+\section*{Exercício 7}
+
+\textbf{Contexto:} Uma editora gerencia o catálogo de livros e seus autores. Um livro pode ter múltiplos autores (coautoria), e um autor pode ter escrito múltiplos livros. Quando um livro é retirado de catálogo e excluído do sistema, todas as suas associações com autores devem ser removidas. Quando um autor deixa a editora e é excluído do sistema, todas as suas associações com livros devem ser mantidas para preservar o histórico das obras, mas o autor não deve mais estar associado a nenhum livro ativo.
+
+\begin{center}
+    \textbf{Modelo Lógico (Relacional)} \\[0.2cm]
+    \begin{tikzpicture}[node distance=2.2cm, >=stealth, thick]
+        \node[table_block] (livro_tbl) at (0,0) {
+            \textbf{tbLivro} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_livro} (PK) \\
+            titulo: TEXT \\
+            ano\_publicacao: INTEGER \\
+            editora: TEXT
+        };
+        
+        \node[table_block] (autor_tbl) at (4,0) {
+            \textbf{tbAutor} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_autor} (PK) \\
+            nome: TEXT \\
+            nacionalidade: TEXT \\
+            data\_nasc: TEXT
+        };
+        
+        \node[table_block] (escrita_tbl) at (8,0) {
+            \textbf{tbAutorLivro} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_livro} (PK, FK) \\
+            \underline{id\_autor} (PK, FK) \\
+            ordem\_autoria: INTEGER
+        };
+        
+        \draw[->, color=forestgreen, ultra thick] (escrita_tbl.west) -- (livro_tbl.east) 
+            node[midway, above, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_livro};
+        \draw[->, color=forestgreen, ultra thick] (escrita_tbl.east) -- (autor_tbl.west) 
+            node[midway, above, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_autor};
+    \end{tikzpicture}
+\end{center}
+
+\begin{enumerate}[label=\textbf{\alph*)}]
+    \item Escreva o script DDL completo para criar as três tabelas com as chaves primárias composta e estrangeiras apropriadas.
+    \resposta{4cm}
+    
+    \item \textbf{Regra de Negócio (Integridade Referencial):} 
+    \begin{enumerate}[label=\arabic*.]
+        \item Quando um livro é retirado de catálogo e excluído do sistema, o que deve acontecer com suas associações na tabela de autores-livros? Identifique a cláusula referencial adequada.
+        \item Quando um autor deixa a editora e é excluído do sistema, o que deve acontecer com suas associações na tabela de autores-livros para manter o histórico das obras? Identifique a cláusula referencial adequada.
+    \end{enumerate}
+    \resposta{3cm}
+    
+    \item Escreva o script DDL das restrições de chave estrangeira na tabela \textbf{tbAutorLivro} que implementam o comportamento descrito no item (b).
+    \resposta{3cm}
+\end{enumerate}
+
+% ------------------------------------------------
+% EXERCÍCIO 8
+% ------------------------------------------------
+\section*{Exercício 8}
+
+\textbf{Contexto:} Um sistema de gestão escolar controla a matrícula de alunos em turmas. Cada turma pode ter múltiplos alunos, e cada aluno pode estar matriculado em múltiplas turmas (disciplinas diferentes). Quando uma turma é encerrada e excluída do sistema (por fim do semestre), todas as matrículas associadas devem ser removidas. Quando o código de identificação de um aluno é alterado devido a uma correção no registro, todas as matrículas associadas devem ser atualizadas automaticamente.
+
+\begin{center}
+    \textbf{Modelo Lógico (Relacional)} \\[0.2cm]
+    \begin{tikzpicture}[node distance=2.2cm, >=stealth, thick]
+        \node[table_block] (aluno_tbl) at (0,0) {
+            \textbf{tbAluno} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_aluno} (PK) \\
+            nome: TEXT \\
+            data\_nasc: TEXT \\
+            curso: TEXT
+        };
+        
+        \node[table_block] (turma_tbl) at (4,0) {
+            \textbf{tbTurma} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_turma} (PK) \\
+            nome\_disc: TEXT \\
+            semestre: TEXT \\
+            professor: TEXT
+        };
+        
+        \node[table_block] (matric_tbl) at (8,0) {
+            \textbf{tbMatricula} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_matric} (PK) \\
+            data\_matricula: TEXT \\
+            nota: REAL \\
+            id\_aluno (FK) \\
+            id\_turma (FK)
+        };
+        
+        \draw[->, color=forestgreen, ultra thick] (matric_tbl.west) -- (aluno_tbl.east) 
+            node[midway, above, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_aluno};
+        \draw[->, color=forestgreen, ultra thick] (matric_tbl.east) -- (turma_tbl.west) 
+            node[midway, above, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_turma};
+    \end{tikzpicture}
+\end{center}
+
+\begin{enumerate}[label=\textbf{\alph*)}]
+    \item Escreva o script DDL completo para criar as três tabelas com as chaves primárias e estrangeiras apropriadas.
+    \resposta{4cm}
+    
+    \item \textbf{Regra de Negócio (Integridade Referencial):} 
+    \begin{enumerate}[label=\arabic*.]
+        \item Quando uma turma é encerrada e excluída do sistema, o que deve acontecer com as matrículas associadas? Identifique a cláusula referencial adequada.
+        \item Quando o código de identificação de um aluno é alterado devido a uma correção, o que deve acontecer com as referências nesse código na tabela de matrículas? Identifique a cláusula referencial adequada.
+    \end{enumerate}
+    \resposta{3cm}
+    
+    \item Escreva o script DDL das restrições de chave estrangeira na tabela \textbf{tbMatricula} que implementam o comportamento descrito no item (b).
+    \resposta{3cm}
+\end{enumerate}
+
+% ------------------------------------------------
+% EXERCÍCIO 9
+% ------------------------------------------------
+\section*{Exercício 9}
+
+\textbf{Contexto:} Uma biblioteca digital gerencia o empréstimo de e-books para seus usuários. Cada e-book pode ser emprestado a múltiplos usuários simultaneamente (cópias digitais), e cada usuário pode ter múltiplos e-books emprestados. Quando uma cópia específica de um e-book é removida do catálogo digital, todos os empréstimos ativos dessa cópia devem ser cancelados. Quando o número de registro de um usuário é atualizado no sistema devido à padronização de formatos, todos os empréstimos associados devem refletir essa mudança automaticamente.
+
+\begin{center}
+    \textbf{Modelo Lógico (Relacional)} \\[0.2cm]
+    \begin{tikzpicture}[node distance=2.2cm, >=stealth, thick]
+        \node[table_block] (ebook_tbl) at (0,0) {
+            \textbf{tbEbook} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_ebook} (PK) \\
+            titulo: TEXT \\
+            autor: TEXT \\
+            ano\_publicacao: INTEGER
+        };
+        
+        \node[table_block] (copia_tbl) at (4,0) {
+            \textbf{tbCopia} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_copia} (PK) \\
+            formato: TEXT \\
+            data\_aquisição: TEXT \\
+            id\_ebook (FK)
+        };
+        
+        \node[table_block] (user_tbl) at (8,0) {
+            \textbf{tbUsuario} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_user} (PK) \\
+            nome: TEXT \\
+            email: TEXT \\
+            tipo: TEXT
+        };
+        
+        \node[table_block] (emprest_tbl) at (12,0) {
+            \textbf{tbEmprestimoDigital} \\
+            \rule{3.5cm}{0.4pt} \\
+            \underline{id\_emprest} (PK) \\
+            data\_emprestimo: TEXT \\
+            data\_devolucao: TEXT \\
+            id\_copia (FK) \\
+            id\_user (FK)
+        };
+        
+        \draw[->, color=forestgreen, ultra thick] (emprest_tbl.west) -- (user_tbl.east) 
+            node[midway, above, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_user};
+        \draw[->, color=forestgreen, ultra thick] (emprest_tbl.east) -- (copia_tbl.west) 
+            node[midway, above, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_copia};
+        \draw[->, color=forestgreen, ultra thick] (copia_tbl.east) -- (ebook_tbl.west) 
+            node[midway, above, font=\scriptsize\bfseries, text=forestgreen] {FK: id\_ebook};
+    \end{tikzpicture}
+\end{center}
+
+\begin{enumerate}[label=\textbf{\alph*)}]
+    \item Escreva o script DDL completo para criar as quatro tabelas com as chaves primárias e estrangeiras apropriadas.
+    \resposta{5cm}
+    
+    \item \textbf{Regra de Negócio (Integridade Referencial):} 
+    \begin{enumerate}[label=\arabic*.]
+        \item Quando uma cópia específica de um e-book é removida do catálogo digital, o que deve acontecer com os empréstimos ativos dessa cópia? Identifique a cláusula referencial adequada.
+        \item Quando o número de registro de um usuário é atualizado no sistema, o que deve acontecer com as referências nesse número na tabela de empréstimos digitais? Identifique a cláusula referencial adequada.
+    \end{enumerate}
+    \resposta{3cm}
+    
+    \item Escreva o script DDL das restrições de chave estrangeira na tabela \textbf{tbEmprestimoDigital} que implementam o comportamento descrito no item (b).
+    \resposta{3cm}
+\end{enumerate}

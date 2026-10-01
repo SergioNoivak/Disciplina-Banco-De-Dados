@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Insercao especificando as colunas}
+\PYG{k}{INSERT}\PYG{+w}{ }\PYG{k}{INTO}\PYG{+w}{ }\PYG{n}{pessoa}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{nome}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{cpf}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{email}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data\PYGZus{}nascimento}\PYG{p}{)}
+\PYG{k}{VALUES}\PYG{+w}{ }\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Ana Souza\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}12345678910\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}ana@email.com\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}1992\PYGZhy{}08\PYGZhy{}24\PYGZsq{}}\PYG{p}{);}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Insercao de multiplos registros em um unico comando}
+\PYG{k}{INSERT}\PYG{+w}{ }\PYG{k}{INTO}\PYG{+w}{ }\PYG{n}{pessoa}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{nome}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{cpf}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{email}\PYG{p}{)}
+\PYG{k}{VALUES}
+\PYG{+w}{    }\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Carlos Luz\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}98765432100\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}carlos@email.com\PYGZsq{}}\PYG{p}{),}
+\PYG{+w}{    }\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Beatriz Vaz\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}55544433322\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}beatriz@email.com\PYGZsq{}}\PYG{p}{);}
+\end{Verbatim}

@@ -1,0 +1,52 @@
+# ==========================================
+# Ignorar pastas de Notas e Dados Sensíveis
+# ==========================================
+Aulas Latex/notas/
+**/notas/
+notas/
+
+# Arquivos de planilhas de notas
+*.xlsx
+*.xls
+*.csv
+
+# ==========================================
+# Arquivos temporários e auxiliares de LaTeX
+# ==========================================
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+*.toc
+*.out
+*.nav
+*.snm
+*.bbl
+*.blg
+*.vrb
+*.dvi
+*.lof
+*.lot
+
+# ==========================================
+# Arquivos de trava do LibreOffice / Office
+# ==========================================
+.~lock.*#
+
+# ==========================================
+# Ambientes Python e Jupyter Notebook
+# ==========================================
+.venv/
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# ==========================================
+# Configurações de Sistema / IDEs
+# ==========================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

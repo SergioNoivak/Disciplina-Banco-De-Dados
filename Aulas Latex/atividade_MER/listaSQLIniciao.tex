@@ -1,0 +1,165 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática e listas
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais e personalizadas
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+\definecolor{bgsql}{RGB}{245, 245, 245}
+\definecolor{verdeuni}{RGB}{0, 100, 0}
+\definecolor{blueuni}{RGB}{0, 0, 128}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{minted}
+
+\newtcblisting{sqlcode}{
+    listing engine=minted,
+    minted language=sql,
+    colback=bgsql,
+    colframe=verdeuni,
+    listing only,
+    title=SQL,
+    fonttitle=\bfseries\color{white},
+    coltitle=white, 
+    colbacktitle=verdeuni
+}
+
+\geometry{margin=2.5cm}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+\setlength{\headheight}{52pt}
+
+\fancyhead[L]{\textbf{UniRV}}
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{\small \textbf{Lista de Exercícios Complementar}\\Me.~Sergio Souza Novak\\\textit{Banco de Dados}}
+}
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+
+\begin{document}
+
+\section*{Lista de Exercícios – Criação, Manipulação e Análise de Dados}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!40!black,title=Objetivo da Atividade]
+Nesta atividade, você deverá realizar o ciclo completo: criar a estrutura das tabelas (DDL), inserir dados de teste (DML) e realizar consultas analíticas (DQL) utilizando filtros e agrupamentos.
+\end{tcolorbox}
+
+\hrulefill
+
+\section*{Exercício 1 – Gestão de Estoque (DDL, Insert e Select)}
+
+
+
+\textbf{Cenário:} Modele uma tabela de \texttt{produto} com: ID (serial), nome (obrigatório), descrição, preço (decimal), estoque (default 0), SKU (único, 8 caracteres) e data automática.
+
+\textbf{Tarefas:}
+\begin{enumerate}
+    \item Escreva o comando \texttt{CREATE TABLE}.
+    \item Insira 3 produtos: 'Teclado Mecânico' (250.00, 15 un), 'Mouse Gamer' (150.00, 5 un) e 'Monitor 24pol' (890.00, 0 un).
+    \item Crie uma consulta que retorne nome e preço dos produtos com \textbf{estoque > 0}, ordenados do mais caro ao mais barato.
+\end{enumerate}
+
+\hrulefill
+
+\section*{Exercício 2 – Relatório de Vendas (Group By e Count)}
+
+
+
+\textbf{Cenário:} Considere a tabela \texttt{venda} com: \texttt{id}, \texttt{data\_venda}, \texttt{valor} e \texttt{vendedor\_id}.
+
+\textbf{Tarefas:}
+\begin{enumerate}
+    \item Escreva a query que mostre a quantidade de vendas realizada por cada vendedor.
+    \item Utilize \texttt{HAVING} para mostrar apenas vendedores com \textbf{mais de 10 vendas}.
+\end{enumerate}
+
+\hrulefill
+
+\section*{Exercício 3 – Status de Clientes (DDL e Having)}
+
+
+
+\textbf{Cenário:} Tabela \texttt{cliente} com ID, nome, CPF (único), e-mail e um campo \texttt{ativo} (booleano).
+
+\textbf{Tarefas:}
+\begin{enumerate}
+    \item Crie a tabela e insira 2 clientes ativos e 1 inativo.
+    \item Conte quantos clientes existem para cada status (\texttt{ativo}).
+    \item Exiba apenas o status que possui \textbf{menos de 2 clientes} cadastrados.
+\end{enumerate}
+
+\hrulefill
+
+\section*{Exercício 4 – Filtros Compostos em Frota}
+
+
+
+\textbf{Cenário:} Tabela \texttt{carro} com placa (única), marca, modelo, ano e valor.
+
+\textbf{Tarefas:}
+\begin{enumerate}
+    \item Escreva um \texttt{SELECT} para contar quantos carros da marca 'Toyota' foram fabricados \textbf{após 2020}.
+    \item Agrupe a contagem de carros por marca e ordene o resultado alfabeticamente.
+\end{enumerate}
+
+\hrulefill
+
+\section*{Exercício 5 – Folha de Pagamento (Sum e Where)}
+
+
+
+\textbf{Cenário:} Tabela \texttt{empregado} com nome, cargo, salário e status ativo.
+
+\textbf{Tarefas:}
+\begin{enumerate}
+    \item Calcule a \textbf{soma total} dos salários apenas de funcionários \textbf{ativos}.
+    \item Explique por que usamos \texttt{SUM(salario)} e não \texttt{COUNT(salario)} para obter o custo total da folha.
+\end{enumerate}
+
+\hrulefill
+
+\section*{Desafio de Lógica – Correção de Sintaxe}
+
+Considere o código abaixo que apresenta erros de ordem de execução:
+
+\begin{sqlcode}
+SELECT departamento, COUNT(id)
+FROM funcionarios
+HAVING COUNT(id) > 5
+WHERE salario > 2000
+GROUP BY departamento;
+\end{sqlcode}
+
+\textbf{Tarefa:}
+\begin{enumerate}
+    \item Corrija o código respeitando a ordem: \texttt{FROM} $\rightarrow$ \texttt{WHERE} $\rightarrow$ \texttt{GROUP BY} $\rightarrow$ \texttt{HAVING}.
+    \item Explique por que o \texttt{WHERE} deve vir antes do \texttt{GROUP BY}.
+\end{enumerate}
+
+
+
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Dica Final]
+Sempre visualize o diagrama de classes antes de codificar. Se o atributo é único no diagrama, ele deve ser \texttt{UNIQUE} no SQL!
+\end{tcolorbox}
+
+\end{document}

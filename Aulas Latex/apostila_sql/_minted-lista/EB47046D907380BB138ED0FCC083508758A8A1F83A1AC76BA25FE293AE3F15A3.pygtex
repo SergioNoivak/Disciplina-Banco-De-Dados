@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data\PYGZus{}nascimento}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{pessoa}
+\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{ativo}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{TRUE}
+\PYG{k}{ORDER}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{data\PYGZus{}nascimento}\PYG{+w}{ }\PYG{k}{ASC}\PYG{p}{;}
+\end{Verbatim}

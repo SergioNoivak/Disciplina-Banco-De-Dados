@@ -1,0 +1,8 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{CREATE}\PYG{+w}{ }\PYG{k}{TABLE}\PYG{+w}{ }\PYG{n}{nome\PYGZus{}da\PYGZus{}tabela}\PYG{+w}{ }\PYG{p}{(}
+\PYG{+w}{    }\PYG{n}{coluna1}\PYG{+w}{ }\PYG{n}{tipo\PYGZus{}de\PYGZus{}dado}\PYG{+w}{ }\PYG{n}{restricoes}\PYG{p}{,}
+\PYG{+w}{    }\PYG{n}{coluna2}\PYG{+w}{ }\PYG{n}{tipo\PYGZus{}de\PYGZus{}dado}\PYG{+w}{ }\PYG{n}{restricoes}\PYG{p}{,}
+\PYG{+w}{    }\PYG{p}{...}
+\PYG{+w}{    }\PYG{n}{colunaN}\PYG{+w}{ }\PYG{n}{tipo\PYGZus{}de\PYGZus{}dado}\PYG{+w}{ }\PYG{n}{restricoes}
+\PYG{p}{);}
+\end{Verbatim}

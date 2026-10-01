@@ -1,0 +1,239 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática, listas e tabelas
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{float} 
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+% Layout e cores
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+\definecolor{tableheader}{RGB}{230,240,230}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+
+% Blocos
+\usepackage[most]{tcolorbox}
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=maincolor,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=6pt,
+  right=6pt,
+  top=6pt,
+  bottom=6pt
+}
+
+% Margens
+\geometry{margin=2.5cm}
+
+% Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+\setlength{\headheight}{52pt}
+\addtolength{\topmargin}{-20pt}
+
+\fancyhead[L]{%
+  \includegraphics[height=3.2cm]{rv.jpeg}
+}
+
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{%
+    \small
+    \textbf{Lista de Exercícios}\\
+    Me.~Sergio Souza Novak\\
+    \textit{Organização de Pastas Windows}
+    }
+}
+    
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+    
+\begin{document}
+    
+\vspace*{0.2cm}
+
+\section*{Exercício 01 – Empresa de Sementes}
+
+Organize a estrutura de pastas do sistema de arquivos da empresa de sementes conforme a hierarquia abaixo. Cada pasta representa um departamento ou categoria de informações.
+
+\begin{table}[H]
+\centering
+\small
+\textbf{Estrutura de Pastas Sugerida}\\
+\begin{tabular}{l}
+\hline
+\rowcolor{tableheader} \textbf{Sementes} \\ \hline
+\quad Produtos \\
+\quad\quad Milho \\
+\quad\quad Soja \\
+\quad\quad Trigo \\
+\quad\quad Feijão \\
+\quad\quad Sementes\_Híbridas \\
+\quad Fornecedores \\
+\quad Pedidos \\
+\quad\quad 2025 \\
+\quad\quad\quad T1 \\
+\quad\quad\quad T2 \\
+\quad\quad 2026 \\
+\quad\quad\quad T1 \\
+\quad Clientes \\
+\quad\quad Norte \\
+\quad\quad Sul \\
+\quad\quad Leste \\
+\quad\quad Oeste \\
+\quad Marketing \\
+\quad\quad Campanhas \\
+\quad\quad RedesSociais \\
+\quad\quad Email\_Marketing \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{block}{Instruções}
+Crie todas as pastas acima no diretório \texttt{C:/Documents/Sementes}. Certifique-se de que a hierarquia está correta.
+\end{block}
+\vspace*{5cm}
+
+\section*{Exercício 02 – Empresa Agropecuária}
+
+Organize os dados da fazenda considerando os diferentes setores de produção, animais e funcionários.
+
+\begin{table}[H]
+\centering
+\small
+\textbf{Estrutura de Pastas Sugerida}\\
+\begin{tabular}{l}
+\hline
+\rowcolor{tableheader} \textbf{Agropecuaria} \\ \hline
+\quad Vacas \\
+\quad\quad Fazenda\_Sul \\
+\quad\quad\quad Leiteiras \\
+\quad\quad\quad Bezerros \\
+\quad\quad Fazenda\_Norte \\
+\quad\quad\quad Leiteiras \\
+\quad\quad\quad Bezerros \\
+\quad Ovinos \\
+\quad Suinos \\
+\quad Funcionarios \\
+\quad\quad Ordenhadores \\
+\quad\quad\quad Manha \\
+\quad\quad\quad Tarde \\
+\quad\quad Veterinarios \\
+\quad\quad\quad Manha \\
+\quad\quad Supervisores \\
+\quad Relatorios \\
+\quad\quad Producao \\
+\quad\quad SaudeAnimal \\
+\quad\quad ManutencaoEquipamentos \\
+\quad Equipamentos \\
+\quad Financeiro \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{block}{Instruções}
+Crie cada pasta e subpasta conforme indicado, garantindo consistência na hierarquia.
+\end{block}
+\vspace*{5cm}
+
+\section*{Exercício 03 – Clínica Veterinária}
+
+Organize os arquivos da clínica considerando pacientes, atendimentos, vacinas, exames e faturamento.
+
+\begin{table}[H]
+\centering
+\small
+\textbf{Estrutura de Pastas Sugerida}\\
+\begin{tabular}{l}
+\hline
+\rowcolor{tableheader} \textbf{ClinicaVeterinaria} \\ \hline
+\quad Pacientes \\
+\quad\quad Cachorros \\
+\quad\quad\quad 2025 \\
+\quad\quad\quad 2026 \\
+\quad\quad Gatos \\
+\quad\quad Aves \\
+\quad\quad Outros \\
+\quad Atendimentos \\
+\quad\quad Janeiro \\
+\quad\quad Fevereiro \\
+\quad\quad ... \\
+\quad Vacinas \\
+\quad\quad Antirrabica \\
+\quad\quad V10 \\
+\quad\quad GripeAnimal \\
+\quad Exames \\
+\quad\quad Sanguineo \\
+\quad\quad Urina \\
+\quad\quad Imagem \\
+\quad Faturamento \\
+\quad Estoque \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{block}{Instruções}
+Implemente a estrutura no Windows, criando pastas e subpastas exatamente como na tabela acima.
+\end{block}
+\vspace*{5cm}
+
+\section*{Exercício 04 – Petshop}
+
+Organize o sistema de arquivos da loja de animais considerando estoque, vendas, clientes e promoções.
+
+\begin{table}[H]
+\centering
+\small
+\textbf{Estrutura de Pastas Sugerida}\\
+\begin{tabular}{l}
+\hline
+\rowcolor{tableheader} \textbf{Petshop} \\ \hline
+\quad Estoque \\
+\quad\quad Racoes \\
+\quad\quad Brinquedos \\
+\quad\quad Higiene \\
+\quad\quad Medicamentos \\
+\quad Vendas \\
+\quad\quad T1\_2026 \\
+\quad\quad\quad Dinheiro \\
+\quad\quad\quad Cartao \\
+\quad Clientes \\
+\quad\quad PF \\
+\quad\quad\quad Norte \\
+\quad\quad\quad Sul \\
+\quad\quad PJ \\
+\quad\quad\quad Norte \\
+\quad Promocoes \\
+\quad Funcionarios \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{block}{Instruções}
+Crie as pastas no diretório \texttt{C:/Documents/Petshop} e verifique se a hierarquia está correta.
+\end{block}
+
+\end{document}

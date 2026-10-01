@@ -1,0 +1,95 @@
+graph DER_Sistema_Ordenha {
+    fontname="Helvetica,Arial,sans-serif"
+    node [fontname="Helvetica,Arial,sans-serif"]
+    edge [fontname="Helvetica,Arial,sans-serif"]
+    layout=neato
+    overlap=false
+    splines=true
+
+    // --- ENTIDADES PRINCIPAIS ---
+    node [shape=box, style=filled, color=forestgreen, fillcolor="white", penwidth=2];
+    Funcionario;
+    Equipamento;
+    Vaca;
+    Medicamento;
+
+    // --- ESPECIALIZAÇÃO FUNCIONÁRIO ---
+    node [shape=triangle, style=filled, color=black, fillcolor="lightgrey", label="ISA"];
+    Esp_Func;
+    
+    node [shape=box, style=filled, color=forestgreen, fillcolor="white"];
+    Ordenhador; Veterinario; Supervisor;
+
+    Funcionario -- Esp_Func;
+    Esp_Func -- Ordenhador;
+    Esp_Func -- Veterinario;
+    Esp_Func -- Supervisor;
+
+    // --- ESPECIALIZAÇÃO EQUIPAMENTO ---
+    node [shape=triangle, label="ISA"];
+    Esp_Equip;
+    
+    node [shape=box];
+    Equip_Manual; Equip_Robotico;
+
+    Equipamento -- Esp_Equip;
+    Esp_Equip -- Equip_Manual;
+    Esp_Equip -- Equip_Robotico;
+
+    // --- ATRIBUTOS ---
+    node [shape=ellipse, style=solid, color=black, fillcolor=none, penwidth=1];
+    // Funcionario
+    f1 [label="<<u>id_func</u>>"]; f2 [label="nome"];
+    Funcionario -- f1; Funcionario -- f2;
+    
+    // Subclasses Func
+    exp [label="experiencia"]; Ordenhador -- exp;
+    crmv [label="<<u>crmv</u>>"]; Veterinario -- crmv;
+    bon [label="bonus"]; Supervisor -- bon;
+
+    // Equipamento
+    e1 [label="<<u>id_equip</u>>"]; e2 [label="situacao"];
+    Equipamento -- e1; Equipamento -- e2;
+    
+    // Subclasses Equip
+    mat [label="material"]; Equip_Manual -- mat;
+    soft [label="software"]; pwr [label="kW/h"];
+    Equip_Robotico -- soft; Equip_Robotico -- pwr;
+
+    // Vaca
+    v1 [label="<<u>id_vaca</u>>"]; v2 [label="nome"];
+    Vaca -- v1; Vaca -- v2;
+
+    // --- AGREGAÇÃO: ATENDIMENTO ---
+    // Representada por um subgrafo (bounding box)
+    subgraph cluster_atendimento {
+        style=dashed;
+        color=grey;
+        label="Agregação: Atendimento";
+        labeljust="r";
+        
+        node [shape=diamond, style=filled, fillcolor="white", color=forestgreen];
+        Rel_Atendimento [label="Atendimento"];
+        
+        // Atributo do relacionamento
+        dt_atend [label="data"];
+        Rel_Atendimento -- dt_atend;
+    }
+
+    Veterinario -- Rel_Atendimento [label="(1,N)"];
+    Rel_Atendimento -- Vaca [label="(1,N)"];
+
+    // Relacionamento da Agregação com Medicamento
+    node [shape=diamond, label="Prescreve"];
+    Rel_Atendimento -- Prescreve;
+    Prescreve -- Medicamento [label="(1,N)"];
+
+    // --- RELACIONAMENTO ORDENHA (Ternário ou Agregado conforme discussão) ---
+    node [shape=diamond, label="Ordenha"];
+    Ordenha -- Vaca [label="(1,1)"];
+    Ordenha -- Ordenhador [label="(1,N)"];
+    Ordenha -- Equipamento [label="(1,N)"];
+    
+    qtde [label="quantidade"]; dt_ord [label="data"];
+    Ordenha -- qtde; Ordenha -- dt_ord;
+}

@@ -1,0 +1,1014 @@
+\documentclass[9pt]{beamer}
+\mode<presentation>
+
+% Theme choice:
+\usetheme{Madrid}%Darmstadt 
+
+\usecolortheme[RGB={0,100,50}]{structure}
+ \usefonttheme{structurebold} 
+\setbeamercovered{invisible}
+%\setbeamertemplate{navigation symbols}{}
+\usepackage{dynblocks}
+\usepackage{textpos}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\newtheorem{teorema}{Teorema}\usepackage{mathtools}
+\renewcommand{\proofname}{Prova}
+\usepackage[portuguese]{babel}
+
+\uselanguage{Portuguese}
+\languagepath{Portuguese}
+
+\deftranslation[to=Portuguese]{Theorem}{Teorema}
+\deftranslation[to=Portuguese]{Lemma}{Lema}
+\deftranslation[to=Portuguese]{Corollary}{Corolário}
+\deftranslation[to=Portuguese]{Proof}{Prova}
+
+\usepackage{dutchcal}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm}
+
+
+\usepackage[affil-it]{authblk} 
+\usepackage{etoolbox}
+\usepackage{lmodern}
+
+% TikZ configuration for diagrams
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, positioning, calc}
+
+\makeatletter
+\patchcmd{\@maketitle}{\LARGE \@title}{\fontsize{18}{19.2}\selectfont\@title}{}{}
+\makeatother
+
+\renewcommand\Authfont{\fontsize{12}{14.4}\selectfont}
+\renewcommand\Affilfont{\fontsize{9}{10.8}\itshape}
+
+% Title page details: 
+\title[Presentation]{Banco de Dados} %add title
+
+
+\institute[UniRV]{\textbf{\large  \textcolor{structure}{\textbf{\large
+Normalização de banco de dados parte 1: 1FN e 2FN
+}} %add name 
+% \hspace{0.5pt}
+\\ \qquad
+\\Professor: Me. Sergio Souza Novak 
+\\Faculdade de Engenharia de Software}
+} 
+% \titlegraphic{\includegraphics[width=5cm]{msu.eps}}
+\titlegraphic{\includegraphics[width=5cm]{Universidade_de_Rio_Verde.jpg}}
+\date{}
+
+% Logo only on title page
+%\logo{\includegraphics[width=1cm,keepaspectratio]{Logo.png}}
+\usepackage[pscoord]{eso-pic}
+
+
+\begin{document}
+
+% Title page frame
+%\begin{frame}
+    %\titlepage 
+%\end{frame}
+\frame[plain]{\titlepage}
+%logo
+\AddToShipoutPictureFG{
+    \put(\LenToUnit{.92\paperwidth},
+    \LenToUnit{.185\paperheight})
+    {\vtop{{\null}
+    \makebox{\includegraphics[width=.8cm,keepaspectratio]{Universidade_de_Rio_Verde.jpg}}}}}
+
+
+\begin{frame}{Sumário}
+  \tableofcontents
+\end{frame}
+\section{Contextualização}
+
+\section{Anomalias de Banco de Dados}
+\begin{frame}{Anomalias em Banco de Dados}
+\small
+\textbf{Ao modelar bancos de dados relacionais, devemos evitar anomalias.}
+
+\vspace{0.4cm}
+
+\begin{block}{Definição}
+Anomalias são inconsistências que podem ocorrer durante operações de inserção, atualização ou remoção de dados, geralmente causadas por \textbf{redundância} e \textbf{má modelagem}.
+\end{block}
+
+\vspace{0.3cm}
+
+\textbf{Principais tipos de anomalias:}
+
+\vspace{0.3cm}
+
+\begin{columns}
+\column{0.3\textwidth}
+\begin{block}{Inserção}
+\footnotesize
+Ocorre quando não é possível inserir um dado sem outro associado.
+
+\textbf{Exemplo:}
+Não é possível cadastrar uma disciplina sem alunos vinculados.
+\end{block}
+
+\column{0.3\textwidth}
+\begin{block}{Atualização}
+\footnotesize
+Ocorre quando um mesmo dado precisa ser alterado em múltiplas linhas.
+
+\textbf{Exemplo:}
+Alterar o nome de uma disciplina em vários registros.
+\end{block}
+
+\column{0.3\textwidth}
+\begin{block}{Remoção}
+\footnotesize
+Ocorre quando a exclusão de um dado causa perda de informações importantes.
+
+\textbf{Exemplo:}
+Ao remover um aluno, perde-se também a informação da disciplina.
+\end{block}
+\end{columns}
+
+\vspace{0.4cm}
+
+\begin{alertblock}{Causa Principal}
+Essas anomalias ocorrem devido à presença de \textbf{dependências funcionais mal estruturadas} e ausência de normalização.
+\end{alertblock}
+
+\vspace{0.2cm}
+
+\begin{block}{Solução}
+Aplicar técnicas de \textbf{normalização (1FN, 2FN, 3FN)} para reduzir redundâncias e garantir consistência dos dados.
+\end{block}
+
+\end{frame}
+\begin{frame}{Anomalia de Inserção}
+  \begin{block}{O que é?}
+    Ocorre quando não é possível inserir uma informação no banco de dados sem que outra informação (não relacionada ou ainda inexistente) também seja inserida.
+  \end{block}
+  \begin{itemize}
+    \item Geralmente causada pela mistura de diferentes entidades em uma mesma tabela.
+    \item Impede o cadastro de dados parciais.
+  \end{itemize}
+\end{frame}
+\begin{frame}{Anomalia de Inserção - Exemplo}
+  Considere a tabela: \textbf{TURMAS\_DISCIPLINAS}
+  \vspace{0.3cm}
+  \begin{small}
+  \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Cod\_Turma} & \textbf{Nome\_Turma} & \textbf{Cod\_Disc} & \textbf{Nome\_Disc} \\ \hline
+    T1 & Turma A & D1 & Cálculo \\ \hline
+    T2 & Turma B & D1 & Cálculo \\ \hline
+  \end{tabular}
+  \end{small}\\
+  
+  \textbf{Problema:} Se quisermos cadastrar uma nova disciplina "Física" (D2), não podemos fazê-lo até que exista uma turma associada a essa disciplina.
+\end{frame}
+
+\begin{frame}{Anomalia de Inserção - Diagrama}
+  \centering
+  \begin{tikzpicture}[node distance=2cm, every node/.style={fill=white, font=\sffamily}, align=center]
+    \node (disc) [draw, rectangle, fill=blue!10, minimum width=2.5cm, minimum height=1cm] {Nova Disciplina:\\\textbf{Física}};
+    
+    \node (table) [draw, cylinder, shape border rotate=90, right=3.5cm of disc, fill=green!10, minimum size=2cm] {Tabela\\Relacional};
+    
+    \draw[->, line width=1.5pt] (disc) -- (table) node[midway, above] {Inserir};
+    
+    \node (barrier) at ($(disc)!0.4!(table)$) [circle, draw, fill=red, text=white, inner sep=2pt] {\textbf{X}};
+    
+    \node [below=0.8cm of barrier, font=\footnotesize\bfseries] {ERRO: Cod\_Turma\\não pode ser nulo!};
+  \end{tikzpicture}
+  
+  \vspace{0.3cm}
+  
+  \begin{itemize}
+      \item A dependência entre turma e disciplina impede o cadastro de disciplinas isoladas.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Anomalia de Atualização}
+  \begin{block}{O que é?}
+    Ocorre quando a alteração de um único fato exige a atualização de múltiplos registros devido à redundância de dados.
+  \end{block}
+  \begin{itemize}
+    \item Se a atualização não for feita em todos os locais, o banco entra em estado \textbf{inconsistente}.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Anomalia de Atualização - Exemplo 1}
+  \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Cod\_Fun} & \textbf{Nome} & \textbf{Cod\_Depto} & \textbf{Nome\_Depto} \\ \hline
+    101 & Alice & D1 & \color{red}Vendas \\ \hline
+    102 & Bob & D1 & \color{red}Vendas \\ \hline
+    103 & Carol & D1 & \color{red}Vendas \\ \hline
+  \end{tabular}
+  \vspace{0.3cm}\\ 
+  \textbf{Cenário:} O departamento "Vendas" mudou de nome para "Comercial".
+  \begin{itemize}
+    \item Precisamos alterar N linhas para uma única mudança lógica.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Anomalia de Atualização - Diagrama}
+  \centering
+  \begin{tikzpicture}[node distance=1.5cm, every node/.style={draw, rectangle, fill=gray!10, font=\sffamily, minimum width=3cm}, align=center]
+    \node (r1) {Alice | \color{blue}Comercial};
+    \node (r2) [below=0.4cm of r1] {Bob | \color{blue}Comercial};
+    \node (r3) [below=0.4cm of r2] {Carol | \color{red}Vendas};
+    \node (update) [draw=none, fill=none, left=2.5cm of r2] {\textbf{Update:}\\\color{blue}Comercial};
+    
+    \draw[->, thick, blue] (update) -- (r1);
+    \draw[->, thick, blue] (update) -- (r2);
+    \draw[->, thick, dashed, red] (update) -- (r3) node[midway, below, sloped, font=\tiny] {Esquecido!};
+    
+    \node [right=0.5cm of r3, red, draw=none, fill=none, font=\bfseries] {Inconsistência!};
+  \end{tikzpicture}
+  \vspace{0.3cm}
+  \begin{itemize}
+      \item A redundância gera o risco de atualizações parciais.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Anomalia de Remoção}
+  \begin{block}{O que é?}
+    Ocorre quando a exclusão de um registro causa a perda acidental de uma informação que não deveria ser removida.
+  \end{block}
+  \begin{itemize}
+    \item Dados "pegam carona" na exclusão de outros dados.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Anomalia de Remoção - Exemplo 1}
+  \begin{tabular}{|l|l|l|l|l|}
+    \hline
+    \textbf{Cod\_F} & \textbf{Nome} & \textbf{Cod\_D} & \textbf{Nome\_D} & \textbf{Local} \\ \hline
+    105 & David & D3 & Marketing & Bloco A \\ \hline
+  \end{tabular}
+  \vspace{0.3cm}\\
+  \textbf{Cenário:} David é o único funcionário do Marketing.
+  \begin{itemize} 
+    \item Se David for demitido e seu registro removido, a informação de que o departamento "Marketing" existe no "Bloco A" é perdida para sempre.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Anomalia de Remoção - Diagrama}
+  \centering
+  \begin{tikzpicture}[node distance=2cm, align=center]
+    \node (item) [draw, rectangle split, rectangle split parts=2, fill=yellow!20, minimum width=3.5cm] {
+      \textbf{Funcionário:} João
+      \nodepart{second}
+      \textbf{Depto:} Financeiro
+    };
+    \node (trash) [below=1.5cm of item, scale=1.5] {Lixeira};
+    \draw[->, line width=2pt, red] (item) -- (trash) node[midway, right] {Delete};
+    
+    \node [right=1cm of item, font=\footnotesize, text width=3cm] {Ao remover o funcionário João...};
+    \node [right=1.5cm of trash, red, font=\bfseries] {...perdemos a existência do\\Depto Financeiro!};
+  \end{tikzpicture}
+  \vspace{0.3cm}
+  \begin{itemize}
+      \item A exclusão de uma entidade arrasta dados de outra.
+  \end{itemize}
+\end{frame}
+
+\section{1ª Forma Normal (1NF)}
+
+\begin{frame}{1ª Forma Normal (1NF)}
+  \begin{block}{Definição}
+    Uma relação está na \textbf{1NF} se, e somente se, todos os seus atributos contêm apenas valores \textbf{atômicos} (indivisíveis) e não existem \textbf{grupos repetitivos}.
+  \end{block}
+  \vspace{0.3cm}
+  \textbf{Objetivos:}
+  \begin{itemize}
+    \item Garantir que cada interseção entre linha e coluna contenha um único valor.
+    \item Eliminar a necessidade de tratar listas ou arrays dentro do banco de dados relacional.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Atributos Multivalorados}
+  \begin{itemize}
+    \item Ocorre quando uma única célula armazena múltiplos valores do mesmo tipo.
+    \item \textbf{Exemplo:} Um campo "Telefones" contendo "(11) 9999-9999, (11) 8888-8888".
+  \end{itemize}
+  \vspace{0.3cm}
+  \begin{alertblock}{Problemas}
+    \begin{itemize}
+      \item Dificuldade em realizar buscas (parciais).
+      \item Impossibilidade de aplicar índices eficientes.
+      \item Complexidade na atualização de apenas um dos valores.
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Grupos Repetitivos}
+  \begin{itemize}
+    \item Ocorre quando criamos colunas extras para comportar múltiplos valores.
+    \item \textbf{Exemplo:} Colunas como \texttt{Tel\_1}, \texttt{Tel\_2}, \texttt{Tel\_3}.
+  \end{itemize}
+  \vspace{0.3cm}
+  \begin{alertblock}{Problemas}
+    \begin{itemize}
+      \item Espaço desperdiçado (muitos campos NULL).
+      \item Limite rígido (o que acontece se o cliente tiver 4 telefones?).
+      \item Consultas complexas (precisa checar todas as colunas).
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Exemplo: Tabela Não Normalizada}
+  Considere a tabela \textbf{ALUNOS}:
+  \vspace{0.3cm}
+  \centering
+  \begin{small}
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{ID} & \textbf{Nome} & \textbf{Contatos} \\ \hline
+    1 & Carlos & car@email.com, (11) 9111-1111 \\ \hline
+    2 & Ana & ana@email.com \\ \hline
+    3 & Bia & bia@work.com, bia@home.com \\ \hline
+  \end{tabular}
+  \end{small}
+  \vspace{0.4cm}
+  \textbf{Violação:} O campo "Contatos" possui valores multivalorados e tipos de dados mistos (e-mail e telefone).
+\end{frame}
+
+
+% ---------------- SLIDE 1 ----------------
+\begin{frame}{Normalização: Atributos Atômicos}
+\centering
+
+\begin{tikzpicture}[node distance=1.5cm]
+
+\node (multi) [draw, fill=red!10, text width=4cm, align=center] 
+{ID: 3 | Nome: Bia \\ \textbf{Emails: bia@a.com, bia@b.com}};
+
+\node (arrow) [below=1cm of multi, scale=1.5] {$\Downarrow$};
+
+\node (row1) [draw, fill=green!10, below=1cm of arrow, xshift=-2.5cm, text width=3.5cm, align=center] 
+{ID: 3 | Nome: Bia \\ \textbf{Email: bia@a.com}};
+
+\node (row2) [draw, fill=green!10, right=1cm of row1, text width=3.5cm, align=center] 
+{ID: 3 | Nome: Bia \\ \textbf{Email: bia@b.com}};
+
+\node [right=1cm of multi, font=\footnotesize, text width=3cm, align=center] 
+{Valores separados em novos registros (linhas).};
+
+\end{tikzpicture}
+
+\end{frame}
+
+% ---------------- SLIDE 2 ----------------
+\begin{frame}{Normalização: Nova Tabela}
+
+\small
+Ao invés de criar múltiplos atributos como \texttt{Tel1} e \texttt{Tel2}, utilizamos uma tabela separada.
+
+\vspace{0.5cm}
+
+\centering
+\begin{tikzpicture}[
+    node distance=1cm,
+    tabela/.style={
+        draw,
+        rectangle,
+        rounded corners,
+        font=\footnotesize\sffamily,
+        align=left,
+        inner sep=6pt,
+        text width=4cm
+    }
+]
+
+\node (t1) [tabela] {
+\textbf{Tabela ALUNOS} \\[2pt]
+\rule{\textwidth}{0.4pt} \\
+ID (PK) \\ Nome
+};
+
+\node (t2) [tabela, right=of t1] {
+\textbf{Tabela TELEFONES} \\[2pt]
+\rule{\textwidth}{0.4pt} \\
+ID\_Telefone (PK) \\ ID\_Aluno (FK) \\ Numero
+};
+
+\draw[->, thick] (t2.west) -- (t1.east) node[midway, above] {$\infty:1$};
+
+\end{tikzpicture}
+
+\vspace{0.5cm}
+
+\begin{itemize}
+    \item Permite múltiplos telefones por aluno
+    \item Reduz redundância de dados
+    \item Garante integridade referencial
+\end{itemize}
+
+\end{frame}
+\begin{frame}{Checklist para 1NF}
+  Para garantir que uma tabela está na \textbf{1NF}, verifique:
+  \vspace{0.4cm}
+  \begin{itemize}
+    \item[$\square$] Todos os atributos são \textbf{atômicos}?
+    \item[$\square$] Existem colunas com nomes parecidos (\texttt{X1}, \texttt{X2})?
+    \item[$\square$] A ordem das colunas e linhas é irrelevante para o significado?
+    \item[$\square$] Existe uma \textbf{Chave Primária} única para cada registro?
+  \end{itemize}
+  \vspace{0.4cm}
+  \begin{block}{Dica de Ouro}
+    Se você precisar usar vírgula, ponto-e-vírgula ou arrays dentro de uma célula, a 1NF provavelmente está sendo violada.
+  \end{block}
+\end{frame}
+
+\section{Dependência Funcional (DF)}
+
+\begin{frame}{O que é Dependência Funcional? (DF)}
+  \begin{block}{Definição}
+     Dizemos que um atributo $Y$ é \textbf{funcionalmente dependente} de $X$ (notação $X \to Y$) se, para cada valor de $X$, existe precisamente um único valor de $Y$ associado.
+  \end{block}
+  \vspace{0.4cm}
+  \begin{itemize}
+    \item $X$ é chamado de \textbf{determinante}.
+    \item $Y$ é chamado de \textbf{dependente}.
+    \item É a base para entender a normalização além da 1NF (2NF e 3NF).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Exemplo Prático de DF}
+  Considere uma tabela de \textbf{ALUNOS}:
+  \vspace{0.3cm}
+  \centering
+  \begin{small}
+  \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Matricula} & \textbf{Nome} & \textbf{Data\_Nasc} & \textbf{Email} \\ \hline
+    2024001 & Carlos Silva & 10/05/2000 & carlos@email.com \\ \hline
+    2024002 & Ana Souza & 22/08/1999 & ana@email.com \\ \hline
+  \end{tabular}
+  \end{small}
+  \vspace{0.4cm}
+  \textbf{Dependências Identificadas:}
+  \begin{itemize}
+    \item $\text{Matricula} \to \text{Nome}$
+    \item $\text{Matricula} \to \text{Email}$
+    \item $\text{Matricula} \to \text{Data\_Nasc}$
+  \end{itemize}
+  \textit{Sabendo a Matrícula, determinamos univocamente todos os outros dados.}
+\end{frame}
+
+\begin{frame}{Representação Visual da DF}
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm, every node/.style={draw, rectangle, rounded corners, fill=blue!5, font=\sffamily, minimum width=2.5cm, minimum height=0.8cm}]
+    \node (x) [fill=orange!20, thick] {\textbf{Matrícula (X)}};
+    \node (y1) [right=of x, yshift=1cm] {Nome (Y)};
+    \node (y2) [right=of x] {Data\_Nasc (Y)};
+    \node (y3) [right=of x, yshift=-1cm] {Email (Y)};
+    
+    \draw[->, >=stealth, thick, blue] (x) -- (y1);
+    \draw[->, >=stealth, thick, blue] (x) -- (y2);
+    \draw[->, >=stealth, thick, blue] (x) -- (y3);
+    
+    \node [below=2cm of x, draw=none, fill=none, text width=6cm, align=center, font=\itshape] {A Matrícula "determina" o valor dos outros campos.};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{A DF e a Normalização}
+  A Dependência Funcional é a "ferramenta de diagnóstico" do DBA:
+  \vspace{0.4cm}
+  \begin{itemize}
+    \item \textbf{2NF}: Analisa se há dependências parciais (depende de apenas parte da chave composta).
+    \item \textbf{3NF}: Analisa se há dependências transitivas (depende de um campo que não é chave).
+  \end{itemize}
+  \vspace{0.4cm}
+  \begin{exampleblock}{Importância}
+    Identificar corretamente as DFs permite decompor tabelas complexas em tabelas menores e mais íntegras.
+  \end{exampleblock}
+\end{frame}
+% ---------------- SLIDE 2 ----------------
+\begin{frame}{Normalização: Nova Tabela}
+
+\small
+Ao invés de criar múltiplos atributos como \texttt{Tel1} e \texttt{Tel2}, utilizamos uma tabela separada.
+
+\vspace{0.5cm}
+
+\centering
+\begin{tikzpicture}[
+    node distance=4cm,
+    tabela/.style={
+        draw,
+        rectangle,
+        rounded corners,
+        font=\footnotesize\sffamily,
+        align=left,
+        inner sep=6pt,
+        text width=4cm
+    }
+]
+
+\node (t1) [tabela] {
+\textbf{Tabela ALUNOS} \\[2pt]
+\rule{\textwidth}{0.4pt} \\
+ID (PK) \\ Nome
+};
+
+\node (t2) [tabela, right=of t1] {
+\textbf{Tabela TELEFONES} \\[2pt]
+\rule{\textwidth}{0.4pt} \\
+ID\_Telefone (PK) \\ ID\_Aluno (FK) \\ Numero
+};
+
+\draw[->, thick] (t2.west) -- (t1.east) node[midway, above] {$\infty:1$};
+
+\end{tikzpicture}
+
+\vspace{0.5cm}
+
+\begin{itemize}
+    \item Permite múltiplos telefones por aluno
+    \item Reduz redundância de dados
+    \item Garante integridade referencial
+\end{itemize}
+
+\end{frame}
+\begin{frame}{Interpretação Lógica da Dependência Funcional}
+
+\small
+
+A dependência funcional pode ser vista como uma restrição lógica:
+
+\vspace{0.4cm}
+
+\begin{block}{Leitura}
+Se dois registros possuem o mesmo valor em $X$, então necessariamente possuem o mesmo valor em $Y$.
+\end{block}
+
+\vspace{0.4cm}
+
+\textbf{Equivalente lógico:}
+
+\[
+\neg \exists\, t_1, t_2 \in r \;\text{tal que}\;
+t_1[X] = t_2[X] \land t_1[Y] \neq t_2[Y]
+\]
+
+\vspace{0.4cm}
+
+\begin{alertblock}{Interpretação}
+Não podem existir duas tuplas com mesmo $X$ e valores diferentes em $Y$.
+\end{alertblock}
+
+\vspace{0.3cm}
+
+\begin{itemize}
+    \item É uma \textbf{restrição de integridade}
+    \item Garante consistência semântica dos dados
+\end{itemize}
+
+\end{frame}
+\begin{frame}{Exemplo de Dependência Funcional}
+
+\small
+
+Considere a relação:
+
+\vspace{0.3cm}
+
+\begin{tabular}{|c|c|c|}
+\hline
+ID & Nome & Curso \\ \hline
+1 & Ana & SI \\ \hline
+2 & Bruno & ADS \\ \hline
+1 & Ana & SI \\ \hline
+\end{tabular}
+
+\vspace{0.4cm}
+
+\begin{block}{Dependência}
+\[
+ID \rightarrow Nome
+\]
+\end{block}
+
+\vspace{0.3cm}
+
+\textbf{Verificação lógica:}
+
+\[
+t_1[ID] = t_2[ID] \Rightarrow t_1[Nome] = t_2[Nome]
+\]
+
+\vspace{0.4cm}
+
+\begin{alertblock}{Violação (exemplo)}
+Se tivermos:
+
+\[
+(1, \text{Ana}) \quad e \quad (1, \text{Maria})
+\]
+
+então a dependência funcional é violada.
+
+\end{alertblock}
+
+\end{frame}
+\begin{frame}{Violação de Dependência Funcional}
+
+\small
+
+Considere a dependência:
+
+\[
+ID \rightarrow Nome
+\]
+
+\vspace{0.3cm}
+
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+ID & Nome & Curso \\ \hline
+1 & Ana & SI \\ \hline
+2 & Bruno & ADS \\ \hline
+3 & Carlos & SI \\ \hline
+1 & Maria & SI \\ \hline
+4 & Juliana & ADS \\ \hline
+2 & Bruno & ADS \\ \hline
+\end{tabular}
+
+\vspace{0.4cm}
+
+\begin{alertblock}{Problema}
+Existem tuplas com o mesmo ID e nomes diferentes:
+\[
+(1, \text{Ana}) \quad e \quad (1, \text{Maria})
+\]
+\end{alertblock}
+
+\vspace{0.3cm}
+
+\textbf{Violação lógica:}
+
+\[
+t_1[ID] = t_2[ID] \;\land\; t_1[Nome] \neq t_2[Nome]
+\]
+
+\end{frame}
+\begin{frame}{Dependência Funcional Satisfeita}
+
+\small
+
+Considere a mesma dependência:
+
+\[
+ID \rightarrow Nome
+\]
+
+\vspace{0.3cm}
+
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+ID & Nome & Curso \\ \hline
+1 & Ana & SI \\ \hline
+2 & Bruno & ADS \\ \hline
+3 & Carlos & SI \\ \hline
+1 & Ana & SI \\ \hline
+4 & Juliana & ADS \\ \hline
+2 & Bruno & ADS \\ \hline
+\end{tabular}
+
+\vspace{0.4cm}
+
+\begin{block}{Observação}
+Para todo par de tuplas com mesmo ID, o Nome é o mesmo.
+\end{block}
+
+\vspace{0.3cm}
+
+\textbf{Verificação lógica:}
+
+\[
+t_1[ID] = t_2[ID] \Rightarrow t_1[Nome] = t_2[Nome]
+\]
+
+\end{frame}
+
+\section{2ª Forma Normal (2NF)}
+
+\begin{frame}{2ª Forma Normal (2NF)}
+  \begin{block}{Definição}
+    Uma relação está na \textbf{2NF} se, e somente se:
+    \begin{enumerate}
+      \item Já estiver na \textbf{1ª Forma Normal (1NF)}.
+      \item Todos os seus atributos não-chave dependem \textbf{funcionalmente de toda a chave primária} (não apenas de parte dela).
+    \end{enumerate}
+  \end{block}
+  \vspace{0.3cm}
+  \begin{itemize}
+    \item A 2NF visa eliminar as \textbf{Dependências Funcionais Parciais}.
+    \item Só é relevante para tabelas com \textbf{chaves primárias compostas}.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Dependência Funcional Parcial}
+  \begin{itemize}
+    \item Ocorre quando um atributo não-chave depende de apenas uma parte de uma chave primária composta.
+    \item \textbf{Cenário:} Chave Primária = $\{A, B\}$.
+    \item Se $A \to C$, então $C$ tem uma dependência parcial da chave $\{A, B\}$.
+  \end{itemize}
+  \vspace{0.4cm}
+  \begin{alertblock}{Consequência}
+    Isso gera redundância, pois a informação de $C$ será repetida para cada valor de $B$ associado ao mesmo $A$.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Exemplo: Tabela ITENS\_PEDIDO (Não 2NF)}
+  \small
+  Chave Primária Composta: \textbf{\{ID\_Pedido, ID\_Produto\}}
+  \vspace{0.3cm}
+  \centering
+  \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{ID\_Pedido} & \textbf{ID\_Produto} & \textbf{Quantidade} & \textbf{Nome\_Produto} \\ \hline
+    501 & 10 & 2 & Notebook \\ \hline
+    501 & 20 & 1 & Mouse \\ \hline
+    502 & 10 & 5 & \color{red}Notebook \\ \hline
+  \end{tabular}
+  \vspace{0.4cm}
+  \begin{itemize}
+    \item \textbf{Quantidade} depende de ambos (ID\_Pedido e ID\_Produto). OK!
+    \item \textbf{Nome\_Produto} depende apenas de \textbf{ID\_Produto}. \textbf{ERRO!}
+  \end{itemize}
+  \textit{Temos uma Dependência Parcial.}
+\end{frame}
+
+\begin{frame}{Dependência Funcional Parcial (2FN)}
+\small
+\begin{block}{Definição Formal (com Quantificadores)}
+Seja uma relação $R$ com chave primária $K$ e um atributo não-chave $Y$.
+
+Uma dependência funcional $K \rightarrow Y$ é dita \textbf{parcial} se, e somente se:
+\[
+\exists X \subset K \mid X \rightarrow Y
+\]
+
+No caso de uma chave composta $K = \{A, B\}$, a dependência é parcial se:
+\[
+(A \rightarrow Y) \lor (B \rightarrow Y)
+\]
+\end{block}
+
+\vspace{0.4cm}
+
+\begin{alertblock}{Interpretação}
+\begin{itemize}
+    \item Um atributo não-chave depende de \textbf{apenas parte da chave composta}.
+    \item A existência desse tipo de dependência viola a \textbf{2ª Forma Normal (2FN)}.
+\end{itemize}
+\end{alertblock}
+
+\vspace{0.3cm}
+
+\begin{block}{Regra da 2FN}
+Uma relação está na \textbf{2FN} se, e somente se:
+\begin{enumerate}
+    \item Estiver na \textbf{1FN}.
+    \item Todo atributo $Y$ (não-chave) depender de \textbf{toda} a chave $K$ (dependência total):
+    \[
+    \nexists X \subset K \text{ tal que } X \rightarrow Y
+    \]
+\end{enumerate}
+\end{block}
+
+\end{frame}
+
+
+\begin{frame}{Exemplo: Testando a 2FN na Prática}
+\small
+
+\begin{block}{Relação \texttt{ITENS\_PEDIDO} (Não está na 2FN)}
+\textbf{Chave Primária Composta:} $K = \{\text{ID\_Pedido}, \text{ID\_Produto}\}$
+
+\vspace{0.2cm}
+\centering
+\begin{tabular}{|c|c|c|l|}
+\hline
+\textbf{ID\_Pedido} & \textbf{ID\_Produto} & \textbf{Quantidade} & \textbf{Nome\_Produto} \\
+\hline
+501 & 10 & 2 & Notebook \\
+501 & 20 & 1 & Mouse \\
+502 & 10 & 5 & Notebook \\
+\hline
+\end{tabular}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Análise de Dependências Funcionais}
+Testando a regra da 2FN (\textbf{não existir dependência de subconjunto da chave}):
+\begin{itemize}
+    \item \textbf{OK (Dependência Total):} A \textit{Quantidade} depende de ambos.
+    \[ \{\text{ID\_Pedido}, \text{ID\_Produto}\} \rightarrow \text{Quantidade} \]
+    
+    \item \textbf{ERRO (Dependência Parcial):} O \textit{Nome\_Produto} depende apenas de uma parte da chave.
+    \[ \text{ID\_Produto} \rightarrow \text{Nome\_Produto} \]
+\end{itemize}
+\end{alertblock}
+
+\vspace{0.1cm}
+
+\textbf{Conclusão:} Temos $X \subset K$ onde $X = \{\text{ID\_Produto}\}$. Como existe uma dependência parcial, a relação viola a \textbf{2ª Forma Normal}.
+
+\end{frame}
+
+
+\begin{frame}{Exemplo: Decomposição para a 2FN}
+\small
+
+\begin{block}{Processo de Normalização}
+Para eliminar a dependência parcial $\text{ID\_Produto} \rightarrow \text{Nome\_Produto}$, decompomos a relação original em duas novas relações:
+\end{block}
+
+\vspace{0.2cm}
+
+\begin{columns}[t]
+    \begin{column}{0.5\textwidth}
+        \begin{exampleblock}{R1: ITENS\_PEDIDO (2FN)}
+        \textbf{Chave:} $K = \{\underline{\text{ID\_Pedido, ID\_Produto}}\}$
+        
+        \centering
+        \vspace{0.1cm}
+        \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{ID\_Ped} & \textbf{ID\_Prod} & \textbf{Qtd} \\
+        \hline
+        501 & 10 & 2 \\
+        501 & 20 & 1 \\
+        502 & 10 & 5 \\
+        \hline
+        \end{tabular}
+        \vspace{0.2cm}
+        \flushleft
+        \scriptsize $\forall Y \in \{\text{Qtd}\}, K \rightarrow Y$ é uma \textbf{Dependência Total}.
+        \end{exampleblock}
+    \end{column}
+
+    \begin{column}{0.45\textwidth}
+        \begin{exampleblock}{R2: PRODUTOS (2FN)}
+        \textbf{Chave:} $K = \{\underline{\text{ID\_Produto}}\}$
+        
+        \centering
+        \vspace{0.1cm}
+        \begin{tabular}{|c|c|l|}
+        \hline
+        \textbf{ID\_Prod} & \textbf{Nome\_Produto} \\
+        \hline
+        10 & Notebook \\
+        20 & Mouse \\
+        \hline
+        \end{tabular}
+        \vspace{0.2cm}
+        \flushleft
+        \scriptsize Como a chave é simples, \textbf{não existem} subconjuntos próprios $X \subset K$.
+        \end{exampleblock}
+    \end{column}
+\end{columns}
+
+\vspace{0.4cm}
+
+\begin{block}{Conclusão Matemática}
+Agora, em ambas as relações:
+\[
+\forall R, \forall Y \ (\text{não-chave}), \nexists X \subset K \mid X \rightarrow Y
+\]
+As redundâncias foram eliminadas e o esquema está na \textbf{2ª Forma Normal}.
+\end{block}
+
+\end{frame}
+
+
+\begin{frame}{Teste Lógico de Dependência Parcial}
+\small
+
+Considere a relação:
+\[
+R(\text{AlunoID}, \text{DisciplinaID}, \text{NomeAluno})
+\]
+
+Chave primária composta:
+\[
+K = (\text{AlunoID}, \text{DisciplinaID})
+\]
+
+\vspace{0.4cm}
+
+\begin{block}{Teste Lógico}
+Sabemos que:
+\[
+(\text{AlunoID}, \text{DisciplinaID}) \rightarrow \text{NomeAluno}
+\]
+
+Agora testamos subconjuntos da chave:
+
+\[
+\text{AlunoID} \rightarrow \text{NomeAluno}
+\]
+
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Conclusão}
+\begin{itemize}
+    \item Como $\text{AlunoID} \subset K$ e já determina $\text{NomeAluno}$:
+    \[
+    \text{Dependência Parcial confirmada}
+    \]
+    \item Logo, a relação \textbf{não está na 2FN}.
+\end{itemize}
+\end{alertblock}
+
+\vspace{0.3cm}
+
+
+\end{frame}
+\begin{frame}{Solução}
+
+\begin{block}{Solução}
+Decompor em:
+\begin{itemize}
+    \item ALUNOS(\text{AlunoID}, NomeAluno)
+    \item MATRÍCULAS(\text{AlunoID}, DisciplinaID)
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Diagrama de Dependência Parcial}
+  \centering
+  \begin{tikzpicture}[node distance=1.5cm, align=center, font=\footnotesize\sffamily]
+    \node (pk1) [draw, fill=orange!20, thick, minimum width=2.5cm] {ID\_Pedido (PK)};
+    \node (pk2) [draw, fill=orange!20, thick, minimum width=2.5cm, right=0.5cm of pk1] {ID\_Produto (PK)};
+    
+    \node (q) [draw, fill=blue!5, below=1.5cm of $(pk1.south)!0.5!(pk2.south)$, minimum width=2.5cm] {Quantidade};
+    \node (n) [draw, fill=red!10, below=1.5cm of pk2, minimum width=2.5cm] {Nome\_Produto};
+    
+    \draw[->, thick, blue] (pk1.south) -- (q);
+    \draw[->, thick, blue] (pk2.south) -- (q);
+    
+    \draw[->, thick, red, line width=1.5pt] (pk2.south) -- (n) node[midway, right] {Dep. Parcial!};
+    
+    \node [below=0.5cm of q, text width=6cm] {Para estar na 2NF, todos devem depender de \textbf{AMBOS} os campos da chave.};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Normalização para 2NF}
+  Para resolver, devemos \textbf{decompor} a tabela original:
+  \vspace{0.4cm}
+  \begin{enumerate}
+    \item Criamos uma nova tabela para o atributo que tinha dependência parcial.
+    \item A chave dessa nova tabela será a parte da chave original da qual ele dependia.
+    \item Mantemos o atributo original como Chave Estrangeira (FK) na tabela de origem.
+  \end{enumerate}
+  \vspace{0.4cm}
+  \textit{Neste caso: Criamos a tabela \textbf{PRODUTOS} e deixamos \textbf{ITENS\_PEDIDO} apenas com as chaves e a quantidade.}
+\end{frame}
+
+\begin{frame}{Resultado da Decomposição (2NF)}
+  \centering
+  \begin{tikzpicture}[node distance=1cm, tabela/.style={draw, rounded corners, font=\footnotesize\sffamily, text width=3.5cm, inner sep=5pt}]
+    \node (t1) [tabela, fill=blue!5] {
+      \textbf{ITENS\_PEDIDO} \\ \rule{\textwidth}{0.4pt} \\ \textbf{ID\_Pedido (PK)} \\ \textbf{ID\_Produto (PK/FK)} \\ Quantidade
+    };
+    \node (t2) [tabela, fill=green!5, right=2cm of t1] {
+      \textbf{PRODUTOS} \\ \rule{\textwidth}{0.4pt} \\ \textbf{ID\_Produto (PK)} \\ Nome\_Produto
+    };
+    \draw[->, thick] (t1.east) -- (t2.west) node[midway, above] {$N:1$};
+    
+    \node [below=1cm of t1, text width=8cm, font=\itshape\small, align=center] {Agora, o Nome\_Produto aparece apenas uma vez na tabela PRODUTOS.};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Checklist para 2NF}
+  Para garantir que uma tabela está na \textbf{2NF}, verifique:
+  \vspace{0.4cm}
+  \begin{itemize}
+    \item[$\square$] A tabela está na \textbf{1NF}?
+    \item[$\square$] A Chave Primária é simples ou composta?
+    \item[$\square$] \textbf{Se for composta:} Existe algum campo que dependa de apenas um pedaço da chave?
+    \item[$\square$] A informação de uma entidade está misturada com a relação entre entidades?
+  \end{itemize}
+  \vspace{0.4cm}
+  \begin{block}{Dica}
+    Se você tem uma chave composta $\{A, B\}$ e percebe que mudar o valor de $A$ te obriga a repetir sempre o mesmo valor de $C$ (independentemente de $B$), você tem um problema de 2NF.
+  \end{block}
+\end{frame}
+\end{document}

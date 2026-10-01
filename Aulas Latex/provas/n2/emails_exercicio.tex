@@ -1,0 +1,243 @@
+\documentclass[12pt,a4paper]{article}
+
+% ------------------------------------------------
+% Pacotes
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{fancyhdr} 
+\usepackage{mathptmx} % Times New Roman 
+\usepackage{enumitem}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tcolorbox}
+
+% ------------------------------------------------ 
+% Configuração de página
+% ------------------------------------------------
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=2cm,
+    bottom=2cm,
+    headheight=15pt
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\parindent}{0pt}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% ------------------------------------------------
+% Documento
+% ------------------------------------------------
+\begin{document}
+
+% ------------------------------------------------
+% Cabeçalho
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{@{} L{4cm} X @{}}
+    \raisebox{-0.5cm}{\includegraphics[width=4cm]{Universidade_de_Rio_Verde.jpg}} &
+    \hfill
+    \begin{tabular}{|>{\centering\arraybackslash}m{10cm}|>{\raggedright\arraybackslash}p{1.8cm}|}
+        \hline
+        \cellcolor{black}\color{white}\rule{0pt}{1.2cm}\textbf{LISTA DE EXERCÍCIOS: COMUNICAÇÃO VIA E-MAIL} 
+        & 
+        \scriptsize Nota \tabularnewline
+        \hline
+    \end{tabular} 
+\end{tabularx}
+\vspace{0.3cm}
+
+\begin{tabularx}{\textwidth}{|X|L{2cm}|}
+\hline
+\textbf{Curso} & \textbf{Campus} \\
+\textit{Informática Básica} & \textit{Rio Verde} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Disciplina}} \\  
+\multicolumn{2}{|l|}{ \textit{Ferramentas de Escritório e Internet}} \\
+\hline
+\textbf{Nome do(a) acadêmico(a)} & \textbf{Valor} \\
+& - \\
+\hline
+\textbf{Professor} & \textbf{Turma} \\
+\textit{Sergio Souza Novak} & \textit{Matutino/Noturno} \\
+\hline
+\textbf{Data} & \textbf{Código} \\
+\textit{13/05/2026} & \textit{INF-BAS} \\
+\hline
+\end{tabularx}
+
+\vspace{0.5cm}
+
+\begin{tcolorbox}[colback=blue!5!white,colframe=blue!75!black,title=Instruções Importantes]
+Utilize sua conta do \textbf{Outlook} ou \textbf{Hotmail} para realizar as atividades abaixo. Para cada exercício, você deve preencher os campos corretamente conforme solicitado. \textbf{Atenção:} No campo "Para" (Destinatário), utilize o e-mail que o professor indicar em sala.
+\end{tcolorbox}
+
+\vspace{0.3cm}
+\rule{\textwidth}{0.4pt}
+\vspace{0.3cm}
+
+% ------------------------------------------------
+% EXERCÍCIO 1
+% ------------------------------------------------
+\section*{Exercício 1: Primeiro Contato (Nível Básico)}
+
+\textbf{Cenário:} Você acabou de iniciar o curso e precisa enviar um e-mail de apresentação para o seu professor.
+
+\begin{itemize}[label=$\square$]
+    \item \textbf{Para:} sergio.novak@unirv.edu.br
+    \item \textbf{Assunto:} Apresentação de Aluno - [Seu Nome Completo]
+    \item \textbf{Corpo do E-mail:}
+    \begin{tcolorbox}[colback=gray!5, colframe=gray!50]
+        Olá, Professor Sergio.\\
+        \\
+        Gostaria de informar que estou presente na aula de Informática Básica e este é o meu e-mail oficial para contato.\\
+        \\
+        Atenciosamente,\\ \relax
+        [Seu Nome]
+    \end{tcolorbox}
+\end{itemize}
+\newpage
+% ------------------------------------------------
+% EXERCÍCIO 2
+% ------------------------------------------------
+\section*{Exercício 2: Dúvida Técnica com Cópia (Nível Básico)}
+
+\textbf{Cenário:} Você está com uma dúvida sobre atalhos do Windows e quer perguntar ao professor, enviando uma cópia (CC) para um colega de classe para que ele também veja a resposta.
+
+\begin{itemize}[label=$\square$]
+    \item \textbf{Para:} sergio.novak@unirv.edu.br
+    \item \textbf{CC:} [E-mail de um colega]
+    \item \textbf{Assunto:} Dúvida sobre Atalhos de Teclado
+    \item \textbf{Corpo do E-mail:}
+    \begin{tcolorbox}[colback=gray!5, colframe=gray!50]
+        Bom dia, Professor.\\
+        \\
+        Poderia me explicar novamente qual o atalho para alternar entre janelas abertas? Estou enviando em cópia para o meu colega que também ficou com essa dúvida.\\
+        \\
+        Obrigado!
+    \end{tcolorbox}
+\end{itemize}
+
+\newpage
+
+% ------------------------------------------------
+% EXERCÍCIO 3
+% ------------------------------------------------
+\section*{Exercício 3: Convite Discreto com CCO (Nível Intermediário)}
+
+\textbf{Cenário:} Você vai organizar um grupo de estudos e quer convidar vários colegas sem que um veja o e-mail do outro (Cópia Oculta - CCO).
+
+\begin{itemize}[label=$\square$]
+    \item \textbf{Para:} [Seu próprio e-mail]
+    \item \textbf{CCO:} [E-mail de pelo menos 3 colegas]
+    \item \textbf{Assunto:} Convite: Grupo de Estudos de Informática
+    \item \textbf{Corpo do E-mail:}
+    \begin{tcolorbox}[colback=gray!5, colframe=gray!50]
+        Pessoal, boa tarde.\\
+        \\
+        Estou organizando um grupo para praticarmos o uso do Outlook na próxima terça-feira, após a aula. Quem tiver interesse, por favor, me responda individualmente.\\
+        \\
+        Até mais!
+    \end{tcolorbox}
+\end{itemize}
+
+% ------------------------------------------------
+% EXERCÍCIO 4
+% ------------------------------------------------
+\section*{Exercício 4: Envio de Arquivo/Currículo (Nível Intermediário)}
+
+\textbf{Cenário:} Você encontrou uma vaga de estágio e precisa enviar seu currículo em anexo.
+
+\begin{itemize}[label=$\square$]
+    \item \textbf{Para:} rh.empresa@exemplo.com (Simulado)
+    \item \textbf{Assunto:} Candidatura à Vaga de Estágio - [Seu Nome]
+    \item \textbf{Anexo:} Um arquivo PDF qualquer renomeado para \texttt{Curriculo\_[SeuNome].pdf}.
+    \item \textbf{Corpo do E-mail:}
+    \begin{tcolorbox}[colback=gray!5, colframe=gray!50]
+        Prezados, boa tarde.\\
+        \\
+        Segue em anexo o meu currículo para a vaga de estágio mencionada no portal de carreiras da UniRV.\\
+        \\
+        Fico à disposição para uma entrevista.\\
+        \\
+        Cordialmente,\\ \relax
+        [Seu Telefone de Contato]
+    \end{tcolorbox}
+\end{itemize}
+
+% ------------------------------------------------
+% EXERCÍCIO 5
+% ------------------------------------------------
+\section*{Exercício 5: Relatório de Trabalho Profissional (Nível Avançado)}
+
+\textbf{Cenário:} Você trabalha em um escritório e deve enviar o relatório semanal para seu chefe, com cópia para o setor administrativo e um arquivo Excel em anexo.
+
+\begin{itemize}[label=$\square$]
+    \item \textbf{Para:} chefe.departamento@unirv.edu.br
+    \item \textbf{CC:} adm.setor@unirv.edu.br
+    \item \textbf{Assunto:} Relatório Semanal de Atividades - Semana 19
+    \item \textbf{Anexo:} Uma planilha do Excel ou arquivo do Word chamado \texttt{Relatorio\_S19.xlsx}.
+    \item \textbf{Corpo do E-mail:}
+    \begin{tcolorbox}[colback=gray!5, colframe=gray!50]
+        Prezado Diretor,\\
+        \\
+        Conforme solicitado, envio em anexo a planilha detalhada com as atividades realizadas por nossa equipe durante esta semana. O setor administrativo já está em cópia para ciência dos prazos.\\
+        \\
+        Qualquer dúvida, estou à disposição.\\
+        \\
+        Atenciosamente,\\
+        \textbf{[Seu Nome]} \\
+        Assistente Administrativo
+    \end{tcolorbox}
+\end{itemize}
+
+\newpage
+
+% ------------------------------------------------
+% EXERCÍCIO 6
+% ------------------------------------------------
+\section*{Exercício 6: Entrega de Projeto Final (Nível Desafio)}
+
+\textbf{Cenário:} É o fim do semestre. Você deve entregar o projeto final para o Diretor do Curso, com cópia para o seu Professor e uma cópia oculta (CCO) para o seu próprio e-mail de backup. \textbf{Deve conter dois anexos.}
+
+\begin{itemize}[label=$\square$]
+    \item \textbf{Para:} diretor.informatica@unirv.edu.br
+    \item \textbf{CC:} sergio.novak@unirv.edu.br
+    \item \textbf{CCO:} [Seu e-mail pessoal]
+    \item \textbf{Assunto:} ENTREGA FINAL: Projeto Integrador - Grupo 04
+    \item \textbf{Anexos:} 
+        1. \texttt{Projeto\_Escrito.pdf} \\
+        2. \texttt{Apresentacao\_Slides.pptx}
+    \item \textbf{Corpo do E-mail:}
+    \begin{tcolorbox}[colback=gray!5, colframe=gray!50]
+        Excelentíssimo Diretor,\\
+        \\
+        Através deste e-mail, realizamos a entrega formal dos documentos referentes ao Projeto Integrador do curso de Informática Básica. Seguem em anexo o relatório técnico e a apresentação em slides.\\
+        \\
+        O professor da disciplina está em cópia para a devida validação acadêmica.\\
+        \\
+        Agradecemos a oportunidade.\\
+        \\
+        Atenciosamente,\\
+        \textbf{Equipe de Informática UniRV}
+    \end{tcolorbox}
+\end{itemize}
+
+\vspace{1cm}
+\begin{center}
+    \textit{"A comunicação eficaz é a base para o sucesso profissional."} -- Boa sorte!
+\end{center}
+
+\end{document}

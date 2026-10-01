@@ -1,0 +1,375 @@
+\documentclass[12pt,a4paper]{article}
+
+% ------------------------------------------------
+% Pacotes Fundamentais
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{mathptmx} % Times New Roman
+\usepackage{enumitem} 
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, calc} 
+
+% Cores Institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+
+% ------------------------------------------------ 
+% Configuração de Página e Margens
+% ------------------------------------------------
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=2cm,
+    bottom=2cm,
+    headheight=15pt
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\parindent}{0pt}
+
+% ------------------------------------------------
+% Macros Customizadas (Caixa de Resposta e Alinhamento)
+% ------------------------------------------------
+\newcommand{\resposta}[1]{}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ------------------------------------------------
+% Configurações de Caixas Decorativas (tcolorbox)
+% ------------------------------------------------
+\usepackage[most]{tcolorbox}
+\newtcolorbox{blockbox}[1]{%
+  colback=green!5,
+  colframe=forestgreen,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=8pt,
+  right=8pt,
+  top=8pt,
+  bottom=8pt
+}
+
+% ------------------------------------------------
+% Configurações de Código (Listings Java)
+% ------------------------------------------------
+\usepackage{listings}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.94}
+
+\lstdefinestyle{javastyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegray},
+    keywordstyle=\color{forestgreen}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=none,                    
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=4,
+    language=Java,
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {â}{{\^a}}1 {à}{{\`a}}1 {é}{{\'e}}1 {ê}{{\^e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ô}{{\^o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {Â}{{\^A}}1 {À}{{\`A}}1 {É}{{\'E}}1 {Ê}{{\^E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ô}{{\^O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1
+}
+\lstset{style=javastyle}
+
+% ================================================
+\begin{document}
+% ================================================
+
+% ------------------------------------------------
+% Cabeçalho Institucional Oficial da UniRV
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{@{} L{4.5cm} X @{}}
+    \raisebox{-0.5cm}{\includegraphics[width=4.5cm]{Universidade_de_Rio_Verde.jpg}} &
+    \hfill
+    \begin{tabular}{|>{\centering\arraybackslash}m{11.6cm}|}
+        \hline
+        \cellcolor{forestgreen}\color{white}\rule{0pt}{1.2cm}\textbf{ROTEIRO PRÁTICO DA DISCIPLINA} \tabularnewline
+        \hline
+    \end{tabular} 
+\end{tabularx}
+\vspace{0.3cm}
+
+\begin{tabularx}{\textwidth}{|X|L{2.5cm}|}
+\hline
+\textbf{Curso} & \textbf{Campus} \\
+\textit{Engenharia de Software} & \textit{Rio Verde} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Disciplina}} \\  
+\multicolumn{2}{|l|}{ \textit{Programação Orientada a Objetos}} \\
+\hline
+\textbf{Professor} & \textbf{Turma} \\
+\textit{Sergio Souza Novak} & \textit{A / B} \\
+\hline
+\end{tabularx}
+
+\vspace{0.5cm}
+
+\section*{Tratamento de Exceções em Java}
+
+Um ótimo jeito de aprender exceções em Java é modelar situações reais de uma conta corrente, porque vários erros fazem sentido no domínio do problema:
+\begin{itemize}
+    \item saldo insuficiente
+    \item valor inválido
+    \item conta inexistente
+    \item saque acima do limite
+    \item transferência para a mesma conta
+\end{itemize}
+
+Isso ajuda a entender:
+\begin{itemize}
+    \item \texttt{throw}
+    \item \texttt{throws}
+    \item exceções personalizadas
+    \item \texttt{try/catch}
+    \item checked vs unchecked exceptions
+\end{itemize}
+
+\section*{Roteiro Prático}
+
+\subsection*{1. Criar a classe da conta}
+\begin{lstlisting}
+public class ContaCorrente {
+
+    private String titular;
+    private double saldo;
+
+    public ContaCorrente(String titular, double saldoInicial) {
+        this.titular = titular;
+        this.saldo = saldoInicial;
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
+}
+\end{lstlisting}
+
+\subsection*{2. Criar uma exceção personalizada}
+Exemplo: saldo insuficiente
+\begin{lstlisting}
+public class SaldoInsuficienteException extends Exception {
+
+    public SaldoInsuficienteException(String mensagem) {
+        super(mensagem);
+    }
+}
+\end{lstlisting}
+
+Aqui você aprende:
+\begin{itemize}
+    \item herança
+    \item \texttt{extends Exception}
+    \item construtor de exceção
+\end{itemize}
+
+\subsection*{3. Lançar exceção com \texttt{throw}}
+
+Agora vamos criar o saque.
+
+\begin{lstlisting}
+public void sacar(double valor)
+        throws SaldoInsuficienteException {
+
+    if (valor > saldo) {
+        throw new SaldoInsuficienteException(
+                "Saldo insuficiente para saque."
+        );
+    }
+
+    saldo -= valor;
+}
+\end{lstlisting}
+
+\subsection*{4. Tratar a exceção com \texttt{try/catch}}
+\begin{lstlisting}
+public class Main {
+
+    public static void main(String[] args) {
+
+        ContaCorrente conta =
+                new ContaCorrente("Ana", 500);
+
+        try {
+
+            conta.sacar(1000);
+
+        } catch (SaldoInsuficienteException e) {
+
+            System.out.println("Erro: " + e.getMessage());
+
+        }
+
+        System.out.println("Programa continua...");
+    }
+}
+\end{lstlisting}
+
+\textbf{Fluxo do que acontece}
+\begin{verbatim}
+main()
+  ↓
+sacar()
+  ↓
+throw new SaldoInsuficienteException()
+  ↓
+catch()
+\end{verbatim}
+
+\subsection*{5. Criar mais exceções}
+\textbf{Valor inválido}
+\begin{lstlisting}
+public class ValorInvalidoException
+        extends RuntimeException {
+
+    public ValorInvalidoException(String mensagem) {
+        super(mensagem);
+    }
+}
+\end{lstlisting}
+
+\subsection*{6. Trabalhar checked vs unchecked}
+\textbf{Checked Exception}
+\begin{itemize}
+    \item \texttt{extends Exception}
+    \item Java obriga: \texttt{try/catch} ou \texttt{throws}
+\end{itemize}
+
+\textbf{Unchecked Exception}
+\begin{itemize}
+    \item \texttt{extends RuntimeException}
+    \item Java NÃO obriga tratamento.
+\end{itemize}
+
+\textbf{Exemplo prático}
+\begin{lstlisting}
+public void depositar(double valor) {
+
+    if (valor <= 0) {
+        throw new ValorInvalidoException(
+                "Valor inválido."
+        );
+    }
+
+    saldo += valor;
+}
+\end{lstlisting}
+
+\subsection*{7. Transferência entre contas}
+Excelente exercício para praticar propagação de exceções.
+\begin{lstlisting}
+public void transferir(
+        ContaCorrente destino,
+        double valor)
+        throws SaldoInsuficienteException {
+
+    this.sacar(valor);
+ 
+    destino.depositar(valor);
+}
+\end{lstlisting}
+
+\subsection*{8. Exceções Nativas Comuns no Java}
+Além das exceções personalizadas, a linguagem Java possui várias exceções nativas que ocorrem frequentemente no dia a dia. Você não precisa criá-las, mas é fundamental saber como evitá-las ou tratá-las.
+
+\begin{itemize}
+    \item \textbf{\texttt{NullPointerException}}: Ocorre quando você tenta acessar um método ou atributo de um objeto que está com referência nula.
+\begin{lstlisting}
+ContaCorrente conta = null;
+conta.getSaldo(); // Lança NullPointerException
+\end{lstlisting}
+
+    \item \textbf{\texttt{IllegalArgumentException}}: Usada quando um método recebe um argumento inadequado. Em vez de criar a \texttt{ValorInvalidoException}, muitas vezes podemos usar esta exceção nativa para validações:
+\begin{lstlisting}
+public void depositar(double valor) {
+    if (valor <= 0) {
+        throw new IllegalArgumentException("Valor inválido.");
+    }
+    saldo += valor;
+}
+\end{lstlisting}
+
+    \item \textbf{\texttt{ArithmeticException}}: Erros de matemática, como divisão por zero.
+\begin{lstlisting}
+int resultado = 10 / 0; // Lança ArithmeticException
+\end{lstlisting}
+
+    \item \textbf{\texttt{ArrayIndexOutOfBoundsException}}: Tentativa de acessar uma posição que não existe em um array.
+\begin{lstlisting}
+int[] numeros = {1, 2, 3};
+System.out.println(numeros[5]); // Lança ArrayIndexOutOfBoundsException
+\end{lstlisting}
+\end{itemize}
+
+\subsection*{9. Exercícios recomendados}
+\begin{itemize}
+    \item \textbf{Básico:} saque simples, depósito, saldo insuficiente.
+    \item \textbf{Intermediário:} limite diário, conta bloqueada, valor negativo.
+    \item \textbf{Avançado:} transferência, logs de erro, hierarquia de exceções, múltiplos catches, \texttt{finally}.
+\end{itemize}
+
+\textbf{Exemplo com \texttt{finally}}
+\begin{lstlisting}
+try {
+    conta.sacar(1000);
+} catch (SaldoInsuficienteException e) {
+    System.out.println(e.getMessage());
+} finally {
+    System.out.println("Operação encerrada.");
+}
+\end{lstlisting}
+
+\subsection*{Estrutura ideal do projeto}
+\begin{verbatim}
+src/
+ |-- Main.java
+ |-- ContaCorrente.java
+ \-- exceptions/
+      |-- SaldoInsuficienteException.java
+      \-- ValorInvalidoException.java
+\end{verbatim}
+
+\subsection*{Conceitos que você aprende nesse exemplo}
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+\textbf{Conceito} & \textbf{Onde aparece} \\
+\hline
+\texttt{throw} & lançar exceção \\
+\texttt{throws} & propagar exceção \\
+\texttt{try/catch} & tratamento \\
+\texttt{finally} & encerramento \\
+Herança & exceções personalizadas \\
+Polimorfismo & RuntimeException vs Exception \\
+Encapsulamento & saldo privado \\
+Regras de negócio & validações bancárias \\
+\hline
+\end{tabular}
+\end{table}
+
+\end{document}

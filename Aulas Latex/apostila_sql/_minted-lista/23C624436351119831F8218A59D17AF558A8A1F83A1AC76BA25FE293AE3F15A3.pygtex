@@ -1,0 +1,8 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 2. Inserir dados para teste}
+\PYG{k}{INSERT}\PYG{+w}{ }\PYG{k}{INTO}\PYG{+w}{ }\PYG{n}{vendas}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{produto}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{categoria}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{valor}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{VALUES}
+\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Teclado\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}Eletrônicos\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{80}\PYG{p}{.}\PYG{l+m+mi}{00}\PYG{p}{),}
+\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Mouse\PYGZsq{}}\PYG{p}{,}\PYG{+w}{   }\PYG{l+s+s1}{\PYGZsq{}Eletrônicos\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{50}\PYG{p}{.}\PYG{l+m+mi}{00}\PYG{p}{),}\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Soma Eletrônicos: 130.00}
+\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Caderno\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}Papelaria\PYGZsq{}}\PYG{p}{,}\PYG{+w}{   }\PYG{l+m+mi}{15}\PYG{p}{.}\PYG{l+m+mi}{00}\PYG{p}{),}
+\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Caneta\PYGZsq{}}\PYG{p}{,}\PYG{+w}{  }\PYG{l+s+s1}{\PYGZsq{}Papelaria\PYGZsq{}}\PYG{p}{,}\PYG{+w}{    }\PYG{l+m+mi}{5}\PYG{p}{.}\PYG{l+m+mi}{00}\PYG{p}{);}\PYG{+w}{  }\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Soma Papelaria: 20.00}
+\end{Verbatim}

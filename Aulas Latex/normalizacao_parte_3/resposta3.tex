@@ -1,0 +1,657 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática e listas
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+% Layout e cores
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+\definecolor{correctcolor}{RGB}{0,120,50}
+\definecolor{wrongcolor}{RGB}{160,30,30}
+\definecolor{highlightbg}{RGB}{230,255,235}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+
+% TikZ
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, positioning, calc}
+
+% Blocos coloridos
+\usepackage[most]{tcolorbox}
+
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=maincolor,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=6pt, right=6pt, top=6pt, bottom=6pt
+}
+
+% Caixa de resposta discursiva
+\newtcolorbox{respdisc}{%
+  colback=highlightbg,
+  colframe=correctcolor,
+  coltitle=white,
+  title=\textit{Resposta:},
+  fonttitle=\bfseries\small,
+  boxrule=1.5pt,
+  arc=2mm,
+  left=8pt, right=8pt, top=8pt, bottom=8pt,
+  attach title to upper
+}
+
+% Caixa gabarito objetiva
+\newtcolorbox{gabbox}[1]{%
+  colback=green!8,
+  colframe=maincolor,
+  coltitle=white,
+  title=Gabarito -- Questão #1,
+  fonttitle=\bfseries\small,
+  boxrule=1pt,
+  arc=2mm,
+  left=6pt, right=6pt, top=4pt, bottom=4pt
+}
+
+% Margens
+\geometry{margin=2.5cm}
+
+% Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+
+\renewcommand{\headrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+
+\renewcommand{\footrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+
+\setlength{\headheight}{52pt}
+\addtolength{\topmargin}{-20pt}
+
+\fancyhead[L]{%
+  \includegraphics[height=1.2cm]{Universidade_de_Rio_Verde.jpg}
+}
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{%
+    \small
+    \textbf{Gabarito --- Lista de Exercícios}\\
+    Me.~Sergio Souza Novak\\
+    \textit{Banco de Dados}
+  }
+}
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+
+\begin{document}
+
+\vspace*{0.2cm}
+\begin{center}
+  {\Large \textbf{Gabarito: Lista de Exercícios -- Normalização}}\\[0.2cm]
+  {\large Banco de Dados}\\[0.2cm]
+  Tema: 4ª Forma Normal (4FN) --- Dependências Multivaloradas
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{block}{Nota ao Professor}
+Este gabarito apresenta as alternativas corretas para as questões objetivas e respostas modelo para as discursivas. As respostas discursivas aceitam variações de redação desde que os conceitos centrais estejam presentes.
+\end{block}
+
+\vspace{0.4cm}
+
+% ==============================================================
+%  BLOCO 1 — CONCEITUAL
+% ==============================================================
+\section*{Bloco 1 — Conceitual}
+
+% ---- Q1 ----
+\begin{gabbox}{1}
+\textbf{Alternativa: d)} Existência de ``fatos independentes muitos-para-muitos'' sobre uma entidade.
+
+\smallskip
+\textit{Justificativa:} A 4FN é necessária quando dois (ou mais) conjuntos de valores multivalorados e \emph{independentes} coexistem na mesma tupla, gerando um produto cartesiano artificial. As demais alternativas descrevem situações tratadas por formas normais anteriores (1FN, 2FN, 3FN/BCNF).
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ---- Q2 ----
+\begin{gabbox}{2}
+\textbf{Alternativa: c)} Minimizar anomalias durante operações de INSERT, UPDATE e DELETE.
+
+\smallskip
+\textit{Justificativa:} Em sistemas transacionais (OLTP), a redundância causada por DMVs independentes obriga atualizações em múltiplas linhas correlacionadas, sendo a principal fonte de anomalias de atualização, inserção e exclusão que a 4FN visa eliminar.
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ---- Q3 (discursiva) ----
+\begin{gabbox}{3}
+\textbf{Questão discursiva}
+\end{gabbox}
+
+\begin{respdisc}
+\textbf{Dependência Funcional (DF):} $X \to Y$ significa que, para cada valor de $X$, existe \emph{exatamente um} valor de $Y$. Exemplo: \texttt{CPF $\to$ Nome} (um CPF determina um único nome).
+
+\medskip
+\textbf{Dependência Multivalorada (DMV):} $X \twoheadrightarrow Y$ significa que, para cada valor de $X$, existe um \emph{conjunto} de valores de $Y$, independentemente dos demais atributos. Exemplo: \texttt{Funcionário $\twoheadrightarrow$ Telefone} (um funcionário pode ter vários telefones).
+
+\medskip
+\textbf{Diferença central:} Na DF, a resposta é singular (1 valor); na DMV, a resposta é um conjunto de valores. Além disso, a DMV só é problemática quando há \emph{duas ou mais} DMVs independentes na mesma relação, pois geram um produto cartesiano.
+\end{respdisc}
+
+\vspace{0.5cm}
+
+% ---- Q4 (discursiva) ----
+\begin{gabbox}{4}
+\textbf{Questão discursiva}
+\end{gabbox}
+
+\begin{respdisc}
+Os \textbf{dois requisitos} para que $R$ esteja na 4FN são:
+\begin{enumerate}
+  \item $R$ deve estar na \textbf{BCNF} (toda DF não trivial tem superchave como determinante).
+  \item Para toda \textbf{DMV não trivial} $X \twoheadrightarrow Y$ em $R$, $X$ deve ser uma \textbf{superchave} de $R$.
+\end{enumerate}
+
+\medskip
+\textbf{Por que a BCNF é pré-requisito?} Porque a 4FN é uma extensão da BCNF: se a relação já possui DF anomalias (não está na BCNF), essas devem ser resolvidas primeiro. Testar DMVs em uma relação que viola a BCNF seria inútil, pois a relação precisaria ser decomposta de qualquer forma pelas DFs. A hierarquia garante que cada forma normal corrija um tipo específico de dependência problemática.
+\end{respdisc}
+
+\vspace{0.5cm}
+
+% ---- Q5 (discursiva) ----
+\begin{gabbox}{5}
+\textbf{Questão discursiva}
+\end{gabbox}
+
+\begin{respdisc}
+\textbf{Por que ocorre o Produto Cartesiano?}
+
+Dada uma entidade $X$ com dois conjuntos independentes $Y = \{y_1, y_2\}$ e $Z = \{z_1, z_2, z_3\}$, a única forma de representar ambas as DMVs em uma única tabela é combinar \emph{cada} $y_i$ com \emph{cada} $z_j$. O número de linhas cresce como $|Y| \times |Z|$.
+
+\medskip
+\textbf{Anomalias práticas geradas:}
+\begin{itemize}
+  \item \textbf{Anomalia de inserção:} ao adicionar um novo valor de $Y$, é preciso criar novas linhas com \emph{todos} os valores de $Z$ para manter o produto cartesiano completo.
+  \item \textbf{Anomalia de exclusão:} remover um valor de $Z$ exige apagar múltiplas linhas, podendo apagar dados de $Y$ que deveriam permanecer.
+  \item \textbf{Anomalia de atualização:} alterar um valor de $Y$ obriga a atualização em $|Z|$ linhas; se alguma for esquecida, surgem inconsistências.
+  \item \textbf{Redundância:} dados de $Y$ e $Z$ são repetidos desnecessariamente, desperdiçando armazenamento.
+\end{itemize}
+\end{respdisc}
+
+\vspace{0.5cm}
+
+% ---- Q6 ----
+\begin{gabbox}{6}
+\textbf{Alternativa: c)} Que cada combinação de (engenheiro, ferramenta) aparecesse em uma linha distinta para o mesmo projeto.
+
+\smallskip
+\textit{Justificativa:} Como engenheiros e ferramentas são fatos independentes sobre o projeto, a tabela violadora da 4FN precisaria listar \emph{todas} as combinações possíveis (produto cartesiano): cada engenheiro emparelhado com cada ferramenta do mesmo projeto.
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ---- Q7 ----
+\begin{gabbox}{7}
+\textbf{Alternativa: a)} Podemos reconstruir a relação original através de uma junção natural das tabelas decompostas.
+
+\smallskip
+\textit{Justificativa:} A decomposição lossless (sem perda) garante que o JOIN natural das tabelas decompostas retorna \emph{exatamente} o conjunto de tuplas da relação original, sem adição de tuplas espúrias.
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ---- Q8 ----
+\begin{gabbox}{8}
+\textbf{Alternativa: b)} Está obrigatoriamente na 4FN, pois não pode haver DMV não trivial.
+
+\smallskip
+\textit{Justificativa:} Em $R(A, B)$, qualquer DMV $A \twoheadrightarrow B$ é trivial (pois $A \cup B$ = conjunto de todos os atributos). Por definição, DMVs triviais não violam a 4FN, logo a relação está automaticamente na 4FN.
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ==============================================================
+%  BLOCO 2 — TESTES E IDENTIFICAÇÃO
+% ==============================================================
+\section*{Bloco 2 — Testes e Identificação}
+
+% ---- Q9 (discursiva) ----
+\begin{gabbox}{9}
+\textbf{Questão discursiva — Pesquisadores}
+\end{gabbox}
+
+\begin{respdisc}
+\textbf{a) DMVs existentes:}
+\begin{itemize}
+  \item \texttt{Pesquisador $\twoheadrightarrow$ Projeto} (cada pesquisador participa de vários projetos, independente dos idiomas)
+  \item \texttt{Pesquisador $\twoheadrightarrow$ Idioma} (cada pesquisador fala vários idiomas, independente dos projetos)
+\end{itemize}
+
+\medskip
+\textbf{b) A tabela VIOLA a 4FN.}
+
+Justificativa: A chave primária da tabela é a combinação \{Pesquisador, Projeto, Idioma\}. O determinante das DMVs é apenas \texttt{Pesquisador}, que \emph{não} é superchave (existem vários registros com o mesmo pesquisador). Logo, há DMVs não triviais cujo determinante não é superchave $\Rightarrow$ viola a 4FN.
+
+\medskip
+\textbf{c) Decomposição em 4FN:}
+
+\smallskip
+\begin{tabular}{|l|l|}
+\hline
+\textbf{PESQUISADOR\_PROJETO} & \\
+\hline
+\textbf{Pesquisador (PK)} & \textbf{Projeto (PK)} \\
+\hline
+Ana Souza  & IA Climática   \\
+Ana Souza  & Robótica       \\
+Ana Souza  & Bioinformática \\
+Bruno Lima & Robótica       \\
+Bruno Lima & Bioinformática \\
+Carla Dias & IA Climática   \\
+Carla Dias & Robótica       \\
+Daniel Paz & Bioinformática \\
+Daniel Paz & IA Climática   \\
+\hline
+\end{tabular}
+
+\medskip
+\begin{tabular}{|l|l|}
+\hline
+\textbf{PESQUISADOR\_IDIOMA} & \\
+\hline
+\textbf{Pesquisador (PK)} & \textbf{Idioma (PK)} \\
+\hline
+Ana Souza  & Inglês    \\
+Ana Souza  & Espanhol  \\
+Ana Souza  & Francês   \\
+Bruno Lima & Inglês    \\
+Bruno Lima & Alemão    \\
+Carla Dias & Português \\
+Carla Dias & Inglês    \\
+Daniel Paz & Italiano  \\
+Daniel Paz & Inglês    \\
+\hline
+\end{tabular}
+\end{respdisc}
+
+\vspace{0.5cm}
+
+% ---- Q10 (discursiva) ----
+\begin{gabbox}{10}
+\textbf{Questão discursiva — Representantes}
+\end{gabbox}
+
+\begin{respdisc}
+\textbf{a) Chave Primária da tabela original:} \{Representante, Região, Linha\_Produto\} (os três atributos juntos formam a PK, pois a tabela registra cada combinação do produto cartesiano).
+
+\medskip
+\textbf{b) Produto cartesiano de Carlos Silva:}
+\begin{itemize}
+  \item Regiões: \{Norte, Sul, Leste\} — 3 valores
+  \item Linhas de produto: \{Ferramentas, Máquinas, EPIs\} — 3 valores
+  \item Resultado: $3 \times 3 = 9$ linhas (todas as combinações possíveis aparecem na tabela original)
+\end{itemize}
+Isso demonstra a redundância: ao adicionar uma nova Região para Carlos, seria necessário inserir \emph{3 novas linhas} (uma para cada Linha\_Produto), mesmo que as linhas de produto não tenham mudado.
+
+\medskip
+\textbf{c) Decomposição para 4FN:}
+
+\medskip
+\textbf{REPRESENTANTE\_REGIÃO} (\underline{Representante}, \underline{Região})
+
+\medskip
+\textbf{REPRESENTANTE\_PRODUTO} (\underline{Representante}, \underline{Linha\_Produto})
+
+\medskip
+Ambas as tabelas têm \texttt{Representante} como FK referenciando a tabela de Representantes. O JOIN natural entre as duas reconstrói a relação original sem perdas.
+\end{respdisc}
+
+\vspace{0.5cm}
+
+% ---- Q11 ----
+\begin{gabbox}{11}
+\textbf{Alternativa: a)} Ao alterar um valor de um atributo multivalorado, é necessário atualizar múltiplas linhas para manter a consistência do produto cartesiano.
+
+\smallskip
+\textit{Justificativa:} Por causa do produto cartesiano, cada valor de um atributo multivalorado aparece repetido em tantas linhas quantos forem os valores do outro atributo independente. Qualquer alteração deve se propagar a todas essas linhas.
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ---- Q12 ----
+\begin{gabbox}{12}
+\textbf{Alternativa: d)} BCNF (Forma Normal de Boyce-Codd).
+
+\smallskip
+\textit{Justificativa:} Ronald Fagin demonstrou em 1977 que a BCNF não era suficiente para eliminar todas as redundâncias, pois não tratava de Dependências Multivaloradas. A 4FN foi proposta como extensão da BCNF para cobrir esse caso.
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ---- Q13 (discursiva) ----
+\begin{gabbox}{13}
+\textbf{Questão discursiva — Hospital}
+\end{gabbox}
+
+\begin{respdisc}
+\textbf{a) DMVs da relação MEDICO\_VINCULO:}
+\begin{itemize}
+  \item \texttt{Medico $\twoheadrightarrow$ Hospital} (cada médico atende em vários hospitais, independente dos convênios)
+  \item \texttt{Medico $\twoheadrightarrow$ Convenio} (cada médico aceita vários convênios, independente dos hospitais)
+\end{itemize}
+
+\medskip
+\textbf{b) Linhas a inserir para o Dr.\ Arnaldo com convênio ``Cassi'':}
+
+O Dr.\ Arnaldo atende em 3 hospitais: \{Sta.\ Casa, Hosp.\ Luz, Clin.\ Sul\}. Como convênios e hospitais são independentes, ao adicionar ``Cassi'' é necessário inserir \textbf{3 linhas} (uma para cada hospital):
+\begin{itemize}
+  \item (Dr.\ Arnaldo, Sta.\ Casa, Cassi)
+  \item (Dr.\ Arnaldo, Hosp.\ Luz, Cassi)
+  \item (Dr.\ Arnaldo, Clin.\ Sul, Cassi)
+\end{itemize}
+
+\medskip
+\textbf{c) Decomposição para 4FN:}
+
+\medskip
+\textbf{MEDICO\_HOSPITAL} (\underline{Medico}, \underline{Hospital})
+
+\medskip
+\textbf{MEDICO\_CONVENIO} (\underline{Medico}, \underline{Convenio})
+
+\medskip
+Agora, para adicionar ``Cassi'' ao Dr.\ Arnaldo, basta inserir \textbf{1 linha} em MEDICO\_CONVENIO: (Dr.\ Arnaldo, Cassi).
+\end{respdisc}
+
+\vspace{0.5cm}
+
+% ---- Q14 (discursiva) ----
+\begin{gabbox}{14}
+\textbf{Questão discursiva — BCNF vs 4FN (CURSOS)}
+\end{gabbox}
+
+\begin{respdisc}
+\textbf{a) A tabela ESTÁ na BCNF.}
+
+Justificativa: A chave primária é \{Curso, Livro\_Texto, Professor\} (os três atributos). Não há nenhuma Dependência Funcional não trivial na tabela (nenhum subconjunto próprio da chave determina funcionalmente outro atributo). Como não há DFs que violem a BCNF, a tabela está na BCNF.
+
+\medskip
+\textbf{b) A tabela NÃO está na 4FN.}
+
+Justificativa: Existem duas DMVs não triviais:
+\begin{itemize}
+  \item \texttt{Curso $\twoheadrightarrow$ Livro\_Texto}
+  \item \texttt{Curso $\twoheadrightarrow$ Professor}
+\end{itemize}
+O determinante \texttt{Curso} \emph{não é superchave} da relação (existem várias linhas com o mesmo Curso). Logo, a 4FN é violada. Esse é um exemplo clássico que demonstra que BCNF $\not\Rightarrow$ 4FN.
+
+\medskip
+\textbf{Decomposição:}
+
+\textbf{CURSOS\_LIVRO} (\underline{Curso}, \underline{Livro\_Texto}) \quad e \quad \textbf{CURSOS\_PROFESSOR} (\underline{Curso}, \underline{Professor})
+\end{respdisc}
+
+\vspace{0.5cm}
+
+% ==============================================================
+%  BLOCO 3 — PROJETO E DECOMPOSIÇÃO
+% ==============================================================
+\section*{Bloco 3 — Projeto e Decomposição}
+
+% ---- Q15 (discursiva) ----
+\begin{gabbox}{15}
+\textbf{Questão discursiva — CARRO}
+\end{gabbox}
+
+\begin{respdisc}
+\textbf{Por que uma única tabela é ineficiente?}
+
+A tabela \texttt{CARRO(Placa, Modelo, Marca, Acessorio, Motorista)} possui:
+\begin{itemize}
+  \item \texttt{Placa $\to$ \{Modelo, Marca\}} — DF normal
+  \item \texttt{Placa $\twoheadrightarrow$ Acessorio} — DMV
+  \item \texttt{Placa $\twoheadrightarrow$ Motorista} — DMV (independente de Acessorio)
+\end{itemize}
+Isso gera produto cartesiano: se um carro tem 3 acessórios e 2 motoristas, são $3 \times 2 = 6$ linhas, repetindo Modelo e Marca 6 vezes.
+
+\medskip
+\textbf{Modelo Relacional em 4FN:}
+
+\begin{itemize}
+  \item \textbf{CARRO} (\underline{Placa}, Modelo, Marca) \quad — elimina a DF
+  \item \textbf{CARRO\_ACESSORIO} (\underline{Placa} \textit{(FK $\to$ CARRO)}, \underline{Acessorio}) \quad — isola a 1ª DMV
+  \item \textbf{CARRO\_MOTORISTA} (\underline{Placa} \textit{(FK $\to$ CARRO)}, \underline{Motorista}) \quad — isola a 2ª DMV
+\end{itemize}
+
+Com essa decomposição, adicionar um novo motorista exige inserir apenas 1 linha em CARRO\_MOTORISTA, sem interferir em acessórios.
+\end{respdisc}
+
+\vspace{0.5cm}
+
+% ---- Q16 (discursiva) ----
+\begin{gabbox}{16}
+\textbf{Questão discursiva — PROJETOS\_TI}
+\end{gabbox}
+
+\begin{respdisc}
+\textbf{Instância que viola a 4FN} (projeto ``Alpha'', 2 colaboradores e 2 tecnologias):
+
+\medskip
+\small
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Cod\_Proj (PK)} & \textbf{Nome\_Proj} & \textbf{Tecnologia (PK)} & \textbf{Colaborador (PK)} \\
+\hline
+P01 & Alpha & Python & Maria \\
+P01 & Alpha & Python & João  \\
+P01 & Alpha & SQL    & Maria \\
+P01 & Alpha & SQL    & João  \\
+\hline
+\end{tabular}
+
+\medskip
+\normalsize
+Observa-se que Nome\_Proj (``Alpha'') e as tecnologias são repetidas desnecessariamente.
+
+\medskip
+\textbf{Solução normalizada em 4FN:}
+
+\medskip
+\textbf{PROJETO} (\underline{Cod\_Proj}, Nome\_Proj)
+
+\medskip
+\textbf{PROJETO\_TECNOLOGIA} (\underline{Cod\_Proj} \textit{(FK)}, \underline{Tecnologia})
+
+\small
+\begin{tabular}{|l|l|}
+\hline
+Cod\_Proj & Tecnologia \\
+\hline
+P01 & Python \\
+P01 & SQL    \\
+\hline
+\end{tabular}
+
+\medskip
+\normalsize
+\textbf{PROJETO\_COLABORADOR} (\underline{Cod\_Proj} \textit{(FK)}, \underline{Colaborador})
+
+\small
+\begin{tabular}{|l|l|}
+\hline
+Cod\_Proj & Colaborador \\
+\hline
+P01 & Maria \\
+P01 & João  \\
+\hline
+\end{tabular}
+\end{respdisc}
+
+\vspace{0.5cm}
+
+% ---- Q17 (discursiva) ----
+\begin{gabbox}{17}
+\textbf{Questão discursiva — Clínica / PACIENTE}
+\end{gabbox}
+
+\begin{respdisc}
+\textbf{Diagnóstico de violação:}
+
+A relação \texttt{PACIENTE(ID\_Pac, Nome, Doenca\_Cronica, Alergia)} possui:
+\begin{itemize}
+  \item \texttt{ID\_Pac $\to$ Nome} — DF
+  \item \texttt{ID\_Pac $\twoheadrightarrow$ Doenca\_Cronica} — DMV (várias doenças por paciente)
+  \item \texttt{ID\_Pac $\twoheadrightarrow$ Alergia} — DMV (várias alergias por paciente, independentes das doenças)
+\end{itemize}
+
+\texttt{ID\_Pac} não é superchave da relação original $\Rightarrow$ viola a 4FN.
+
+\medskip
+\textbf{Decomposição em 4FN:}
+
+\begin{itemize}
+  \item \textbf{PACIENTE} (\underline{ID\_Pac}, Nome) \quad — preserva a DF
+  \item \textbf{PACIENTE\_DOENCA} (\underline{ID\_Pac} \textit{(FK)}, \underline{Doenca\_Cronica})
+  \item \textbf{PACIENTE\_ALERGIA} (\underline{ID\_Pac} \textit{(FK)}, \underline{Alergia})
+\end{itemize}
+
+\medskip
+\textbf{Como as anomalias são evitadas:}
+\begin{itemize}
+  \item \textbf{Inserção:} para registrar uma nova alergia de um paciente, insere-se 1 linha em PACIENTE\_ALERGIA sem tocar em PACIENTE\_DOENCA.
+  \item \textbf{Exclusão:} remover uma doença não afeta as alergias do paciente.
+  \item \textbf{Atualização:} alterar o nome do paciente requer atualizar apenas 1 linha na tabela PACIENTE, sem risco de inconsistência.
+\end{itemize}
+\end{respdisc}
+
+\vspace{0.5cm}
+
+% ---- Q18 ----
+\begin{gabbox}{18}
+\textbf{Alternativa: b)} Estiver na BCNF e toda dependência multivalorada não trivial tiver como determinante uma superchave.
+
+\smallskip
+\textit{Justificativa:} Esta é a definição formal da 4FN: a relação deve satisfazer a BCNF (pré-requisito) e, adicionalmente, qualquer DMV $X \twoheadrightarrow Y$ não trivial deve ter $X$ como superchave.
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ---- Q19 ----
+\begin{gabbox}{19}
+\textbf{Alternativa: c)} $Y$ não é um subconjunto de $X$ e $X \cup Y$ não contém todos os atributos da relação.
+
+\smallskip
+\textit{Justificativa:} Uma DMV $X \twoheadrightarrow Y$ é \emph{trivial} se $Y \subseteq X$ (Y está "dentro" de X) ou se $X \cup Y = R$ (Y é o complemento de X). Portanto, é \emph{não trivial} quando nenhuma dessas condições é satisfeita.
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ---- Q20 ----
+\begin{gabbox}{20}
+\textbf{Alternativa: b)} A redundância de dados gerada por um produto cartesiano entre atributos independentes.
+
+\smallskip
+\textit{Justificativa:} O principal problema da violação da 4FN é exatamente a explosão combinatória de linhas resultante de combinar dois atributos multivalorados independentes, gerando o produto cartesiano e toda a redundância associada.
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ---- Q21 ----
+\begin{gabbox}{21}
+\textbf{Alternativa: b)} $R1(A, B)$ e $R2(A, C)$.
+
+\smallskip
+\textit{Justificativa:} A regra de decomposição para 4FN é: dada $X \twoheadrightarrow Y$ em $R(X, Y, Z)$, decompor em $R1(X, Y)$ e $R2(X, Z)$. No caso $R(A, B, C)$ com $A \twoheadrightarrow B$ e $A \twoheadrightarrow C$: $R1(A, B)$ e $R2(A, C)$.
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ---- Q22 ----
+\begin{gabbox}{22}
+\textbf{Alternativa: b)} Uma relação na 4FN está obrigatoriamente na BCNF.
+
+\smallskip
+\textit{Justificativa:} A 4FN é mais restritiva que a BCNF: a definição de 4FN exige que a relação esteja na BCNF como pré-requisito. Portanto, 4FN $\Rightarrow$ BCNF (mas BCNF $\not\Rightarrow$ 4FN). A alternativa (a) está invertida; (c), (d) e (e) são incorretos.
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ---- Q23 ----
+\begin{gabbox}{23}
+\textbf{Alternativa: d)} 12 linhas (produto cartesiano).
+
+\smallskip
+\textit{Justificativa:} Com 3 telefones e 4 habilidades independentes, a tabela violadora da 4FN precisa representar todas as combinações: $3 \times 4 = 12$ linhas, repetindo os dados de telefone e habilidade de forma redundante.
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ---- Q24 ----
+\begin{gabbox}{24}
+\textbf{Alternativa: b)} $(x, y1, z2)$ e $(x, y2, z1)$.
+
+\smallskip
+\textit{Justificativa:} A definição formal de DMV $X \twoheadrightarrow Y$ em $R(X,Y,Z)$ diz: se $(x, y_1, z_1) \in R$ e $(x, y_2, z_2) \in R$, então $(x, y_1, z_2) \in R$ e $(x, y_2, z_1) \in R$. Isso garante que os valores de $Y$ aparecem combinados com \emph{todos} os valores de $Z$ para o mesmo $X$.
+\end{gabbox}
+
+\vspace{0.5cm}
+
+% ---- Q25 ----
+\begin{gabbox}{25}
+\textbf{Alternativa: b)} Elas ocorrem quando dois atributos multivalorados não possuem ligação lógica entre si, mas dependem da mesma chave.
+
+\smallskip
+\textit{Justificativa:} DMVs independentes são exatamente aquelas em que existem dois conjuntos multivalorados $Y$ e $Z$ que dependem do mesmo determinante $X$, mas não possuem relação direta entre si. Esse é o cenário que gera o produto cartesiano e justifica a 4FN. As demais alternativas contêm erros conceituais.
+\end{gabbox}
+
+\vspace{1cm}
+
+\begin{center}
+\begin{tabular}{|c|c||c|c|}
+\hline
+\textbf{Questão} & \textbf{Gabarito} & \textbf{Questão} & \textbf{Gabarito} \\
+\hline
+1  & d & 14 & Discursiva \\
+2  & c & 15 & Discursiva \\
+3  & Discursiva & 16 & Discursiva \\
+4  & Discursiva & 17 & Discursiva \\
+5  & Discursiva & 18 & b \\
+6  & c & 19 & c \\
+7  & a & 20 & b \\
+8  & b & 21 & b \\
+9  & Discursiva & 22 & b \\
+10 & Discursiva & 23 & d \\
+11 & a & 24 & b \\
+12 & d & 25 & b \\
+13 & Discursiva & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+\begin{center}
+  \textit{``A 4FN remove redundâncias causadas por dependências multivaloradas, garantindo que fatos independentes não sejam forçados a coexistir em combinações artificiais.''}
+\end{center}
+
+\end{document}

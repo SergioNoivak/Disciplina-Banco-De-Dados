@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Encontra a quantia monetária máxima, mínima e condensa todo o resto na média}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{k}{MAX}\PYG{p}{(}\PYG{n}{nota}\PYG{p}{),}\PYG{+w}{ }\PYG{k}{MIN}\PYG{p}{(}\PYG{n}{nota}\PYG{p}{),}\PYG{+w}{ }\PYG{k}{AVG}\PYG{p}{(}\PYG{n}{nota}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{matricula}\PYG{p}{;}
+\end{Verbatim}

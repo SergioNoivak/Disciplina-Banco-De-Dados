@@ -1,0 +1,214 @@
+\documentclass[a4paper,10pt]{article}
+
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1.5cm]{geometry}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{xcolor}
+
+\definecolor{maincolor}{RGB}{0,100,50}
+
+\lstset{
+    language=SQL,
+    basicstyle=\ttfamily\scriptsize,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{gray},
+    stringstyle=\color{red},
+    breaklines=true,
+    showstringspaces=false,
+    frame=none,
+    aboveskip=0.5em,
+    belowskip=0.5em
+}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Guia Rápido: SQL Joins}} \\[0.3em]
+    {\small Me. Sergio Souza Novak}
+\end{center}
+
+\vspace{0.5em}
+
+\begin{multicols}{2}
+
+% INNER JOIN
+\begin{center}
+\textbf{INNER JOIN} \\[0.5em]
+\begin{tikzpicture}[scale=0.6]
+    \begin{scope}
+        \clip (0,0) circle (1.2);
+        \fill[maincolor!50] (1.2,0) circle (1.2);
+    \end{scope}
+    \draw (0,0) circle (1.2);
+    \draw (1.2,0) circle (1.2);
+    \node at (-0.5,0) {\tiny Alunos};
+    \node at (1.7,0) {\tiny Cursos};
+\end{tikzpicture}
+\end{center}
+\begin{lstlisting}
+SELECT A.nome, C.nome_curso
+FROM Alunos A
+INNER JOIN Cursos C ON A.c_id = C.id;
+\end{lstlisting}
+
+\vspace{1em}
+
+% LEFT JOIN
+\begin{center}
+\textbf{LEFT JOIN} \\[0.5em]
+\begin{tikzpicture}[scale=0.6]
+    \fill[maincolor!50] (0,0) circle (1.2);
+    \draw (0,0) circle (1.2);
+    \draw (1.2,0) circle (1.2);
+    \node at (-0.5,0) {\tiny Alunos};
+    \node at (1.7,0) {\tiny Cursos};
+\end{tikzpicture}
+\end{center}
+\begin{lstlisting}
+SELECT A.nome, C.nome_curso
+FROM Alunos A
+LEFT JOIN Cursos C ON A.c_id = C.id;
+\end{lstlisting}
+
+\vspace{1em}
+
+% RIGHT JOIN
+\begin{center}
+\textbf{RIGHT JOIN} \\[0.5em]
+\begin{tikzpicture}[scale=0.6]
+    \fill[maincolor!50] (1.2,0) circle (1.2);
+    \draw (0,0) circle (1.2);
+    \draw (1.2,0) circle (1.2);
+    \node at (-0.5,0) {\tiny Alunos};
+    \node at (1.7,0) {\tiny Cursos};
+\end{tikzpicture}
+\end{center}
+\begin{lstlisting}
+SELECT A.nome, C.nome_curso
+FROM Alunos A
+RIGHT JOIN Cursos C ON A.c_id = C.id;
+\end{lstlisting}
+
+\vspace{1em}
+
+% LEFT EXCLUSIVE
+\begin{center}
+\textbf{LEFT EXCLUSIVE} \\[0.5em]
+\begin{tikzpicture}[scale=0.6]
+    \fill[maincolor!50] (0,0) circle (1.2);
+    \begin{scope}
+        \clip (1.2,0) circle (1.2);
+        \fill[white] (0,0) circle (1.2);
+    \end{scope}
+    \draw (0,0) circle (1.2);
+    \draw (1.2,0) circle (1.2);
+    \node at (-0.5,0) {\tiny Alunos};
+    \node at (1.7,0) {\tiny Cursos};
+\end{tikzpicture}
+\end{center}
+\begin{lstlisting}
+SELECT A.nome, C.nome_curso
+FROM Alunos A
+LEFT JOIN Cursos C ON A.c_id = C.id
+WHERE C.id IS NULL;
+\end{lstlisting}
+
+\columnbreak
+
+% FULL OUTER JOIN
+\begin{center}
+\textbf{FULL OUTER JOIN} \\[0.5em]
+\begin{tikzpicture}[scale=0.6]
+    \fill[maincolor!50] (0,0) circle (1.2);
+    \fill[maincolor!50] (1.2,0) circle (1.2);
+    \draw (0,0) circle (1.2);
+    \draw (1.2,0) circle (1.2);
+    \node at (-0.5,0) {\tiny Alunos};
+    \node at (1.7,0) {\tiny Cursos};
+\end{tikzpicture}
+\end{center}
+\begin{lstlisting}
+SELECT A.nome, C.nome_curso
+FROM Alunos A
+FULL JOIN Cursos C ON A.c_id = C.id;
+\end{lstlisting}
+
+\vspace{1em}
+
+% RIGHT EXCLUSIVE
+\begin{center}
+\textbf{RIGHT EXCLUSIVE} \\[0.5em]
+\begin{tikzpicture}[scale=0.6]
+    \fill[maincolor!50] (1.2,0) circle (1.2);
+    \begin{scope}
+        \clip (0,0) circle (1.2);
+        \fill[white] (1.2,0) circle (1.2);
+    \end{scope}
+    \draw (0,0) circle (1.2);
+    \draw (1.2,0) circle (1.2);
+    \node at (-0.5,0) {\tiny Alunos};
+    \node at (1.7,0) {\tiny Cursos};
+\end{tikzpicture}
+\end{center}
+\begin{lstlisting}
+SELECT A.nome, C.nome_curso
+FROM Alunos A
+RIGHT JOIN Cursos C ON A.c_id = C.id
+WHERE A.id IS NULL;
+\end{lstlisting}
+
+\vspace{1em}
+
+% FULL EXCLUSIVE (Anti-Join)
+\begin{center}
+\textbf{FULL EXCLUSIVE (Anti-Join)} \\[0.5em]
+\begin{tikzpicture}[scale=0.6]
+    \fill[maincolor!50] (0,0) circle (1.2);
+    \fill[maincolor!50] (1.2,0) circle (1.2);
+    \begin{scope}
+        \clip (0,0) circle (1.2);
+        \fill[white] (1.2,0) circle (1.2);
+    \end{scope}
+    \draw (0,0) circle (1.2);
+    \draw (1.2,0) circle (1.2);
+    \node at (-0.5,0) {\tiny Alunos};
+    \node at (1.7,0) {\tiny Cursos};
+\end{tikzpicture}
+\end{center}
+\begin{lstlisting}
+SELECT A.nome, C.nome_curso
+FROM Alunos A
+FULL JOIN Cursos C ON A.c_id = C.id
+WHERE A.id IS NULL OR C.id IS NULL;
+\end{lstlisting}
+
+\vspace{1em}
+
+% CROSS JOIN
+\begin{center}
+\textbf{CROSS JOIN (Produto Cartesiano)} \\[0.5em]
+\begin{tikzpicture}[scale=0.6]
+    \fill[maincolor!50] (0,0) circle (1.2);
+    \fill[maincolor!50] (1.2,0) circle (1.2);
+    \fill[maincolor!50] (0.6,-0.3) ellipse (1.8 and 1.0);
+    \draw (0,0) circle (1.2);
+    \draw (1.2,0) circle (1.2);
+    \node at (-0.5,0) {\tiny Alunos};
+    \node at (1.7,0) {\tiny Cursos};
+\end{tikzpicture}
+\end{center}
+\begin{lstlisting}
+SELECT A.nome, C.nome_curso
+FROM Alunos A
+CROSS JOIN Cursos C;
+\end{lstlisting}
+
+\end{multicols}
+
+\end{document}

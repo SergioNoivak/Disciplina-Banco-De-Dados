@@ -1,0 +1,309 @@
+\documentclass[12pt,a4paper]{article}
+
+% ------------------------------------------------
+% Pacotes Fundamentais
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{mathptmx} % Times New Roman
+\usepackage{enumitem} 
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric, calc}
+
+% Cores Institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+
+% ------------------------------------------------
+% Estilos TikZ para Diagramas ER, Lógicos e Wireframes CRUD
+% ------------------------------------------------
+\tikzset{
+    block/.style={rectangle, draw=forestgreen, thick, minimum width=2.5cm, minimum height=0.9cm, fill=white, align=center, font=\small\bfseries},
+    diamond_node/.style={diamond, draw=forestgreen, thick, minimum width=1.8cm, minimum height=0.9cm, fill=white, aspect=2, align=center, font=\small},
+    attribute/.style={ellipse, draw=forestgreen, thin, minimum width=1.6cm, minimum height=0.6cm, fill=white, align=center, font=\scriptsize},
+    line/.style={draw, thick, -},
+    table_block/.style={
+        rectangle, 
+        draw=forestgreen, 
+        thick, 
+        rounded corners=4pt, 
+        minimum width=4.5cm, 
+        fill=green!2, 
+        align=left, 
+        font=\small\ttfamily, 
+        inner sep=8pt
+    },
+    screen/.style={draw=forestgreen, thick, rectangle, rounded corners=8pt, minimum width=8.5cm, minimum height=7.0cm, fill=white},
+    screen_title/.style={fill=forestgreen, text=white, minimum width=8.3cm, minimum height=0.6cm, font=\footnotesize\bfseries\sffamily, align=center},
+    btn/.style={draw=forestgreen, fill=green!10, rounded corners=3pt, font=\tiny\sffamily, inner sep=3pt},
+    btn_danger/.style={draw=red, fill=red!10, rounded corners=3pt, font=\tiny\sffamily, inner sep=3pt, text=red},
+    input_field/.style={draw=gray!50, fill=gray!2, rectangle, minimum width=7.5cm, minimum height=0.55cm, font=\tiny\sffamily, align=left, inner sep=4pt}
+}
+
+% ------------------------------------------------ 
+% Configuração de Página e Margens
+% ------------------------------------------------
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=2cm,
+    bottom=2cm,
+    headheight=15pt
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\parindent}{0pt}
+
+% ------------------------------------------------
+% Macros Customizadas (Caixa de Resposta e Alinhamento)
+% ------------------------------------------------
+\newcommand{\resposta}[1]{}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ------------------------------------------------
+% Configurações de Caixas Decorativas (tcolorbox)
+% ------------------------------------------------
+\usepackage[most]{tcolorbox}
+\newtcolorbox{blockbox}[1]{%
+  colback=green!5,
+  colframe=forestgreen,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=8pt,
+  right=8pt,
+  top=8pt,
+  bottom=8pt
+}
+
+% ------------------------------------------------
+% Configurações de Código (Listings SQL)
+% ------------------------------------------------
+\usepackage{listings}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.94}
+
+\lstdefinestyle{sqlstyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegray},
+    keywordstyle=\color{forestgreen}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=none,                    
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=SQL,
+    morekeywords={REFERENCES, ON, CASCADE, SET, NULL, NO, ACTION, RESTRICT, OFFSET, LIMIT, DISTINCT},
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {â}{{\^a}}1 {à}{{\`a}}1 {é}{{\'e}}1 {ê}{{\^e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ô}{{\^o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {Â}{{\^A}}1 {À}{{\`A}}1 {É}{{\'E}}1 {Ê}{{\^E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ô}{{\^O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1
+}
+\lstset{style=sqlstyle}
+
+% ================================================
+\begin{document}
+% ================================================
+
+% ------------------------------------------------
+% Cabeçalho Institucional Oficial da UniRV
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{@{} L{4.5cm} X @{}}
+    \raisebox{-0.5cm}{\includegraphics[width=4.5cm]{Universidade_de_Rio_Verde.jpg}} &
+    \hfill
+    \begin{tabular}{|>{\centering\arraybackslash}m{11.6cm}|}
+        \hline
+        \cellcolor{forestgreen}\color{white}\rule{0pt}{1.2cm}\textbf{ROTEIRO PRÁTICO DA DISCIPLINA} \tabularnewline
+        \hline
+    \end{tabular} 
+\end{tabularx}
+\vspace{0.3cm}
+
+\begin{tabularx}{\textwidth}{|X|L{2.5cm}|}
+\hline
+\textbf{Curso} & \textbf{Campus} \\
+\textit{Engenharia de Software} & \textit{Rio Verde} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Disciplina}} \\  
+\multicolumn{2}{|l|}{ \textit{Banco de Dados I}} \\
+\hline
+\textbf{Professor} & \textbf{Turma} \\
+\textit{Sergio Souza Novak} & \textit{A / B} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Código da Atividade}} \\
+\multicolumn{2}{|l|}{\textit{ESW417}} \\
+\hline
+\end{tabularx}
+
+\vspace{0.5cm}
+
+\begin{blockbox}{Configuração Importante: Google Colab e SQLite}
+Para resolver este roteiro prático utilizando SQL no \textbf{Google Colab}, certifique-se de executar as etapas iniciais de instalação da extensão SQL e, \textbf{fundamentalmente}, habilitar a integridade referencial de chaves estrangeiras executando o seguinte comando no início do seu notebook:
+\begin{center}
+    \large\texttt{\%sql PRAGMA foreign\_keys = ON;}
+\end{center}
+Se essa diretiva não for executada, o SQLite aceitará inserções consistentes de chaves órfãs, prejudicando o teste das restrições DDL formuladas.
+\end{blockbox}
+
+\vspace{0.4cm}
+
+
+\section{Passo 1: Preparando o Ambiente}
+Instale o pacote jupysql e configure a conex\~ao com SQLite:
+\begin{lstlisting}[language=SQL]
+!pip install jupysql
+%load_ext sql
+%sql sqlite:///meu_banco.db
+%sql PRAGMA foreign_keys = ON;
+\end{lstlisting}
+
+\section{Passo 2: Modelagem das Tabelas}
+Crie as tabelas base:
+\begin{lstlisting}[language=SQL]
+CREATE TABLE Cursos(
+  id INTEGER PRIMARY KEY,
+  nome TEXT NOT NULL
+);
+
+CREATE TABLE Alunos(
+  id INTEGER PRIMARY KEY,
+  nome TEXT NOT NULL,
+  idade INTEGER NOT NULL,
+  curso INTEGER,
+  FOREIGN KEY (curso) REFERENCES Cursos(id)
+);
+\end{lstlisting}
+
+\section{Passo 3: Populando o Banco de Dados}
+Insira registros de cursos e alunos:
+\begin{lstlisting}[language=SQL]
+-- Cursos
+INSERT INTO Cursos (nome) VALUES ('Engenharia de Software');
+INSERT INTO Cursos (nome) VALUES ('Ciencia da Computacao');
+INSERT INTO Cursos (nome) VALUES ('Analise e Desenvolvimento de Sistemas');
+INSERT INTO Cursos (nome) VALUES ('Sistemas de Informacao');
+INSERT INTO Cursos (nome) VALUES ('Redes de Computadores');
+
+-- Alunos
+INSERT INTO Alunos (nome, idade, curso) VALUES ('Joao Silva', 20, 1);
+INSERT INTO Alunos (nome, idade, curso) VALUES ('Maria Oliveira', 22, 2);
+INSERT INTO Alunos (nome, idade, curso) VALUES ('Pedro Santos', 19, 1);
+INSERT INTO Alunos (nome, idade, curso) VALUES ('Ana Souza', 21, 3);
+INSERT INTO Alunos (nome, idade, curso) VALUES ('Carlos Lima', 23, 2);
+INSERT INTO Alunos (nome, idade, curso) VALUES ('Julia Costa', 20, 4);
+INSERT INTO Alunos (nome, idade, curso) VALUES ('Rafael Martins', 24, 3);
+INSERT INTO Alunos (nome, idade, curso) VALUES ('Fernanda Almeida', 18, 5);
+INSERT INTO Alunos (nome, idade, curso) VALUES ('Gustavo Pereira', 21, 4);
+INSERT INTO Alunos (nome, idade, curso) VALUES ('Isabela Rocha', 22, 5);
+\end{lstlisting}
+
+\section{Passo 4: Praticando Window Functions}
+\subsection{Agregacao Comum vs Window Function}
+\begin{lstlisting}[language=SQL]
+-- Agrupamento com GROUP BY
+SELECT curso, AVG(idade) FROM Alunos GROUP BY curso;
+\end{lstlisting}
+\begin{lstlisting}[language=SQL]
+-- Window Function preservando linhas
+SELECT nome, curso, AVG(idade) OVER (PARTITION BY curso) AS media_curso
+FROM Alunos ORDER BY curso;
+\end{lstlisting}
+
+\subsection{Acumulando Valores (Running Total)}
+\begin{lstlisting}[language=SQL]
+SELECT nome, curso,
+       SUM(idade) OVER (PARTITION BY curso ORDER BY nome DESC) AS somatorio
+FROM Alunos ORDER BY nome DESC;
+\end{lstlisting}
+
+\section{Passo 5: Praticando Views}
+Crie uma view que une alunos e cursos:
+\begin{lstlisting}[language=SQL]
+CREATE VIEW alunos_cursos AS
+SELECT Alunos.id, Alunos.nome, Cursos.nome AS curso
+FROM Alunos INNER JOIN Cursos ON Alunos.curso = Cursos.id;
+\end{lstlisting}
+Consultando a view:
+\begin{lstlisting}[language=SQL]
+SELECT * FROM alunos_cursos;
+\end{lstlisting}
+
+\section{Passo 6: Praticando Triggers e Auditoria}
+\subsection{Tabela de Log}
+\begin{lstlisting}[language=SQL]
+CREATE TABLE log_alunos_cursos (
+  log_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  aluno_id INTEGER NOT NULL,
+  aluno_nome TEXT NOT NULL,
+  curso_antigo_id INTEGER,
+  curso_novo_id INTEGER,
+  operation_type TEXT,
+  data_modificacao DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+\end{lstlisting}
+\subsection{Triggers}
+\begin{lstlisting}[language=SQL]
+-- UPDATE trigger
+CREATE TRIGGER log_de_mudanca_cursos
+AFTER UPDATE OF curso ON Alunos
+FOR EACH ROW WHEN OLD.curso IS NOT NEW.curso
+BEGIN
+  INSERT INTO log_alunos_cursos (aluno_id, aluno_nome, curso_antigo_id, curso_novo_id, operation_type)
+  VALUES (OLD.id, OLD.nome, OLD.curso, NEW.curso, 'UPDATE');
+END;
+
+-- INSERT trigger
+CREATE TRIGGER log_de_insercao_alunos
+AFTER INSERT ON Alunos
+FOR EACH ROW
+BEGIN
+  INSERT INTO log_alunos_cursos (aluno_id, aluno_nome, curso_novo_id, operation_type)
+  VALUES (NEW.id, NEW.nome, NEW.curso, 'INSERT');
+END;
+
+-- DELETE trigger
+CREATE TRIGGER log_de_remocao_alunos
+AFTER DELETE ON Alunos
+FOR EACH ROW
+BEGIN
+  INSERT INTO log_alunos_cursos (aluno_id, aluno_nome, curso_antigo_id, operation_type)
+  VALUES (OLD.id, OLD.nome, OLD.curso, 'DELETE');
+END;
+\end{lstlisting}
+\subsection{Teste dos Triggers}
+\begin{lstlisting}[language=SQL]
+-- INSERT test
+INSERT INTO Alunos (nome, idade, curso) VALUES ('Novo Aluno', 20, 1);
+-- UPDATE test
+UPDATE Alunos SET curso = 3 WHERE id = 1;
+-- DELETE test
+DELETE FROM Alunos WHERE nome = 'Novo Aluno';
+\end{lstlisting}
+Verifique o log:
+\begin{lstlisting}[language=SQL]
+SELECT * FROM log_alunos_cursos;
+\end{lstlisting}
+
+\end{document}

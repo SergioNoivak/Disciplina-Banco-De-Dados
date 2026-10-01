@@ -1,0 +1,160 @@
+
+% =======================
+% Pacotes básicos
+% =======================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+\usepackage{graphicx}    % Para inserir logo/imagens
+\usepackage{xcolor}      % Cores
+\usepackage{hyperref}    % Links clicáveis
+\usepackage{minted}      % Código com destaque (compilar com -shell-escape)
+\usepackage[most]{tcolorbox}\usepackage{titlesec}    % Para customizar títulos
+\usepackage{fancyhdr}    % Cabeçalho e rodapé
+\usepackage{tikz}        % Para desenhar capa com moldura colorida
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{ragged2e}
+% =======================
+% Cores personalizadas
+% =======================
+\definecolor{verdeuni}{RGB}{0,70,40} % Verde do logo UniRV
+\definecolor{bgsql}{rgb}{0.95,0.95,0.95}
+% FIX: Para o erro do fancyhdr headheight
+\setlength{\headheight}{26pt} 
+\addtolength{\topmargin}{-1.5pt}
+% =======================
+% Cabeçalho e rodapé
+% =======================
+% --- Configuração de Cabeçalho e Rodapé ---
+\pagestyle{fancy}
+\fancyhf{}
+
+% Nome do autor no lado esquerdo
+\lhead{\color{verdeuni} \textbf{Prof. Me. Sergio Souza Novak, Prof. Leandro, Prof. Ronaldo}} 
+
+% Título do guia no lado direito
+\rhead{\textbf{\color{verdeuni}Banco de Dados}}
+
+% Número da página no centro do rodapé
+\cfoot{\thepage}
+
+% Linha horizontal colorida (opcional, combina com o estilo)
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{verdeuni}\leaders\hrule height \headrulewidth\hfill}}
+
+% =======================
+% Sumário automático
+% =======================
+\setcounter{tocdepth}{2} % mostra até subseções
+\hypersetup{
+    colorlinks=true,
+    linkcolor=verdeuni,
+    urlcolor=blue 
+}
+
+% =======================
+% Estilo de títulos
+% =======================
+\titleformat{\section}{\Large\bfseries\color{black}}{\thesection}{1em}{} % seções em preto
+\titleformat{\subsection}{\large\bfseries\color{verdeuni}}{\thesubsection}{1em}{} % subseções no verde
+
+% =======================
+% Caixa para exemplos de SQL
+% =======================
+\tcbuselibrary{minted}
+
+\newtcblisting{sqlcode}{
+    listing engine=minted,
+    minted language=sql,
+    colback=bgsql,
+    colframe=verdeuni,
+    listing only,               % só mostra código
+    title=SQL,                  % título visível
+    fonttitle=\bfseries\color{white},
+    coltitle=white,
+    colbacktitle=verdeuni
+}
+
+\newtcolorbox{diagramER}{
+    colback=white,
+    colframe=verdeuni,
+    title=Diagrama ER,
+    fonttitle=\bfseries\color{white},
+    coltitle=white,
+    colbacktitle=verdeuni,
+    boxrule=0.8pt,
+    arc=2mm,
+    left=4mm,
+    right=4mm,
+    top=3mm,
+    bottom=3mm
+}
+  
+% =======================
+% Caixa para observações
+% =======================
+\newtcolorbox{observacao}{
+    colback=green!5,
+    colframe=verdeuni,
+    boxrule=0.6mm,
+    arc=2mm,
+    left=4mm,
+    right=4mm,
+    top=3mm,
+    bottom=3mm
+}
+% =======================
+% Definição dos Blocos (FIX para o erro de Environment undefined)
+% =======================
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=verdeuni,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1pt,
+  arc=2mm,
+  left=6pt,
+  right=6pt,
+  top=6pt,
+  bottom=6pt
+}
+
+ \usepackage[most]{tcolorbox}
+\usepackage{ragged2e}
+
+\newtcolorbox{authorcard}{
+  colback=white,
+  colframe=white,
+  boxrule=0pt,
+  arc=0pt,          % cantos quadrados
+  left=12pt,
+  right=12pt,
+  top=14pt,
+  bottom=14pt,
+  height=19.5cm,
+  width=140pt,
+}
+\newlength{\authorphotoheight}
+\setlength{\authorphotoheight}{4.5cm}
+
+\newcommand{\authorphoto}[1]{%
+\begin{minipage}[c][\authorphotoheight][c]{\linewidth}
+\centering
+\includegraphics[
+width=3.5cm,
+height=3.5cm,
+keepaspectratio]{#1}
+\end{minipage}
+}
+% =======================
+% Dados do documento
+% =======================
+\title{Banco de Dados}
+\author{Me. Sergio Souza Novak} 
+\date{\today}
+ 

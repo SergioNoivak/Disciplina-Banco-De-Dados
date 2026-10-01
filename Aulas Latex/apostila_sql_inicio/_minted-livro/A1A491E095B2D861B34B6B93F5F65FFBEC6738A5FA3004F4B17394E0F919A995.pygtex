@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{id}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{nome}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{email}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{pessoa}\PYG{+w}{ }\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{ativo}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{TRUE}\PYG{p}{;}
+\end{Verbatim}

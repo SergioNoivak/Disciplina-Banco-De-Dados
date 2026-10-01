@@ -1,0 +1,20 @@
+digraph DER {
+
+    rankdir=LR;
+    node [shape=rectangle, style=filled, fillcolor=lightgray];
+
+    Aluno [label="Aluno\n----------------\nID_Aluno\nNome\nEmail"];
+    Curso [label="Curso\n----------------\nID_Curso\nNome"];
+    Disciplina [label="Disciplina\n----------------\nID_Disc\nNome"];
+
+    node [shape=diamond, style=filled, fillcolor=lightblue];
+
+    Matricula [label="Matrícula"];
+    Possui [label="Possui"];
+
+    Aluno -> Matricula;
+    Matricula -> Curso;
+
+    Curso -> Possui;
+    Possui -> Disciplina;
+}

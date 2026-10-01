@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{ativo}\PYG{p}{,}\PYG{+w}{ }\PYG{k}{COUNT}\PYG{p}{(}\PYG{n}{id}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{AS}\PYG{+w}{ }\PYG{n}{total\PYGZus{}pessoas}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{pessoa}
+\PYG{k}{GROUP}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{ativo}
+\PYG{k}{HAVING}\PYG{+w}{ }\PYG{k}{COUNT}\PYG{p}{(}\PYG{n}{id}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{10}\PYG{p}{;}
+\end{Verbatim}

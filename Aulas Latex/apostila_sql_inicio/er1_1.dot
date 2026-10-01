@@ -1,0 +1,38 @@
+digraph G {
+
+  rankdir=LR;
+  splines=polyline;
+  graph [forcelabels=true, nodesep=0.4, ranksep=1.2];
+
+  node [fontname="Arial", fontsize=18];
+  edge [dir=none, fontsize=16];
+
+  // ENTIDADES
+  Padrinho [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+  Madrinha [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+
+  // RELACIONAMENTO
+  casamento [shape=diamond, label="casamento", style=filled, fillcolor="#c9d3e8"];
+
+  Padrinho -> casamento [label="(1,1)"];
+  casamento -> Madrinha [label="(1,1)"];
+
+  // ATRIBUTOS
+  node [shape=ellipse, fontsize=15];
+
+  id_padrinho [label="id_padrinho", style=filled, fillcolor="#004628", fontcolor=white];
+  nome_padrinho [label="nome"];
+
+  id_madrinha [label="id_madrinha", style=filled, fillcolor="#004628", fontcolor=white];
+  nome_madrinha [label="nome"];
+
+  data_casamento [label="data"];
+
+  Padrinho -> id_padrinho;
+  Padrinho -> nome_padrinho;
+
+  Madrinha -> id_madrinha;
+  Madrinha -> nome_madrinha;
+
+  casamento -> data_casamento;
+}

@@ -1,0 +1,513 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática e listas
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+% Layout e cores
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+
+% TikZ configuration for diagrams
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, positioning, calc}
+
+% Blocos coloridos
+\usepackage[most]{tcolorbox}
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=maincolor,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=6pt, right=6pt, top=6pt, bottom=6pt
+}
+
+% Espaço para resposta
+\newtcolorbox{resposta}{
+  colback=white,
+  colframe=gray!40,
+  arc=0mm,
+  height=8cm,
+  left=6pt, right=6pt, top=6pt, bottom=6pt,
+  title=\textit{Resposta:},
+  coltitle=gray!80,
+  fonttitle=\bfseries\small,
+  attach title to upper
+}
+
+% Margens
+\geometry{margin=2.5cm}
+
+% Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+
+\renewcommand{\headrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+
+\renewcommand{\footrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+
+\setlength{\headheight}{52pt}
+\addtolength{\topmargin}{-20pt}
+
+\fancyhead[L]{%
+  \includegraphics[height=1.2cm]{Universidade_de_Rio_Verde.jpg}
+}
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{%
+    \small
+    \textbf{Lista de Exercícios}\\
+    Me.~Sergio Souza Novak\\
+    \textit{Banco de Dados}
+  }
+}
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+
+\begin{document}
+
+\vspace*{0.2cm}
+\begin{center}
+  {\Large \textbf{Lista de Exercícios: Normalização}}\\[0.2cm]
+  {\large Banco de Dados}\\[0.2cm]
+  Tema: 4ª Forma Normal (4FN) --- Dependências Multivaloradas
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{block}{Instruções}
+Para cada questão: (1) identifique as Dependências Multivaloradas (DMV) e Funcionais (DF); (2) aplique o teste da 4FN verificando se o determinante é superchave; (3) apresente a decomposição se necessário, indicando PKs e FKs.
+\end{block}
+
+\vspace{0.4cm}
+
+\begin{enumerate}[label=\textbf{Questão \arabic*:}, leftmargin=*]
+
+% ================================================================
+%  BLOCO 1 — CONCEITUAL
+% ================================================================
+  \item \textbf{Qual das seguintes situações tipicamente sinaliza a necessidade de aplicar a 4FN?}
+  \begin{enumerate}[label=\alph*)]
+    \item Presença de atributos derivados (ex: Total = Preço * Qtd).
+    \item Tabelas com chaves compostas por muitos atributos.
+    \item Atributos que aceitam valores Nulos.
+    \item Existência de "fatos independentes muitos-para-muitos" sobre uma entidade.
+    \item Um atributo que depende apenas de parte da chave composta.
+  \end{enumerate}
+
+  \item \textbf{O uso da 4FN é crucial em sistemas OLTP (Online Transaction Processing) principalmente para:}
+  \begin{enumerate}[label=\alph*)]
+    \item Facilitar a geração de relatórios complexos.
+    \item Garantir que o banco de dados ocupe o máximo de espaço possível.
+    \item Minimizar anomalias durante operações de INSERT, UPDATE e DELETE.
+    \item Evitar o uso de chaves estrangeiras.
+    \item Aumentar a velocidade de buscas envolvendo produtos cartesianos.
+  \end{enumerate}
+
+  \item \textbf{(Conceito)} Explique, com suas palavras, o que é uma \textbf{Dependência Multivalorada (DMV)} e qual a principal diferença entre ela e uma \textbf{Dependência Funcional (DF)}. Dê um exemplo simples de cada.
+  \begin{resposta}
+  \end{resposta}
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Definição)} Quais são os dois requisitos fundamentais para que uma relação seja considerada na \textbf{4ª Forma Normal (4FN)}? Por que uma relação deve obrigatoriamente estar na BCNF antes de ser testada para a 4FN?
+  \begin{resposta}
+  \end{resposta}
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Redundância)} Por que a presença de duas ou mais DMVs independentes em uma mesma tabela gera o chamado ``Produto Cartesiano''? Quais são os problemas práticos (anomalias) que esse fenômeno causa no banco de dados?
+  
+  \vspace{0.2cm}
+  \begin{tikzpicture}[node distance=2cm, font=\small\sffamily]
+      \node (x) [draw, circle, fill=orange!20, thick] {X};
+      \node (y) [draw, rectangle, right=of x, fill=blue!10] {\{Y1, Y2, \dots\}};
+      \node (z) [draw, rectangle, left=of x, fill=green!10] {\{Z1, Z2, \dots\}};
+
+      \draw[->>, thick, blue] (x) -- (y) node[midway, above] {\tiny DMV};
+      \draw[->>, thick, green!60!black] (x) -- (z) node[midway, above] {\tiny DMV};
+
+      \node [below=0.5cm of x] {\small $R(x) = Y(x) \times Z(x)$};
+  \end{tikzpicture}
+  % 
+  
+  \begin{resposta}
+  \end{resposta}
+  
+  \item \textbf{Em um cenário de "Projetos, Ferramentas e Engenheiros", se um projeto usa várias ferramentas e possui vários engenheiros independentes, a violação da 4FN exigiria:}
+  \begin{enumerate}[label=\alph*)]
+    \item Que cada engenheiro fosse associado a apenas uma ferramenta.
+    \item Que cada ferramenta fosse usada por apenas um engenheiro.
+    \item Que cada combinação de (engenheiro, ferramenta) aparecesse em uma linha distinta para o mesmo projeto.
+    \item Que a chave primária fosse apenas o código do Engenheiro.
+    \item Nenhuma das anteriores.
+  \end{enumerate}
+
+  \item \textbf{A decomposição para a 4FN é dita "sem perdas" (lossless join decomposition) porque:}
+  \begin{enumerate}[label=\alph*)]
+    \item Podemos reconstruir a relação original através de uma junção natural das tabelas decompostas.
+    \item Não se perde espaço em disco.
+    \item Todas as chaves estrangeiras são removidas.
+    \item O número de linhas permanece o mesmo.
+    \item Ela apaga dados irrelevantes.
+  \end{enumerate}
+
+  \item \textbf{Se uma relação possui apenas dois atributos $R(A, B)$, ela:}
+  \begin{enumerate}[label=\alph*)]
+    \item Pode violar a 4FN.
+    \item Está obrigatoriamente na 4FN, pois não pode haver DMV não trivial.
+    \item Viola a 1FN por ser pequena demais.
+    \item Necessita de um terceiro atributo para ser normalizada.
+    \item Sempre terá redundância exponencial.
+  \end{enumerate}
+% ================================================================
+%  BLOCO 2 — TESTES E IDENTIFICAÇÃO
+% ================================================================
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Teste 4FN -- Pesquisadores)} A tabela abaixo registra os projetos e os idiomas de cada pesquisador. Sabendo que projetos e idiomas são independentes:
+  
+  \vspace{0.2cm}
+  \small
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Pesquisador (PK)} & \textbf{Projeto (PK)} & \textbf{Idioma (PK)} \\ \hline
+    Ana Souza  & IA Climática   & Inglês    \\ \hline
+    Ana Souza  & IA Climática   & Espanhol  \\ \hline
+    Ana Souza  & IA Climática   & Francês   \\ \hline
+    Ana Souza  & Robótica       & Inglês    \\ \hline
+    Ana Souza  & Robótica       & Espanhol  \\ \hline
+    Ana Souza  & Robótica       & Francês   \\ \hline
+    Ana Souza  & Bioinformática & Inglês    \\ \hline
+    Ana Souza  & Bioinformática & Espanhol  \\ \hline
+    Ana Souza  & Bioinformática & Francês   \\ \hline
+    Bruno Lima & Robótica       & Inglês    \\ \hline
+    Bruno Lima & Robótica       & Alemão    \\ \hline
+    Bruno Lima & Bioinformática & Inglês    \\ \hline
+    Bruno Lima & Bioinformática & Alemão    \\ \hline
+    Carla Dias & IA Climática   & Português \\ \hline
+    Carla Dias & IA Climática   & Inglês    \\ \hline
+    Carla Dias & Robótica       & Português \\ \hline
+    Carla Dias & Robótica       & Inglês    \\ \hline
+    Daniel Paz & Bioinformática & Italiano  \\ \hline
+    Daniel Paz & Bioinformática & Inglês    \\ \hline
+    Daniel Paz & IA Climática   & Italiano  \\ \hline
+  \end{tabular}
+  % 
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Liste as DMVs existentes.
+    \item A tabela viola a 4FN? Justifique verificando a superchave.
+    \item Como ficariam as tabelas após a decomposição?
+  \end{enumerate}
+  \begin{resposta}
+  \end{resposta}
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Teste 4FN -- Representantes)} Em uma empresa, cada \textbf{representante} atende a várias \textbf{regiões} e vende várias \textbf{linhas de produtos}. As regiões e as linhas de produtos são independentes.
+  
+  \vspace{0.2cm}
+  \small
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Representante (PK)} & \textbf{Região (PK)} & \textbf{Linha\_Produto (PK)} \\ \hline
+    Carlos Silva  & Norte   & Ferramentas  \\ \hline
+    Carlos Silva  & Norte   & Máquinas     \\ \hline
+    Carlos Silva  & Norte   & EPIs         \\ \hline
+    Carlos Silva  & Sul     & Ferramentas  \\ \hline
+    Carlos Silva  & Sul     & Máquinas     \\ \hline
+    Carlos Silva  & Sul     & EPIs         \\ \hline
+    Carlos Silva  & Leste   & Ferramentas  \\ \hline
+    Carlos Silva  & Leste   & Máquinas     \\ \hline
+    Carlos Silva  & Leste   & EPIs         \\ \hline
+    João Paulo    & Centro  & Ferramentas  \\ \hline
+    João Paulo    & Centro  & Máquinas     \\ \hline
+    João Paulo    & Oeste   & Ferramentas  \\ \hline
+    João Paulo    & Oeste   & Máquinas     \\ \hline
+    Maria Alice   & Sul     & Eletrônicos  \\ \hline
+    Maria Alice   & Sul     & Papelaria    \\ \hline
+    Maria Alice   & Norte   & Eletrônicos  \\ \hline
+    Maria Alice   & Norte   & Papelaria    \\ \hline
+    Ricardo Lima  & Centro  & Móveis       \\ \hline
+    Ricardo Lima  & Centro  & Decoração    \\ \hline
+    Ricardo Lima  & Centro  & Iluminação   \\ \hline
+  \end{tabular}
+  % 
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Identifique a Chave Primária da tabela original.
+    \item Demonstre a ocorrência do produto cartesiano para o representante Carlos Silva.
+    \item Aplique a decomposição para 4FN.
+  \end{enumerate}
+  \begin{resposta}
+  \end{resposta}
+
+  \vspace{0.4cm}
+  \item \textbf{A anomalia de atualização na 4FN ocorre porque:}
+  \begin{enumerate}[label=\alph*)]
+    \item Ao alterar um valor de um atributo multivalorado, é necessário atualizar múltiplas linhas para manter a consistência do produto cartesiano.
+    \item O banco de dados bloqueia a tabela para qualquer escrita.
+    \item Não se pode inserir chaves nulas.
+    \item A chave primária é muito curta.
+    \item Os atributos não-chave dependem de apenas parte da chave.
+  \end{enumerate}
+
+  \item \textbf{Historicamente, a 4FN foi introduzida por Ronald Fagin em 1977 para lidar com falhas de qual forma normal anterior?}
+  \begin{enumerate}[label=\alph*)]
+    \item 1FN.
+    \item 2FN.
+    \item 3FN.
+    \item BCNF (Forma Normal de Boyce-Codd).
+    \item 5FN.
+  \end{enumerate}
+  \item \textbf{(Teste 4FN -- Hospital)} Considere a relação \texttt{MEDICO\_VINCULO}:
+  
+  \vspace{0.2cm}
+  \small
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Medico (PK)} & \textbf{Hospital (PK)} & \textbf{Convenio (PK)} \\ \hline
+    Dr. Arnaldo & Sta. Casa   & Unimed  \\ \hline
+    Dr. Arnaldo & Sta. Casa   & Bradesco \\ \hline
+    Dr. Arnaldo & Sta. Casa   & Amil     \\ \hline
+    Dr. Arnaldo & Hosp. Luz   & Unimed  \\ \hline
+    Dr. Arnaldo & Hosp. Luz   & Bradesco \\ \hline
+    Dr. Arnaldo & Hosp. Luz   & Amil     \\ \hline
+    Dr. Arnaldo & Clin. Sul   & Unimed  \\ \hline
+    Dr. Arnaldo & Clin. Sul   & Bradesco \\ \hline
+    Dr. Arnaldo & Clin. Sul   & Amil     \\ \hline
+    Dra. Beatriz & Sta. Casa   & Cassi    \\ \hline
+    Dra. Beatriz & Sta. Casa   & Ipasgo   \\ \hline
+    Dra. Beatriz & Hosp. Luz   & Cassi    \\ \hline
+    Dra. Beatriz & Hosp. Luz   & Ipasgo   \\ \hline
+    Dr. Claudio  & Clin. Norte & Unimed   \\ \hline
+    Dr. Claudio  & Clin. Norte & Bradesco \\ \hline
+    Dr. Claudio  & Clin. Norte & Cassi    \\ \hline
+    Dr. Claudio  & Hosp. Luz   & Unimed   \\ \hline
+    Dr. Claudio  & Hosp. Luz   & Bradesco \\ \hline
+    Dr. Claudio  & Hosp. Luz   & Cassi    \\ \hline
+    Dr. Claudio  & Sta. Casa   & Unimed   \\ \hline
+  \end{tabular}
+  
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Quais são as DMVs?
+    \item Se o Dr. Arnaldo passar a atender pelo convênio ``Cassi'', quantas linhas devem ser inseridas?
+    \item Decompunha a tabela para eliminar a redundância.
+  \end{enumerate}
+  \begin{resposta}
+  \end{resposta}
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Análise BCNF vs 4FN)} Uma tabela \texttt{CURSOS} possui os atributos: \texttt{\{Curso, Livro\_Texto, Professor\}}. As regras são: (1) Para cada curso, há vários livros sugeridos; (2) Para cada curso, há vários professores que podem ministrá-lo; (3) Professores e livros são independentes.
+  
+  \begin{center}
+  \begin{tikzpicture}[node distance=1.5cm, font=\footnotesize\sffamily]
+      \node (c) [draw, fill=orange!10, rectangle, rounded corners] {Curso (Chave?)};
+      \node (l) [draw, fill=blue!5, rectangle, right=of c] {Livro\_Texto};
+      \node (p) [draw, fill=green!5, rectangle, left=of c] {Professor};
+      
+      \draw[->>, thick, blue] (c) -- (l);
+      \draw[->>, thick, green!60!black] (c) -- (p);
+  \end{tikzpicture}
+  \end{center}
+
+  \begin{enumerate}[label=\alph*)]
+    \item Essa tabela está na BCNF? Justifique.
+    \item Essa tabela está na 4FN? Justifique.
+  \end{enumerate}
+  \begin{resposta}
+  \end{resposta}
+
+% ================================================================
+%  BLOCO 3 — PROJETO E DECOMPOSIÇÃO
+% ================================================================
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Projeto -- CARRO)} Baseado no exemplo da aula, considere a relação:
+  \texttt{CARRO(Placa, Modelo, Marca, Acessorio, Motorista)}.
+  Sabe-se que:
+  \begin{itemize}
+    \item \texttt{Placa $\to$ \{Modelo, Marca\}}
+    \item \texttt{Placa $\twoheadrightarrow$ Acessorio}
+    \item \texttt{Placa $\twoheadrightarrow$ Motorista}
+  \end{itemize}
+
+  \begin{center}
+  \begin{tikzpicture}[node distance=1cm and 2cm, font=\footnotesize\sffamily, thick]
+      \node (p) [draw, fill=orange!20, circle] {Placa};
+      \node (m) [draw, fill=gray!10, rectangle, above right=of p] {Modelo, Marca};
+      \node (a) [draw, fill=blue!10, rectangle, right=of p] {Acessório};
+      \node (mo) [draw, fill=green!10, rectangle, below right=of p] {Motorista};
+      
+      \draw[->] (p) -- (m) node[midway, left, sloped] {\tiny DF};
+      \draw[->>] (p) -- (a) node[midway, above] {\tiny DMV};
+      \draw[->>] (p) -- (mo) node[midway, left, sloped] {\tiny DMV};
+  \end{tikzpicture}
+  \end{center}
+
+  Apresente o modelo relacional final na 4FN, identificando claramente as chaves primárias e estrangeiras. Explique por que manter todos em uma única tabela é ineficiente.
+  \begin{resposta}
+  \end{resposta}
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Projeto -- TI)} Uma empresa de software registra seus projetos na tabela \texttt{PROJETOS\_TI(Cod\_Proj, Nome\_Proj, Tecnologia, Colaborador)}. 
+  Regras: 
+  \begin{itemize}
+      \item Um projeto usa várias tecnologias (Python, SQL, etc).
+      \item Um projeto tem vários colaboradores alocados.
+      \item As tecnologias usadas no projeto não dependem de quem está alocado.
+  \end{itemize}
+
+  \begin{center}
+  \begin{tikzpicture}[node distance=1.5cm, font=\footnotesize\sffamily, thick]
+      \node (cp) [draw, fill=orange!10, rectangle] {Cod\_Proj};
+      \node (np) [draw, fill=gray!5, rectangle, above=of cp] {Nome\_Proj};
+      \node (t) [draw, fill=blue!5, rectangle, right=of cp] {Tecnologia};
+      \node (co) [draw, fill=green!5, rectangle, left=of cp] {Colaborador};
+      
+      \draw[->] (cp) -- (np);
+      \draw[->>] (cp) -- (t);
+      \draw[->>] (cp) -- (co);
+  \end{tikzpicture}
+  \end{center}
+
+  Monte uma instância (tabela com dados) que viole a 4FN com pelo menos 2 colaboradores e 2 tecnologias para o mesmo projeto, e mostre a solução normalizada.
+  \begin{resposta}
+  \end{resposta}
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Projeto -- Clínica)} Normalize para a 4FN a relação:
+  \texttt{PACIENTE(ID\_Pac, Nome, Doenca\_Cronica, Alergia)}. 
+  Considere que um paciente pode ter várias doenças e várias alergias, e estas informações são fatos independentes sobre o paciente. Mostre como as anomalias de atualização são evitadas após a separação das tabelas.
+
+  \begin{center}
+  \begin{tikzpicture}[node distance=1.5cm, font=\footnotesize\sffamily, thick]
+      \node (id) [draw, fill=orange!10, rectangle] {ID\_Pac};
+      \node (n) [draw, fill=gray!5, rectangle, above=of id] {Nome};
+      \node (d) [draw, fill=red!5, rectangle, right=of id] {Doença\_C};
+      \node (a) [draw, fill=yellow!5, rectangle, left=of id] {Alergia};
+      
+      \draw[->] (id) -- (n);
+      \draw[->>] (id) -- (d);
+      \draw[->>] (id) -- (a);
+  \end{tikzpicture}
+  \end{center}
+  \begin{resposta}
+  \end{resposta}
+
+
+
+  \item \textbf{Uma relação está na 4ª Forma Normal (4FN) se, e somente se:}
+  \begin{enumerate}[label=\alph*)]
+    \item Estiver na 3FN e não possuir dependências transitivas.
+    \item Estiver na BCNF e toda dependência multivalorada não trivial tiver como determinante uma superchave.
+    \item Estiver na 1FN e todos os atributos forem atômicos.
+    \item Estiver na BCNF e não possuir dependências funcionais parciais.
+    \item Não possuir chaves estrangeiras nulas.
+  \end{enumerate}
+
+  \item \textbf{A Dependência Multivalorada (DMV) $X \twoheadrightarrow Y$ é considerada não trivial quando:}
+  \begin{enumerate}[label=\alph*)]
+    \item $Y$ é um subconjunto de $X$.
+    \item $X \cup Y$ é igual ao conjunto de todos os atributos da relação.
+    \item $Y$ não é um subconjunto de $X$ e $X \cup Y$ não contém todos os atributos da relação.
+    \item $X$ é a chave primária da relação.
+    \item $Y$ depende funcionalmente de $X$.
+  \end{enumerate}
+
+  \item \textbf{O principal problema causado pela violação da 4FN é:}
+  \begin{enumerate}[label=\alph*)]
+    \item A perda de integridade referencial nas chaves estrangeiras.
+    \item A redundância de dados gerada por um produto cartesiano entre atributos independentes.
+    \item A impossibilidade de realizar junções (JOIN) entre tabelas.
+    \item A criação de tabelas com excesso de chaves primárias.
+    \item O aumento do desempenho das consultas de leitura.
+  \end{enumerate}
+
+  \item \textbf{Considere a relação $R(A, B, C)$ onde existem as DMVs $A \twoheadrightarrow B$ e $A \twoheadrightarrow C$. Se $B$ e $C$ são independentes, a decomposição correta para a 4FN gera as tabelas:}
+  \begin{enumerate}[label=\alph*)]
+    \item $R1(A, B)$ e $R2(B, C)$.
+    \item $R1(A, B)$ e $R2(A, C)$.
+    \item $R1(A, B, C)$ permanece inalterada.
+    \item $R1(B, C)$ e $R2(A, B)$.
+    \item $R1(A)$ e $R2(B, C)$.
+  \end{enumerate}
+
+  \item \textbf{Qual das alternativas abaixo melhor descreve a relação entre BCNF e 4FN?}
+  \begin{enumerate}[label=\alph*)]
+    \item BCNF é uma forma normal mais rigorosa que a 4FN.
+    \item Uma relação na 4FN está obrigatoriamente na BCNF.
+    \item Uma relação na BCNF está obrigatoriamente na 4FN.
+    \item A 4FN trata de dependências funcionais, enquanto a BCNF trata de DMVs.
+    \item Elas são conceitos independentes e não possuem relação hierárquica.
+  \end{enumerate}
+
+  \item \textbf{Em uma tabela que viola a 4FN, se um funcionário possui 3 telefones e 4 habilidades independentes, quantas linhas ele ocupará na tabela original?}
+  \begin{enumerate}[label=\alph*)]
+    \item 3 linhas.
+    \item 4 linhas.
+    \item 7 linhas.
+    \item 12 linhas (produto cartesiano).
+    \item 1 linha com campos multivalorados.
+  \end{enumerate}
+
+
+
+  \item \textbf{Uma DMV $X \twoheadrightarrow Y$ implica que, para um par de tuplas $(x, y1, z1)$ e $(x, y2, z2)$, também devem existir na relação as tuplas:}
+  \begin{enumerate}[label=\alph*)]
+    \item $(x, z1, y2)$ e $(x, z2, y1)$.
+    \item $(x, y1, z2)$ e $(x, y2, z1)$.
+    \item $(y1, x, z1)$ e $(y2, x, z2)$.
+    \item $(x, x, x)$ e $(y, y, y)$.
+    \item A DMV não exige a existência de outras tuplas.
+  \end{enumerate}
+
+  \item \textbf{Sobre as "Dependências Multivaloradas Independentes", assinale a correta:}
+  \begin{enumerate}[label=\alph*)]
+    \item Duas DMVs são independentes se o determinante de uma for o dependente da outra.
+    \item Elas ocorrem quando dois atributos multivalorados não possuem ligação lógica entre si, mas dependem da mesma chave.
+    \item Devem sempre ser mantidas na mesma tabela para facilitar o JOIN.
+    \item São resolvidas através da 3FN.
+    \item Não causam redundância se a tabela estiver na 1FN.
+  \end{enumerate}
+
+
+
+
+\end{enumerate}
+
+\vspace{1cm}
+\begin{center}
+  \textit{``A 4FN remove redundâncias causadas por dependências multivaloradas, garantindo que fatos independentes não sejam forçados a coexistir em combinações artificiais.''}
+\end{center}
+
+\end{document}

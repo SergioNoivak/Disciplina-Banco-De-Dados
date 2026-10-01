@@ -1,0 +1,186 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática e listas
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+% Layout e cores
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+
+% Blocos
+\usepackage[most]{tcolorbox}
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=maincolor,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=6pt,
+  right=6pt,
+  top=6pt,
+  bottom=6pt
+}
+
+% Margens
+\geometry{margin=2.5cm}
+
+% Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+
+\renewcommand{\headrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+
+\renewcommand{\footrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+
+% Altura do cabeçalho (corrigida)
+\setlength{\headheight}{52pt}
+\addtolength{\topmargin}{-20pt}
+
+% Cabeçalho
+\fancyhead[L]{%
+  \includegraphics[height=1.2cm]{Universidade_de_Rio_Verde.jpg}
+}
+
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{%
+    \small
+    \textbf{Lista de Exercícios}\\
+    Me.~Sergio Souza Novak\\
+    \textit{Banco de Dados}
+    }
+    }
+    
+% Rodapé
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+
+\begin{document}
+
+\vspace*{0.2cm}
+\begin{center}
+  {\Large \textbf{Lista de Exercícios: Normalização}}\\[0.2cm]
+  {\large Banco de Dados}\\[0.2cm]
+  Tema: 1ª e 2ª Formas Normais (1FN e 2FN)
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{enumerate}[label=\textbf{Questão \arabic*:}, leftmargin=*]
+
+    \item \textbf{(Teoria - Anomalias)} Explique, com suas palavras, o que são anomalias de banco de dados e descreva brevemente os três tipos principais (Inserção, Atualização e Remoção).
+
+    \item \textbf{(Anomalia de Inserção)} Considere a tabela abaixo, que armazena informações de turmas e disciplinas:
+    
+    \vspace{0.2cm}
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+        \hline
+        \textbf{Cod\_Turma} & \textbf{Nome\_Turma} & \textbf{Cod\_Disc} & \textbf{Nome\_Disc} \\ \hline
+        T1 & Turma A & D1 & Cálculo \\ \hline
+        T2 & Turma B & D1 & Cálculo \\ \hline
+    \end{tabular}
+    \flushleft
+    \vspace{0.2cm}
+    Qual anomalia de inserção ocorre se tentarmos cadastrar uma nova disciplina (ex: "Física") que ainda não possui nenhuma turma vinculada? Como a normalização resolveria este problema?
+
+    \item \textbf{(Anomalia de Atualização)} Na tabela \texttt{FUNCIONARIOS} abaixo, o departamento "Vendas" mudou seu nome para "Comercial".
+    
+    \vspace{0.2cm}
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+        \hline
+        \textbf{Cod\_Fun} & \textbf{Nome} & \textbf{Cod\_Depto} & \textbf{Nome\_Depto} \\ \hline
+        101 & Alice & D1 & Vendas \\ \hline
+        102 & Bob & D1 & Vendas \\ \hline
+        103 & Carol & D1 & Vendas \\ \hline
+    \end{tabular}
+    \flushleft
+    \vspace{0.2cm}
+    O que acontece se o DBA atualizar apenas o registro da Alice? Como chamamos esse problema e qual a causa raiz dele?
+
+    \item \textbf{(1ª Forma Normal - Atributos Multivalorados)} A tabela abaixo viola a 1FN. Identifique o motivo e realize a normalização, separando os valores em novos registros.
+    
+    \vspace{0.2cm}
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{ID} & \textbf{Nome} & \textbf{Contatos} \\ \hline
+        1 & Carlos & car@email.com, (11) 9111-1111 \\ \hline
+        2 & Ana & ana@email.com \\ \hline
+        3 & Bia & bia@work.com, bia@home.com \\ \hline
+    \end{tabular}
+    \flushleft
+
+    \item \textbf{(1ª Forma Normal - Grupos Repetitivos)} Um desenvolvedor criou a tabela \texttt{CLIENTES} com os campos: \texttt{ID, Nome, Tel\_1, Tel\_2, Tel\_3}.
+    \begin{enumerate}[label=\alph*)]
+        \item Por que essa estrutura viola a 1FN?
+        \item Quais problemas essa modelagem pode causar no futuro?
+        \item Refaça a modelagem utilizando uma nova tabela para armazenar os telefones.
+    \end{enumerate}
+
+    \item \textbf{(Dependência Funcional)} Dada a tabela \texttt{PRODUTOS}:
+    
+    \vspace{0.2cm}
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+        \hline
+        \textbf{Cod\_Prod} & \textbf{Descricao} & \textbf{Cod\_Cat} & \textbf{Nome\_Categoria} \\ \hline
+        P1 & Mouse & C1 & Periféricos \\ \hline
+        P2 & Teclado & C1 & Periféricos \\ \hline
+        P3 & Monitor & C2 & Vídeo \\ \hline
+    \end{tabular}
+    \flushleft
+    \vspace{0.2cm}
+    Identifique as Dependências Funcionais (DF) existentes. (Exemplo: $X \to Y$).
+
+    \item \textbf{(2ª Forma Normal)} Para que uma tabela esteja na 2FN, ela deve obrigatoriamente satisfazer dois requisitos. Quais são eles? A 2FN é relevante para tabelas com chave primária simples (apenas um atributo)? Justifique.
+
+    \item \textbf{(Normalização 2FN)} Considere a tabela de itens de um pedido, onde a Chave Primária é composta pelos campos \{\textbf{ID\_Pedido, ID\_Produto}\}:
+    
+    \vspace{0.2cm}
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+        \hline
+        \textbf{ID\_Pedido} & \textbf{ID\_Produto} & \textbf{Quantidade} & \textbf{Nome\_Produto} \\ \hline
+        501 & 10 & 2 & Notebook \\ \hline
+        501 & 20 & 1 & Mouse \\ \hline
+        502 & 10 & 5 & Notebook \\ \hline
+    \end{tabular}
+    \flushleft
+    \vspace{0.2cm}
+    \begin{enumerate}[label=\alph*)]
+        \item Identifique a Dependência Funcional Parcial nesta tabela.
+        \item Realize a decomposição da tabela para que ela passe a respeitar a 2FN.
+    \end{enumerate}
+
+\end{enumerate}
+
+\vspace{1cm}
+\begin{center}
+    \textit{"A normalização é a arte de organizar os dados para que cada fato seja armazenado em apenas um lugar."}
+\end{center}
+
+\end{document}

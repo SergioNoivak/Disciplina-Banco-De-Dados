@@ -1,0 +1,36 @@
+digraph G {
+
+  rankdir=LR;
+  splines=polyline;
+  graph [forcelabels=true, nodesep=0.4, ranksep=1.2];
+
+  node [fontname="Arial", fontsize=18];
+  edge [dir=none, fontsize=16];
+
+  // ENTIDADES
+  Pessoa [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+  Computador [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+
+  // RELACIONAMENTO
+  possui [shape=diamond, label="possui", style=filled, fillcolor="#c9d3e8"];
+
+  Pessoa -> possui [label="(1,n)"];
+  possui -> Computador [label="(1,1)"];
+
+  // ATRIBUTOS
+  node [shape=ellipse, fontsize=15];
+
+  id_pessoa [label="id_pessoa", style=filled, fillcolor="#004628", fontcolor=white];
+  nome_pessoa [label="nome"];
+
+  id_computador [label="id_computador", style=filled, fillcolor="#004628", fontcolor=white];
+  marca [label="marca"];
+  modelo [label="modelo"];
+
+  Pessoa -> id_pessoa;
+  Pessoa -> nome_pessoa;
+
+  Computador -> id_computador;
+  Computador -> marca;
+  Computador -> modelo;
+}

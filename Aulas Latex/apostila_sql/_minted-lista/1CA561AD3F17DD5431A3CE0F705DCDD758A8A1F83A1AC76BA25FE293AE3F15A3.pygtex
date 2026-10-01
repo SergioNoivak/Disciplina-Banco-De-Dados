@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} O banco de dados retornará apenas as linhas onde \PYGZsq{}ativo\PYGZsq{} for verdadeiro}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{email}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{pessoa}
+\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{ativo}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{TRUE}\PYG{p}{;}
+\end{Verbatim}

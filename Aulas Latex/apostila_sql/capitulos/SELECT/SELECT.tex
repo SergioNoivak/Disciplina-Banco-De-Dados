@@ -1,0 +1,231 @@
+\chapter{O Comando SELECT: Consultando Dados}
+
+O comando \texttt{SELECT} é a ferramenta fundamental para extrair informações do banco de dados. Diferente das operações \texttt{INSERT}, \texttt{UPDATE} e \texttt{DELETE}, o \texttt{SELECT} apenas realiza a leitura dos dados. Toda a lógica de extração e cruzamento de informações numa aplicação moderna, desde relatórios gerenciais até tabelas de dashboards, depende substancialmente da construção correta desse comando.
+
+\begin{observacao}
+Pense no banco de dados como uma biblioteca estruturada. O \texttt{SELECT} é a forma como você descreve \textbf{o que} quer encontrar e \textbf{como} deseja que esses dados sejam apresentados e organizados. O SGBD fará o trabalho pesado de varrer milhares de registros e entregar apenas o resultado desejado.
+\end{observacao}
+
+% =======================
+\section{Sintaxe e Cenário de Exemplo}
+% =======================
+
+A estrutura base para toda consulta em SQL segue uma ordem obrigatória de declaração das cláusulas. Cada cláusula desempenha um papel específico no processamento da busca:
+
+\begin{sqlcode}
+SELECT  [DISTINCT] colunas    -- O que mostrar (colunas)
+FROM    tabela                -- De onde buscar (tabelas)
+WHERE   condicao              -- Filtro de linhas (registros)
+GROUP BY coluna               -- Agrupamento
+HAVING  condicao_grupo        -- Filtro sobre grupos
+ORDER BY coluna [ASC|DESC]    -- Ordem de exibição
+LIMIT   quantidade;           -- Limite de linhas retornadas
+\end{sqlcode}
+
+Neste capítulo, utilizaremos três tabelas de um modelo acadêmico simples para ilustrar os conceitos:
+\begin{itemize}
+    \item \textbf{aluno}: \texttt{id}, \texttt{nome}, \texttt{cidade}, \texttt{email}, \texttt{data\_nascimento}, \texttt{ativo}.
+    \item \textbf{curso}: \texttt{id}, \texttt{nome}, \texttt{area}.
+    \item \textbf{matricula}: \texttt{id}, \texttt{aluno\_id}, \texttt{curso\_id}, \texttt{nota}, \texttt{ano}.
+\end{itemize}
+
+% =======================
+\section{Buscando Dados: SELECT Básico}
+% =======================
+
+A forma mais simples de recuperar dados consiste em listar as colunas desejadas separadas por vírgula logo após o \texttt{SELECT}, e indicar a tabela alvo na cláusula \texttt{FROM}.
+
+\begin{sqlcode}
+-- Recuperando colunas específicas:
+SELECT nome, cidade FROM aluno;
+
+-- Recuperando todas as informações (curinga *):
+SELECT * FROM aluno;
+\end{sqlcode}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!40!black,title=Dica de Ouro]
+O uso do \texttt{SELECT *} em sistemas corporativos de produção não é recomendado, pois extrai colunas desnecessárias e sobrecarrega a rede. Especifique apenas as colunas que sua interface ou relatório realmente precisa.
+\end{tcolorbox}
+
+\subsection{Apelidos com AS e Valores Únicos com DISTINCT}
+Podemos renomear as colunas exibidas utilizando a palavra-chave \texttt{AS}. Esta alteração afeta apenas a exibição do resultado e não modifica a tabela original. Quando necessitamos apenas das ocorrências únicas de uma coluna (sem dados repetidos), aplicamos a cláusula \texttt{DISTINCT}.
+
+\begin{sqlcode}
+-- Renomeando colunas para relatórios:
+SELECT nome AS "Nome Completo", cidade AS "Naturalidade" FROM aluno;
+
+-- Listando cidades únicas cadastradas, ignorando as duplicatas:
+SELECT DISTINCT cidade FROM aluno;
+\end{sqlcode}
+
+% =======================
+\section{Filtrando Linhas com WHERE}
+% =======================
+
+A cláusula \texttt{WHERE} atua como uma peneira, aplicando condições lógicas linha por linha. Apenas os registros cujo teste retorne verdadeiro (\texttt{TRUE}) farão parte do pacote final enviado ao usuário.
+
+Os operadores básicos incluem igualdade (\texttt{=}), diferença (\texttt{<>} ou \texttt{!=}), maior que (\texttt{>}), menor que (\texttt{<}), e suas variantes (\texttt{>=}, \texttt{<=}).
+
+\begin{sqlcode}
+-- Exibe apenas registros onde a cidade equivale a Rio Verde
+SELECT nome FROM aluno WHERE cidade = 'Rio Verde';
+\end{sqlcode}
+
+\subsection{Lógica Múltipla: AND, OR e NOT}
+O SQL permite combinações avançadas utilizando \texttt{AND} (onde obrigatoriamente todas as premissas devem ser reais), \texttt{OR} (sendo suficiente apenas um lado provar-se verídico) e \texttt{NOT} (fator modificador que inverte a premissa).
+
+\begin{sqlcode}
+-- Alunos ativos (E) moradores de Goiânia
+SELECT nome FROM aluno WHERE cidade = 'Goiânia' AND ativo = TRUE;
+
+-- Alunos não ativos de qualquer cidade
+SELECT nome FROM aluno WHERE NOT ativo = TRUE;
+\end{sqlcode}
+
+\subsection{Operadores Estruturais: IN e BETWEEN}
+Para checar contra uma pluralidade solta de múltiplos valores usa-se o termo \texttt{IN}. Já para abranger intervalos numéricos ou temporais perfeitamente, emprega-se \texttt{BETWEEN}, que garante a inclusão do teto e do piso no processo.
+
+\begin{sqlcode}
+SELECT nome FROM aluno WHERE cidade IN ('Rio Verde', 'Jataí', 'Mineiros');
+SELECT aluno_id FROM matricula WHERE nota BETWEEN 6.0 AND 8.5;
+\end{sqlcode}
+
+\subsection{Busca Textual Avançada com LIKE}
+O operador textual de similaridade \texttt{LIKE} trabalha operando metacaracteres específicos. É de uso rotineiro nas barras de pesquisa e filtros gerenciais e telas de listagem.
+\begin{itemize}
+    \item \textbf{\%} Substitui um aglomerado de múltiplos caracteres em sequência (ou mesmo nenhum).
+    \item \textbf{\_} Restringe a substituição unicamente para um exato caractere isolado.
+\end{itemize}
+
+\begin{sqlcode}
+-- Pessoas da família 'Lima' (não importa o que vem antes ou depois)
+SELECT nome FROM aluno WHERE nome LIKE '%Lima%';
+
+-- Nomes iniciados com a letra B
+SELECT nome FROM aluno WHERE nome LIKE 'B%';
+\end{sqlcode}
+
+\subsection{Lidando com a Ausência Absoluta: IS NULL}
+No ecossistema SQL, o elemento \texttt{NULL} aponta para uma ausência imutável de dado preenchido; ou seja, o campo não possui lastro, nunca foi editado ou se perdeu. Nunca verificamos \texttt{NULL} com operador matemático de igualdade (\texttt{=}), devendo invocar o \texttt{IS NULL} ou o reverso \texttt{IS NOT NULL}.
+
+\begin{sqlcode}
+-- Detecção de cadastro com pendência de e-mail (em branco/nulo absoluto)
+SELECT nome FROM aluno WHERE email IS NULL;
+\end{sqlcode}
+
+% =======================
+\section{Ordenando e Limitando Resultados}
+% =======================
+
+Sem intervenção sistemática explícita, um retorno do SGBD pode apresentar linhas de maneira randômica, baseando-se no critério interno físico ditado por onde a linha se alojou na superfície de leitura do disco rígido.
+
+\subsection{Ordenação Descritiva com ORDER BY}
+Para consolidar análises claras, forçamos um direcionamento organizacional estrito aplicando \texttt{ORDER BY}. O compilador oferece o enquadramento linear natural crescente e alfanumérico padrão original referenciado pelas siglas (\texttt{ASC}) em contraposição ao modo invertido regressivo (\texttt{DESC}).
+
+Podemos definir chaves primárias e secundárias preestabelecendo critérios rigorosos focados no desempate posicional em ocorrências conjuntas:
+
+\begin{sqlcode}
+-- Agrupa blocos em ordem crescente pelas cidades adjacentes, 
+-- desempatando alunos residentes da mesma urbe pelo nome em ordem decrescente
+SELECT nome, cidade FROM aluno ORDER BY cidade ASC, nome DESC;
+\end{sqlcode}
+
+\subsection{Supressão e Segmentação Paginada: LIMIT e OFFSET}
+Como frequentemente as aplicações modernas exibem seus relatórios particionados de forma palatável amigavelmente em grades compostas por páginas numéricas de tabelas de interface. Controlamos precisamente esse tráfego de exibição mitigando excessos operacionais ao segmentar retornos via \texttt{LIMIT}. O termo atrelado \texttt{OFFSET} engloba o papel de pular, no bastidor interno da varredura operante executiva, os patamares listados de instâncias inicialmente contabilizadas que não competem à exibição da fração ativa solicitada.
+
+\begin{sqlcode}
+-- Recuperando estritamente os cinco estudantes de maior potencial acadêmico 
+SELECT aluno_id, nota FROM matricula ORDER BY nota DESC LIMIT 5;
+
+-- Mecânica focal paginada: Retorna cinco instâncias suprimindo os dez prévios 
+SELECT nome FROM aluno ORDER BY nome LIMIT 5 OFFSET 10;
+\end{sqlcode}
+
+% =======================
+\section{Agrupando Dados e Agregações}
+% =======================
+
+Em situações analíticas focadas onde a averiguação corporativa exige apurações sintéticas com sumarização extensiva macro, deixamos de lidar pontualmente com cada registro atomizado singular. Aplicamos ativamente equações providas pelas rotuladas "funções de agregação": 
+A modalidade de varredura cumulativa enumerando tuplas atende por \texttt{COUNT()}, as prospecções orientadas focadas explicitamente a identificar extremos tetos ou abismos pisos invocamos \texttt{MAX()} atrelado concomitantemente na outra polaridade avaliativa com e \texttt{MIN()}, e a consolidação focada em sintetizar a raiz algébrica acumulativa e média aritmética providas pelos termos \texttt{SUM()} e \texttt{AVG()}.
+
+\begin{sqlcode}
+-- Encontra a quantia monetária máxima, mínima e condensa todo o resto na média
+SELECT MAX(nota), MIN(nota), AVG(nota) FROM matricula;
+\end{sqlcode}
+
+\subsection{Segmentando Agrupamentos Estritos: GROUP BY}
+O SGBD atinge seu pleno potencial ao acoplar funções agregativas no enquadramento fragmentador departamental lógico \texttt{GROUP BY}. Ele obrigatoriamente segmenta todos os registros matriz que se assemelham no crivo da restrição alocando e separando tais conglomerados de tal formato que as agregações computáveis processam de maneira fragmentada calculando de subgrupo a subgrupo, resultando extratos individuais avaliativos:
+
+\begin{sqlcode}
+-- Descobrindo avaliativamente a síntese analítica final das médias exatas isoladas para todo e cada singular estudante contabilizado na lista de matriculados listados:
+SELECT aluno_id, AVG(nota) AS media
+FROM matricula
+GROUP BY aluno_id;
+\end{sqlcode}
+
+\subsection{A Peneira Superior de Aglomerados Analíticos: HAVING}
+Lembre-se imperativamente das camadas constituidoras de modelagem matricial relacional, não utilizamos a condicional delimitadora \texttt{WHERE} no foco analítico se estivermos ambicionando promover censura com avaliações diretas e calcificadas em base do teto ou sínteses aglutinadas recém computadas. O preceito clássico matriz atua previamente separando lixo do material orgânico, ao passo e tempo que todo exame analítico executivo consolidado provindo de extrato originado das próprias funções agregadoras deverá de fato estar posicionado englobado restritamente abrigado unicamente sob as sentenças reguladoras provadas no cerne da estrutura avançada condicionadora expressa sob o código do termo e chancela nominativa \texttt{HAVING}.
+
+\begin{sqlcode}
+-- Rastreando todos os alunos provados merecedores englobando e atestando que toda média final particular obtida unicamente foi auferida superando a escala limite baseada estritamente pontuada referenciada englobante e acima de sólidos 7 pontos corridos:
+SELECT aluno_id, AVG(nota) AS media
+FROM matricula
+GROUP BY aluno_id
+HAVING AVG(nota) > 7.0;
+\end{sqlcode}
+
+% =======================
+\section{Junções Matemáticas Complexas: JOINs}
+% =======================
+
+A verdadeira inteligência processual reside num princípio lógico fundacional arquitetônico da sistemática contida nativamente do princípio elementar das bases de dados relacionais ativas de fato, interligar entidades fracionadas independentes englobando seus vetores apontadores para reconstruir uma visão sintética compreensiva global integrada e completa. O operador analítico mesclador interno matriz elementar executor é chamado formal e universalmente conhecido pela denominação estrita unificada condutiva contígua rotulada unicamente e referenciada amplamente da clássica chave operacional \texttt{JOIN}.
+
+\subsection{O Acoplamento Perfeito Simétrico: INNER JOIN}
+Tratando do caso restritivo simétrico principal balizador denominado na essência englobante \texttt{INNER JOIN}, operamos estritos elos de correlação espelhada em consonância atrelada unicamente nas linhas dotadas explicitamente e preenchidas restritamente que provam paridade absoluta equivalência mútua presente simultaneamente interconectada referencial restritivamente idêntica em ambos espectros lados tabelados simultaneamente inseridos postos englobados:
+
+\begin{sqlcode}
+-- Evidencia alunos conectados ativamente num englobado atrelanço demonstrado da ponte e espelhamento idêntico absoluto apontador provado e englobado estrito formativo provado correlacionado
+SELECT a.nome, m.nota
+FROM aluno AS a
+INNER JOIN matricula AS m ON a.id = m.aluno_id;
+\end{sqlcode}
+
+\subsection{O Espelhamento Total Elementar Origético: LEFT JOIN}
+Abordagens direcionadas assimétricas englobam preceito de totalidade, na declaração referida base contida regrada imperativamente declarada esquerda contígua analítica unicamente \texttt{LEFT JOIN} engloba na premissa elementar fundamental manter sem perda excludente restritiva pontuais todas representatividades listadas originalmente advindas do polo e quadrante matriz declarado contido do lado alocado primeiro esquerdista (tabela referenciada unicamente na estrutura preestabelecida de declarações em matriz de consulta englobante do núcleo premissa \texttt{FROM}). Se inexistirem correspondências ligantes diretas simétricas na estrutura tabela do lado justaposto oposto vizinho direita atrelada, este completará unicamente entregando valor vazio limitante expresso condicional contido formatado pontual vazio exposto nulo \texttt{NULL} garantindo entrega inteira.
+
+\begin{sqlcode}
+-- Lista sem omissões por excepcionalidade todos formandos expostos evidenciando até casos faltantes pendentes isolados:
+SELECT a.nome, m.nota
+FROM aluno AS a
+LEFT JOIN matricula AS m ON a.id = m.aluno_id;
+\end{sqlcode}
+
+% =======================
+\section{Ordem Linear Processada Compiladora}
+% =======================
+
+Num fluxo processual restritivo base focado sequencial primário de execuções lógicas avaliativas condicionadas imposto, temos a cronologia base executável:
+\begin{enumerate}
+    \item \textbf{FROM/JOIN}: Mescla as bases.
+    \item \textbf{WHERE}: Filtragem inicial linha a linha.
+    \item \textbf{GROUP BY}: Junção e condensação em blocos.
+    \item \textbf{HAVING}: Filtragem profunda nos blocos.
+    \item \textbf{SELECT}: Cálculos explícitos.
+    \item \textbf{DISTINCT}: Expurgo de repetições textuais geradas.
+    \item \textbf{ORDER BY}: Estética e alinhamento visual final resultante.
+    \item \textbf{LIMIT / OFFSET}: Paginação de recortes avaliativos seccionais.
+\end{enumerate}
+
+% =======================
+\section{Laboratório e Práticas Orientadas}
+% =======================
+
+\begin{tcolorbox}[colback=green!5,colframe=green!40!black,title=Exercícios - Sintaxe DQL de Estruturas Restritivas Contidas]
+\begin{enumerate}
+    \item Desenvolva relatórios apontadores apenas englobando instâncias nativas da cidade 'Rio Verde'.
+    \item Formule pesquisa estrita listando numerado os nichos por municípios ativando o comando aglomerante consolidado prático referenciado contido focado na matriz em (GROUP BY).
+    \item Restrinja visual final das apurações do retorno limitante estritamente prático focados englobando restritivamente em apurações de exibir formatados apenas cinco exemplares paginados iniciais.
+    \item Interligue simetricamente o consolidado dos estudantes alinhados as grades contidas mescladas apontadas focando relacionando ativamente no limitante (INNER JOIN).
+    \item Estabeleça restrições posteriores limítrofes baseando apurações nas extremidades estritas (HAVING) englobando restritivamente o polo de avaliação da média > 5.0.
+\end{enumerate}
+\end{tcolorbox}

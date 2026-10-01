@@ -1,0 +1,118 @@
+digraph G {
+  rankdir=TB;
+  splines=polyline;
+  graph [forcelabels=true];
+
+  nodesep=0.9;
+  ranksep=0.8;
+
+  node [fontname="Arial", fontsize=15];
+  edge [dir=none, fontsize=15];
+
+  // =========================
+  // ENTIDADES E RELACIONAMENTOS
+  // =========================
+
+  Turma    [shape=rectangle];
+  pertence [shape=diamond];
+  Aluno    [shape=rectangle];
+  possui   [shape=diamond];
+  Contato  [shape=rectangle];
+
+  { rank=same; Turma; pertence; Aluno; possui; Contato; }
+
+  Turma -> pertence [label="(1,1)"];
+  pertence -> Aluno [label="(1,n)"];
+  Aluno -> possui [label="(1,1)"];
+  possui -> Contato [label="(1,n)", penwidth=3.0];
+
+  // =========================
+  // ATRIBUTOS TURMA
+  // =========================
+
+  codigo_turma [
+    shape=ellipse,
+    label="codigo",
+    width=1.2,
+    height=0.6,
+    margin=0.1,
+    style=filled,
+    fillcolor="#004628",
+    fontcolor=white
+  ];
+
+  nome_turma [
+    shape=ellipse,
+    label="nome",
+    width=1.2,
+    height=0.6,
+    margin=0.1
+  ];
+
+  Turma -> codigo_turma;
+  Turma -> nome_turma;
+
+  { rank=same; codigo_turma; nome_turma; }
+
+  // =========================
+  // ATRIBUTOS ALUNO
+  // =========================
+
+  matricula [
+    shape=ellipse,
+    label="matricula",
+    width=1.4,
+    height=0.6,
+    margin=0.1,
+    style=filled,
+    fillcolor="#004628",
+    fontcolor=white
+  ];
+
+  nome [
+    shape=ellipse,
+    label="nome",
+    width=1.2,
+    height=0.6,
+    margin=0.1
+  ];
+
+  data_nascimento [
+    shape=ellipse,
+    label="data_nascimento",
+    width=1.8,
+    height=0.6,
+    margin=0.1
+  ];
+
+  Aluno -> matricula;
+  Aluno -> nome;
+  Aluno -> data_nascimento;
+
+  { rank=same; matricula; nome; data_nascimento; }
+
+  // =========================
+  // ATRIBUTOS CONTATO
+  // =========================
+
+  nome_contato [
+    shape=ellipse,
+    label="nome",
+    width=1.2,
+    height=0.6,
+    margin=0.1
+  ];
+
+  fone_contato [
+    shape=ellipse,
+    label="fone",
+    width=1.2,
+    height=0.6,
+    margin=0.1
+  ];
+
+  Contato -> nome_contato;
+  Contato -> fone_contato;
+
+  { rank=same; nome_contato; fone_contato; }
+}

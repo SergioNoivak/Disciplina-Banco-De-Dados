@@ -1,0 +1,271 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática e listas
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+% Layout e cores
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+
+% Blocos coloridos
+\usepackage[most]{tcolorbox}
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=maincolor,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=6pt, right=6pt, top=6pt, bottom=6pt
+}
+
+% Margens
+\geometry{margin=2.5cm}
+
+% Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+
+\renewcommand{\headrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+
+\renewcommand{\footrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+
+\setlength{\headheight}{52pt}
+\addtolength{\topmargin}{-20pt}
+
+\fancyhead[L]{%
+  \includegraphics[height=1.2cm]{Universidade_de_Rio_Verde.jpg}
+}
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{%
+    \small
+    \textbf{Lista de Exercícios}\\
+    Me.~Sergio Souza Novak\\
+    \textit{Banco de Dados}
+  }
+}
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+
+\begin{document}
+
+\vspace*{0.2cm}
+\begin{center}
+  {\Large \textbf{Lista de Exercícios: Normalização}}\\[0.2cm]
+  {\large Banco de Dados}\\[0.2cm]
+  Tema: 4ª Forma Normal (4FN) --- Dependências Multivaloradas
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{block}{Instruções}
+Para cada questão: (1) identifique as Dependências Multivaloradas (DMV) usando a notação $X \twoheadrightarrow Y$; (2) verifique se o determinante é superchave; (3) conclua com \textbf{Viola} ou \textbf{Não viola} a 4FN e justifique. Nas questões de projeto, apresente as novas tabelas com dados e indique as chaves (PK/FK).
+\end{block}
+
+\vspace{0.4cm}
+
+\begin{enumerate}[label=\textbf{Questão \arabic*:}, leftmargin=*]
+
+% ================================================================
+%  BLOCO 1 — IDENTIFICAR DMV E TESTAR 4FN (Q1–Q3)
+% ================================================================
+
+  \item \textbf{(Teste 4FN -- Pesquisadores)} A tabela \texttt{PESQUISADORES} abaixo registra, para cada pesquisador, os projetos nos quais atua e os idiomas que domina. Um pesquisador pode atuar em vários projetos \textbf{e} dominar vários idiomas, de forma \textbf{independente}. Chave Primária: \textbf{\{Pesquisador, Projeto, Idioma\}}.
+
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Pesquisador} & \textbf{Projeto} & \textbf{Idioma} \\ \hline
+    Ana Souza  & IA Climática   & Inglês    \\ \hline
+    Ana Souza  & IA Climática   & Espanhol  \\ \hline
+    Ana Souza  & Robótica       & Inglês    \\ \hline
+    Ana Souza  & Robótica       & Espanhol  \\ \hline
+    Bruno Lima & Robótica       & Inglês    \\ \hline
+    Bruno Lima & Robótica       & Francês   \\ \hline
+    Bruno Lima & Bioinformática & Inglês    \\ \hline
+    Bruno Lima & Bioinformática & Francês   \\ \hline
+    Carla Dias & IA Climática   & Português \\ \hline
+    Carla Dias & Bioinformática & Português \\ \hline
+  \end{tabular}
+  \flushleft
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Identifique as Dependências Multivaloradas (DMV) existentes, usando a notação $X \twoheadrightarrow Y$.
+    \item Por que a combinação entre \textit{Projeto} e \textit{Idioma} constitui um \textbf{produto cartesiano}? Calcule quantas linhas seriam necessárias se Ana tivesse 4 projetos e 3 idiomas.
+    \item A tabela está na \textbf{4FN}? O determinante das DMVs é superchave? Justifique sua conclusão.
+  \end{enumerate}
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Teste 4FN -- Desenvolvedores)} A tabela \texttt{DESENVOLVEDORES} abaixo registra, para cada desenvolvedor, os sistemas em que trabalha e as linguagens de programação que domina. As duas informações são \textbf{independentes} entre si. Chave Primária: \textbf{\{Desenvolvedor, Sistema, Linguagem\}}.
+
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Desenvolvedor} & \textbf{Sistema} & \textbf{Linguagem} \\ \hline
+    Felipe Melo  & ERP Financeiro  & Java       \\ \hline
+    Felipe Melo  & ERP Financeiro  & Python     \\ \hline
+    Felipe Melo  & Portal RH       & Java       \\ \hline
+    Felipe Melo  & Portal RH       & Python     \\ \hline
+    Gisele Rocha & Portal RH       & Kotlin     \\ \hline
+    Gisele Rocha & Portal RH       & JavaScript \\ \hline
+    Gisele Rocha & App Mobile      & Kotlin     \\ \hline
+    Gisele Rocha & App Mobile      & JavaScript \\ \hline
+    Hugo Neves   & ERP Financeiro  & C\#        \\ \hline
+    Hugo Neves   & App Mobile      & C\#        \\ \hline
+  \end{tabular}
+  \flushleft
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Identifique as DMVs presentes na tabela usando a notação $X \twoheadrightarrow Y$.
+    \item Explique formalmente por que as dependências $\text{Desenvolvedor} \twoheadrightarrow \text{Sistema}$ e $\text{Desenvolvedor} \twoheadrightarrow \text{Linguagem}$ são \textbf{independentes}.
+    \item A tabela viola a \textbf{4FN}? Identifique a anomalia de inserção que ocorreria ao adicionar a linguagem \textit{TypeScript} para Felipe Melo.
+  \end{enumerate}
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Teste 4FN -- Professores)} A tabela \texttt{PROFESSORES\_AULAS} abaixo registra os professores, as disciplinas que lecionam e os dias da semana em que estão disponíveis. A disponibilidade de um professor é \textbf{independente} da disciplina que ele leciona. Chave Primária: \textbf{\{Professor, Disciplina, Dia\}}.
+
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Professor} & \textbf{Disciplina} & \textbf{Dia} \\ \hline
+    Dr. Almeida  & Banco de Dados & Segunda  \\ \hline
+    Dr. Almeida  & Banco de Dados & Quarta   \\ \hline
+    Dr. Almeida  & Redes          & Segunda  \\ \hline
+    Dr. Almeida  & Redes          & Quarta   \\ \hline
+    Dra. Figueiredo & Algoritmos  & Terça    \\ \hline
+    Dra. Figueiredo & Algoritmos  & Quinta   \\ \hline
+    Dra. Figueiredo & Estruturas  & Terça    \\ \hline
+    Dra. Figueiredo & Estruturas  & Quinta   \\ \hline
+    Dr. Kastner  & SO             & Segunda  \\ \hline
+    Dr. Kastner  & Compiladores   & Segunda  \\ \hline
+  \end{tabular}
+  \flushleft
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Identifique as DMVs e classifique-as como triviais ou não triviais.
+    \item Aplique o \textbf{teste formal da 4FN}: para cada DMV $X \twoheadrightarrow Y$, verifique se $X$ é superchave da relação.
+    \item A tabela viola a \textbf{4FN}? Que redundância concreta ocorreria se Dr. Almeida passasse a estar disponível também às Sextas?
+  \end{enumerate}
+
+% ================================================================
+%  BLOCO 2 — ANÁLISE DO PRODUTO CARTESIANO (Q4)
+% ================================================================
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Análise Formal -- Produto Cartesiano)} Considere a relação \texttt{FUNCIONARIOS} que registra, para cada funcionário, os \textbf{cargos} que exerceu ao longo da carreira e os \textbf{benefícios} que recebe da empresa. Sabe-se que os conjuntos de cargos e benefícios são \textbf{independentes} entre si.
+
+  Os conjuntos de um funcionário são:
+  \[
+    C(\text{Marcos}) = \{\text{Analista}, \text{Gerente}, \text{Coordenador}\}
+    \qquad
+    B(\text{Marcos}) = \{\text{Plano de Saúde}, \text{Vale-Alimentação}\}
+  \]
+
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Funcionário} & \textbf{Cargo} & \textbf{Benefício} \\ \hline
+    Marcos & Analista     & Plano de Saúde    \\ \hline
+    Marcos & Analista     & Vale-Alimentação  \\ \hline
+    Marcos & Gerente      & Plano de Saúde    \\ \hline
+    Marcos & Gerente      & Vale-Alimentação  \\ \hline
+    Marcos & Coordenador  & Plano de Saúde    \\ \hline
+    Marcos & Coordenador  & Vale-Alimentação  \\ \hline
+  \end{tabular}
+  \flushleft
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Escreva formalmente as DMVs presentes, usando a notação $X \twoheadrightarrow Y$.
+    \item Calcule e escreva explicitamente o conjunto $C(\text{Marcos}) \times B(\text{Marcos})$, mostrando todos os pares ordenados.
+    \item A tabela viola a \textbf{4FN}? Demonstre que o determinante \textit{Funcionário} não é superchave na relação original.
+    \item Que anomalia de \textbf{exclusão} ocorreria se o benefício ``Plano de Saúde'' fosse removido para Marcos?
+  \end{enumerate}
+
+% ================================================================
+%  BLOCO 3 — PROJETO: DECOMPOR PARA A 4FN (Q5)
+% ================================================================
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Projeto Lógico -- Adequar à 4FN)} A tabela \texttt{PESSOAS} abaixo registra pessoas com seus telefones de contato e suas habilidades profissionais. As habilidades e os telefones de cada pessoa são \textbf{independentes} entre si. Chave Primária: \textbf{\{CPF, Telefone, Habilidade\}}.
+
+  As dependências identificadas são:
+  \[
+    CPF \to \{\text{Nome}, \text{Cidade}, \text{Email}\}
+    \qquad
+    CPF \twoheadrightarrow \text{Telefone}
+    \qquad
+    CPF \twoheadrightarrow \text{Habilidade}
+  \]
+
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|c|l|l|c|l|l|}
+    \hline
+    \textbf{CPF} & \textbf{Nome} & \textbf{Cidade} & \textbf{Telefone} & \textbf{Email} & \textbf{Habilidade} \\ \hline
+    001 & Ana Lima  & Goiânia     & 9001 & ana@mail.com  & Python \\ \hline
+    001 & Ana Lima  & Goiânia     & 9001 & ana@mail.com  & SQL    \\ \hline
+    001 & Ana Lima  & Goiânia     & 9002 & ana@mail.com  & Python \\ \hline
+    001 & Ana Lima  & Goiânia     & 9002 & ana@mail.com  & SQL    \\ \hline
+    002 & Bruno Costa & Rio Verde & 8001 & bruno@mail.com & Java   \\ \hline
+    002 & Bruno Costa & Rio Verde & 8001 & bruno@mail.com & Kotlin \\ \hline
+    002 & Bruno Costa & Rio Verde & 8002 & bruno@mail.com & Java   \\ \hline
+    002 & Bruno Costa & Rio Verde & 8002 & bruno@mail.com & Kotlin \\ \hline
+  \end{tabular}
+  \flushleft
+  \vspace{0.2cm}
+
+  \begin{enumerate}[label=\alph*)]
+    \item Comprove que a tabela está na \textbf{BCNF} (ou seja, todas as DFs $X \to Y$ têm $X$ como superchave).
+    \item Identifique as duas DMVs que violam a \textbf{4FN} e explique por que o determinante $CPF$ não é superchave.
+    \item Aplique o algoritmo de decomposição para a 4FN:
+    \begin{enumerate}[label=\roman*.]
+      \item Encontre a DMV violadora $X \twoheadrightarrow Y$ com $X$ não sendo superchave.
+      \item Crie $S_1 = X \cup Y$ e $S_2 = \text{Relação} - Y$.
+      \item Repita o processo até que todas as relações estejam na 4FN.
+    \end{enumerate}
+    \item \textbf{Reconstrua o modelo lógico} apresentando as \textbf{três} novas tabelas com:
+    \begin{itemize}
+      \item Nome, atributos, PK e FK de cada tabela.
+      \item Os dados preenchidos conforme a tabela original (sem redundâncias).
+    \end{itemize}
+    \item Com a decomposição, o número de linhas armazenadas passou de \textbf{8} para quantas? Qual é o ganho em relação a uma pessoa com 5 telefones e 10 habilidades?
+  \end{enumerate}
+
+\end{enumerate}
+
+\vspace{1cm}
+\begin{center}
+  \textit{``Uma relação está na 4FN se, para toda dependência multivalorada não trivial $X \twoheadrightarrow Y$, $X$ é uma superchave --- pois cada fato multivalorado deve ser armazenado em sua própria relação.''}
+\end{center}
+
+\end{document}

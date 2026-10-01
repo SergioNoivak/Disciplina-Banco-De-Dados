@@ -1,0 +1,366 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática e listas
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+% Layout e cores
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+
+% Blocos coloridos
+\usepackage[most]{tcolorbox}
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=maincolor,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=6pt, right=6pt, top=6pt, bottom=6pt
+}
+
+% Margens
+\geometry{margin=2.5cm}
+
+% Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+
+\renewcommand{\headrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+
+\renewcommand{\footrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+
+\setlength{\headheight}{52pt}
+\addtolength{\topmargin}{-20pt}
+
+\fancyhead[L]{%
+  \includegraphics[height=1.2cm]{Universidade_de_Rio_Verde.jpg}
+}
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{%
+    \small
+    \textbf{Lista de Exercícios}\\
+    Me.~Sergio Souza Novak\\
+    \textit{Banco de Dados}
+  }
+}
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+
+\begin{document}
+
+\vspace*{0.2cm}
+\begin{center}
+  {\Large \textbf{Lista de Exercícios: Normalização}}\\[0.2cm]
+  {\large Banco de Dados}\\[0.2cm]
+  Tema: 3ª Forma Normal (3FN) e Forma Normal de Boyce-Codd (BCNF)
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{block}{Instruções}
+Para cada questão: (1) liste as dependências funcionais identificadas; (2) aplique o critério de verificação indicado; (3) conclua com \textbf{Viola} ou \textbf{Não viola} e justifique. Nas questões de projeto, apresente as novas tabelas com dados e indique as chaves (PK/FK).
+\end{block}
+
+\vspace{0.4cm}
+
+\begin{enumerate}[label=\textbf{Questão \arabic*:}, leftmargin=*]
+
+% ================================================================
+%  BLOCO 1 — TESTAR SE VIOLA A 3FN (Q1–Q4)
+% ================================================================
+
+  \item \textbf{(Teste 3FN -- Biblioteca)} A tabela \texttt{EMPRESTIMOS} abaixo registra empréstimos de livros em uma biblioteca. Chave Primária: \textbf{ID\_Emp}.
+  \small
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|c|c|c|l|c|l|}
+    \hline
+    \textbf{ID\_Emp} & \textbf{Data} & \textbf{ID\_Livro} & \textbf{Titulo} & \textbf{Cod\_Cat} & \textbf{Nome\_Categoria} \\ \hline
+    E01 & 05/03/2025 & L10 & Dom Casmurro         & C1 & Literatura Brasileira \\ \hline
+    E02 & 06/03/2025 & L11 & O Alquimista          & C2 & Ficção                \\ \hline
+    E03 & 07/03/2025 & L12 & Sapiens               & C3 & História              \\ \hline
+    E04 & 08/03/2025 & L10 & Dom Casmurro         & C1 & Literatura Brasileira \\ \hline
+    E05 & 09/03/2025 & L13 & 1984                  & C2 & Ficção                \\ \hline
+    E06 & 10/03/2025 & L11 & O Alquimista          & C2 & Ficção                \\ \hline
+    E07 & 11/03/2025 & L14 & Código Limpo          & C4 & Tecnologia            \\ \hline
+    E08 & 12/03/2025 & L12 & Sapiens               & C3 & História              \\ \hline
+    E09 & 13/03/2025 & L13 & 1984                  & C2 & Ficção                \\ \hline
+    E10 & 14/03/2025 & L14 & Código Limpo          & C4 & Tecnologia            \\ \hline
+  \end{tabular}
+  \flushleft
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Liste todas as dependências funcionais existentes, usando a notação $X \to Y$.
+    \item A tabela está na \textbf{3FN}? Identifique a(s) cadeia(s) transitiva(s), se houver.
+    \item Justifique sua conclusão com base na definição: \textit{``todo atributo não-chave deve depender diretamente e somente da chave primária''}.
+  \end{enumerate}
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Teste 3FN -- Escola)} A tabela \texttt{ALUNOS} abaixo armazena dados de alunos matriculados. Chave Primária: \textbf{RA}.
+
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|c|l|l|l|}
+    \hline
+    \textbf{RA} & \textbf{Nome} & \textbf{Email} & \textbf{Curso} \\ \hline
+    2301 & Ana Lima    & ana@uni.br    & Engenharia de Software \\ \hline
+    2302 & Bruno Costa & bruno@uni.br  & Ciência da Computação  \\ \hline
+    2303 & Carla Dias  & carla@uni.br  & Engenharia de Software \\ \hline
+    2304 & Diego Melo  & diego@uni.br  & Administração          \\ \hline
+    2305 & Eva Rocha   & eva@uni.br    & Ciência da Computação  \\ \hline
+    2306 & Fábio Neto  & fabio@uni.br  & Administração          \\ \hline
+    2307 & Gabi Lemos  & gabi@uni.br   & Engenharia de Software \\ \hline
+    2308 & Hugo Pires  & hugo@uni.br   & Ciência da Computação  \\ \hline
+    2309 & Iris Sales  & iris@uni.br   & Administração          \\ \hline
+    2310 & João Vaz    & joao@uni.br   & Engenharia de Software \\ \hline
+  \end{tabular}
+  \flushleft
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Liste as dependências funcionais da tabela.
+    \item Existe alguma dependência transitiva? A tabela viola a \textbf{3FN}?
+    \item Justifique sua resposta com base nas DFs encontradas.
+  \end{enumerate}
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Teste 3FN -- Hotel)} A tabela \texttt{RESERVAS} registra hospedagens em um hotel. Chave Primária: \textbf{ID\_Res}.
+
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|c|c|c|l|c|l|}
+    \hline
+    \textbf{ID\_Res} & \textbf{DataEnt.} & \textbf{ID\_Hos} & \textbf{Nome\_Hos} & \textbf{Cod\_Qto} & \textbf{Tipo\_Quarto} \\ \hline
+    R01 & 10/03 & H01 & Marcos Silva   & Q10 & Suíte         \\ \hline
+    R02 & 10/03 & H02 & Laura Moura    & Q20 & Standard      \\ \hline
+    R03 & 11/03 & H01 & Marcos Silva   & Q30 & Luxo          \\ \hline
+    R04 & 11/03 & H03 & Tiago Braga    & Q10 & Suíte         \\ \hline
+    R05 & 12/03 & H04 & Renata Faria   & Q20 & Standard      \\ \hline
+    R06 & 12/03 & H02 & Laura Moura    & Q30 & Luxo          \\ \hline
+    R07 & 13/03 & H05 & Carlos Pinto   & Q10 & Suíte         \\ \hline
+    R08 & 13/03 & H03 & Tiago Braga    & Q20 & Standard      \\ \hline
+    R09 & 14/03 & H04 & Renata Faria   & Q10 & Suíte         \\ \hline
+    R10 & 14/03 & H05 & Carlos Pinto   & Q30 & Luxo          \\ \hline
+  \end{tabular}
+  \flushleft
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Identifique as dependências funcionais, incluindo as possíveis transitivas.
+    \item Execute o teste da \textbf{3FN}: para cada DF $X \to Y$, verifique se $X$ é a chave primária.
+    \item A tabela viola a 3FN? Conclua e justifique.
+  \end{enumerate}
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Teste 3FN -- Farmácia)} A tabela \texttt{VENDAS} registra vendas de uma farmácia. Chave Primária: \textbf{ID\_Venda}.
+
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|c|c|c|l|r|}
+    \hline
+    \textbf{ID\_Venda} & \textbf{Data} & \textbf{ID\_Prod} & \textbf{Nome\_Prod} & \textbf{Preco\_Unit} \\ \hline
+    V001 & 01/03 & P10 & Dipirona 500mg & R\$\,4,50  \\ \hline
+    V002 & 01/03 & P20 & Amoxicilina    & R\$\,18,00 \\ \hline
+    V003 & 02/03 & P10 & Dipirona 500mg & R\$\,4,50  \\ \hline
+    V004 & 02/03 & P30 & Ibuprofeno     & R\$\,12,00 \\ \hline
+    V005 & 03/03 & P20 & Amoxicilina    & R\$\,18,00 \\ \hline
+    V006 & 03/03 & P40 & Losartana      & R\$\,8,00  \\ \hline
+    V007 & 04/03 & P10 & Dipirona 500mg & R\$\,4,50  \\ \hline
+    V008 & 04/03 & P30 & Ibuprofeno     & R\$\,12,00 \\ \hline
+    V009 & 05/03 & P40 & Losartana      & R\$\,8,00  \\ \hline
+    V010 & 05/03 & P20 & Amoxicilina    & R\$\,18,00 \\ \hline
+  \end{tabular}
+  \flushleft
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Liste as dependências funcionais. Há alguma cadeia transitiva?
+    \item A tabela está ou não na \textbf{3FN}? Justifique formalmente.
+    \item Que anomalia concreta ocorreria se o preço da Dipirona mudasse?
+  \end{enumerate}
+
+% ================================================================
+%  BLOCO 2 — TESTAR SE VIOLA A BCNF (Q5–Q7)
+% ================================================================
+
+  \vspace{0.4cm}
+
+  \item 
+  \textbf{(Teste BCNF -- Laboratório)} No laboratório de informática de uma faculdade, cada \textbf{aluno} reserva um \textbf{laboratório} em determinado \textbf{horário}, e cada laboratório possui \textbf{um único responsável técnico} por horário. Sabe-se também que cada técnico é responsável por \textbf{um único} laboratório. A tabela \texttt{RESERVAS\_LAB} possui as seguintes dependências:
+  \[
+    \{\text{Aluno, Horario}\} \to \text{Laboratorio}, \quad
+    \text{Laboratorio} \to \text{Tecnico}, \quad
+    \text{Tecnico} \to \text{Laboratorio}
+  \]
+
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Aluno} & \textbf{Horario} & \textbf{Laboratorio} & \textbf{Tecnico} \\ \hline
+    Ana    & 08h & Lab-A & Marcos  \\ \hline
+    Bruno  & 08h & Lab-B & Lúcia   \\ \hline
+    Carla  & 10h & Lab-A & Marcos  \\ \hline
+    Diego  & 10h & Lab-B & Lúcia   \\ \hline
+    Eva    & 14h & Lab-C & Rogério \\ \hline
+    Ana    & 14h & Lab-B & Lúcia   \\ \hline
+    Bruno  & 16h & Lab-C & Rogério \\ \hline
+    Carla  & 16h & Lab-A & Marcos  \\ \hline
+    Diego  & 08h & Lab-C & Rogério \\ \hline
+    Eva    & 10h & Lab-C & Rogério \\ \hline
+  \end{tabular}
+  \flushleft
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Identifique \textbf{todas} as chaves candidatas e os atributos primos.
+    \item A tabela está na \textbf{3FN}? Aplique a definição formal.
+    \item A tabela está na \textbf{BCNF}? Identifique a DF violadora, se houver.
+    \item Justifique por que este caso é um exemplo clássico de relação que está na 3FN mas \textbf{não} na BCNF.
+  \end{enumerate}
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Teste BCNF -- Clínica)} Em uma clínica médica, cada \textbf{paciente} é atendido por um \textbf{médico} em uma determinada \textbf{especialidade}. As regras do domínio são:
+  \begin{itemize}
+    \item Cada médico atua em \textbf{uma única} especialidade: $\text{Medico} \to \text{Especialidade}$
+    \item Para cada paciente e especialidade, há \textbf{um único} médico responsável: $\{\text{Paciente, Especialidade}\} \to \text{Medico}$
+  \end{itemize}
+
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Paciente} & \textbf{Medico} & \textbf{Especialidade} \\ \hline
+    João    & Dr.\ Alves  & Cardiologia    \\ \hline
+    Maria   & Dr.\ Braga  & Ortopedia      \\ \hline
+    Pedro   & Dr.\ Alves  & Cardiologia    \\ \hline
+    Ana     & Dr.\ Costa  & Neurologia     \\ \hline
+    Lucia   & Dr.\ Braga  & Ortopedia      \\ \hline
+    Carlos  & Dr.\ Costa  & Neurologia     \\ \hline
+    Sara    & Dr.\ Alves  & Cardiologia    \\ \hline
+    Marcos  & Dr.\ Braga  & Ortopedia      \\ \hline
+    Renata  & Dr.\ Costa  & Neurologia     \\ \hline
+    Felipe  & Dr.\ Alves  & Cardiologia    \\ \hline
+  \end{tabular}
+  \flushleft
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Quais são as chaves candidatas? Quais atributos são primos?
+    \item Verifique se a tabela está na \textbf{3FN} usando a definição formal.
+    \item Verifique se a tabela está na \textbf{BCNF}. Há alguma DF cujo determinante não é superchave?
+    \item Que anomalia de atualização ocorreria se o Dr.\ Alves mudasse de especialidade?
+  \end{enumerate}
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Teste BCNF -- Estoque)} A tabela \texttt{ESTOQUE} de um almoxarifado tem chave primária simples \textbf{ID\_Item}:
+
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|c|l|c|l|r|}
+    \hline
+    \textbf{ID\_Item} & \textbf{Descricao} & \textbf{Cod\_Forn} & \textbf{Nome\_Forn} & \textbf{Qtde} \\ \hline
+    I01 & Parafuso M6   & F10 & MetalParts  & 500 \\ \hline
+    I02 & Porca M6      & F10 & MetalParts  & 300 \\ \hline
+    I03 & Chapa de aço  & F20 & SideroMax   & 50  \\ \hline
+    I04 & Tubo PVC      & F30 & PlasticoSA  & 80  \\ \hline
+    I05 & Tinta epóxi   & F20 & SideroMax   & 20  \\ \hline
+    I06 & Rebite alumínio & F10 & MetalParts & 1000\\ \hline
+    I07 & Borracha vedação & F30 & PlasticoSA & 150\\ \hline
+    I08 & Eletrodo 3mm  & F40 & SoldaTec    & 200 \\ \hline
+    I09 & Disco de corte & F40 & SoldaTec   & 75  \\ \hline
+    I10 & Luva latex     & F30 & PlasticoSA & 400 \\ \hline
+  \end{tabular}
+  \flushleft
+  \vspace{0.2cm}
+  \begin{enumerate}[label=\alph*)]
+    \item Liste as dependências funcionais da tabela.
+    \item A tabela está na \textbf{3FN}? Está na \textbf{BCNF}? As respostas diferem? Por quê?
+    \item Identifique a anomalia que ocorreria se o nome do fornecedor F20 mudasse.
+  \end{enumerate}
+
+% ================================================================
+%  BLOCO 3 — PROJETO: ADEQUAR À 3FN (Q8)
+% ================================================================
+
+  \vspace{0.4cm}
+% ================================================================
+%  BLOCO 4 — PROJETO: ADEQUAR À BCNF (Q9)
+% ================================================================
+
+  \vspace{0.4cm}
+
+  \item \textbf{(Projeto Lógico -- Adequar à BCNF)} A tabela \texttt{ALOCACOES} registra a alocação de técnicos a projetos em uma empresa de TI. As regras de negócio são:
+  \begin{itemize}
+    \item Cada técnico é especialista em \textbf{uma única} linguagem: $\text{Tecnico} \to \text{Linguagem}$
+    \item Para cada projeto e linguagem, há \textbf{um único} técnico alocado: $\{\text{Projeto, Linguagem}\} \to \text{Tecnico}$
+    \item Isso implica duas chaves candidatas: $\{\text{Projeto, Linguagem}\}$ e $\{\text{Projeto, Tecnico}\}$
+  \end{itemize}
+
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Projeto} & \textbf{Tecnico} & \textbf{Linguagem} \\ \hline
+    SistemaVendas   & Carlos   & Java       \\ \hline
+    SistemaVendas   & Fernanda & Python     \\ \hline
+    AppMobile       & Carlos   & Java       \\ \hline
+    AppMobile       & Ricardo  & Kotlin     \\ \hline
+    PortalRH        & Fernanda & Python     \\ \hline
+    PortalRH        & Beatriz  & JavaScript \\ \hline
+    SistemaVendas   & Beatriz  & JavaScript \\ \hline
+    AppMobile       & Fernanda & Python     \\ \hline
+    PortalRH        & Carlos   & Java       \\ \hline
+    AppMobile       & Beatriz  & JavaScript \\ \hline
+  \end{tabular}
+  \flushleft
+  \vspace{0.2cm}
+
+  \begin{enumerate}[label=\alph*)]
+    \item Comprove que a tabela está na \textbf{3FN} (use a definição com atributo primo).
+    \item Identifique a DF que viola a \textbf{BCNF} e explique por quê.
+    \item Sobre FNBC:
+    \begin{enumerate}[label=\roman*.]
+      \item Encontre a DF violadora $X \to Y$ onde $X$ não é superchave.
+      \item Crie $S_1 = X \cup Y$ e $S_2 = \text{Relação} - Y$.
+      \item Verifique se $S_1$ e $S_2$ estão na BCNF.
+    \end{enumerate}
+    \item \textbf{Reconstrua o modelo lógico} apresentando as novas tabelas com:
+    \begin{itemize}
+      \item Nome, atributos, PK e FK de cada tabela.
+      \item Os dados preenchidos conforme a tabela original.
+    \end{itemize}
+    \item Que dependência funcional original \textbf{não pode} ser verificada diretamente após a decomposição? Isso é problemático? Justifique.
+  \end{enumerate}
+
+\end{enumerate}
+
+\vspace{1cm}
+\begin{center}
+  \textit{``Normalizar é garantir que cada fato esteja em exatamente um lugar --- e que esse lugar seja determinado pela chave, por toda a chave e nada mais que a chave.''}
+\end{center}
+
+\end{document}

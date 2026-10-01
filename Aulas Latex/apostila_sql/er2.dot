@@ -1,0 +1,132 @@
+digraph G {
+
+  rankdir=LR;
+  splines=polyline;
+  graph [forcelabels=true, nodesep=0.2, ranksep=1.2];
+
+  node [fontname="Arial", fontsize=20];
+  edge [dir=none, fontsize=18];
+
+  // =========================
+  // ENTIDADES
+  // =========================
+
+  Professor [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+  Disciplina [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+  Aluno [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+
+  // =========================
+  // RELACIONAMENTOS
+  // =========================
+
+  leciona [shape=diamond, label="leciona", style=filled, fillcolor="#c9d3e8"];
+  estuda  [shape=diamond, label="estuda",  style=filled, fillcolor="#c9d3e8"];
+
+  // =========================
+  // LIGAÇÕES COM CARDINALIDADE
+  // =========================
+
+  Professor -> leciona [label="(1,1)"];
+  leciona -> Disciplina [label="(1,n)"];
+
+  Disciplina -> estuda [label="(1,n)"];
+  estuda -> Aluno [label="(1,n)"];
+
+  // =========================
+  // PADRÃO PARA ATRIBUTOS (texto dentro da elipse)
+  // =========================
+
+  node [
+    shape=ellipse,
+    fontsize=13,
+    margin=0.15
+  ];
+
+  // =========================
+  // ATRIBUTOS PROFESSOR
+  // =========================
+
+  matricula_professor [
+    label="matricula",
+    width=1.4,
+    height=0.6,
+    style=filled,
+    fillcolor="#004628",
+    fontcolor=white,
+    fontsize=20
+  ];
+
+  nome_professor [
+    label="nome",
+    width=1.2,
+    height=0.6,    fontsize=20
+
+  ];
+
+  telefone_professor [
+    label="telefone",
+    width=1.5,
+    height=0.6,    fontsize=20
+
+  ];
+
+  Professor -> matricula_professor;
+  Professor -> nome_professor;
+  Professor -> telefone_professor;
+
+  // =========================
+  // ATRIBUTOS DISCIPLINA
+  // =========================
+
+  codigo_disciplina [
+    label="codigo",
+    width=1.2,
+    height=0.6,
+    style=filled,
+    fillcolor="#004628",
+    fontcolor=white,    fontsize=20
+
+  ];
+
+  nome_disciplina [
+    label="nome",
+    width=1.2,
+    height=0.6,    fontsize=20
+
+  ];
+
+  Disciplina -> codigo_disciplina;
+  Disciplina -> nome_disciplina;
+
+  // =========================
+  // ATRIBUTOS ALUNO
+  // =========================
+
+  matricula_aluno [
+    label="matricula",
+    width=1.4,
+    height=0.6,
+    style=filled,
+    fillcolor="#004628",
+    fontcolor=white,    fontsize=20
+
+  ];
+
+  nome_aluno [
+    label="nome",
+    width=1.2,
+    height=0.6,    fontsize=20
+
+  ];
+
+  data_nascimento_aluno [
+    label="data_nasc",
+    width=1.6,
+    height=0.6,    fontsize=20
+
+  ];
+
+  Aluno -> matricula_aluno;
+  Aluno -> nome_aluno;
+  Aluno -> data_nascimento_aluno;
+}

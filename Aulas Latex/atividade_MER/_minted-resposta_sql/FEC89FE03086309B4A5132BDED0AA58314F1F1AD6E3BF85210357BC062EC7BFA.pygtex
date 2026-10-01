@@ -1,0 +1,8 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Código Corrigido}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{departamento}\PYG{p}{,}\PYG{+w}{ }\PYG{k}{COUNT}\PYG{p}{(}\PYG{n}{id}\PYG{p}{)}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{funcionarios}
+\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{salario}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{2000}
+\PYG{k}{GROUP}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{departamento}
+\PYG{k}{HAVING}\PYG{+w}{ }\PYG{k}{COUNT}\PYG{p}{(}\PYG{n}{id}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{p}{;}
+\end{Verbatim}

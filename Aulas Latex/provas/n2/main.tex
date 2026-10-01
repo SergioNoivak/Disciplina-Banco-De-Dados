@@ -1,0 +1,333 @@
+\documentclass[12pt,a4paper]{article}
+
+% ------------------------------------------------
+% Pacotes
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{mathptmx} % Times New Roman
+\usepackage{enumitem}\usepackage{amsfonts}
+\usepackage{amsmath} % Recomendado para o comando \text{}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric}
+
+% TikZ Styles for ER Diagrams
+\tikzset{
+    block/.style={rectangle, draw, thick, minimum width=2cm, minimum height=1cm, fill=white},
+    diamond_node/.style={diamond, draw, thick, minimum width=2cm, minimum height=1cm, fill=white, aspect=2},
+    attribute/.style={ellipse, draw, thin, minimum width=1.5cm, minimum height=0.6cm, fill=white, font=\scriptsize},
+    line/.style={draw, thick},
+}
+% ------------------------------------------------ 
+% Configuração de página
+% ------------------------------------------------
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=2cm,
+    bottom=2cm,
+    headheight=15pt % Adicione isso
+}% Caixa para resposta discursiva
+\newcommand{\resposta}[1]{
+\noindent
+\framebox[\textwidth]{
+\begin{minipage}{0.98\textwidth}
+\vspace{#1}
+\end{minipage}
+}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+
+\setlength{\parindent}{0pt}
+
+% ------------------------------------------------
+% Comandos auxiliares
+% ------------------------------------------------
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ------------------------------------------------
+% Documento
+% ------------------------------------------------
+\begin{document}
+
+% ------------------------------------------------
+% Cabeçalho - Corrigido para evitar aninhamento problemático
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{@{} L{4cm} X @{}}
+    \raisebox{-0.5cm}{\includegraphics[width=4cm]{Universidade_de_Rio_Verde.jpg}} &
+    \hfill
+    \begin{tabular}{|>{\centering\arraybackslash}m{10cm}|>{\raggedright\arraybackslash}p{1.8cm}|}
+        \hline
+        \cellcolor{black}\color{white}\rule{0pt}{1.2cm}\textbf{AVALIAÇÃO 2} 
+        & 
+        \scriptsize Nota \tabularnewline
+        \hline
+    \end{tabular} 
+\end{tabularx}
+\vspace{0.3cm}
+
+% ------------------------------------------------  
+% Tabela principal - Estrutura limpa
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{|X|L{2cm}|}
+\hline
+\textbf{Curso} & \textbf{Campus} \\
+\textit{Engenharia de Software} & \textit{Rio Verde} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Disciplina}} \\  
+\multicolumn{2}{|l|}{ \textit{Banco de dados}} \\
+\hline
+\textbf{Nome do(a) acadêmico(a)} & \textbf{Valor} \\
+& 7,0 \\
+\hline
+\textbf{Professor} & \textbf{Turma} \\
+\textit{ Sergio Souza Novak} & \textit{B} \\
+\hline
+\textbf{Data da Avaliação} & \textbf{Código} \\
+\textit{12/05/2026} & \textit{ESW417} \\
+\hline
+\end{tabularx}
+ 
+% ------------------------------------------------
+% Barra de Atenção
+% ------------------------------------------------
+\vspace{0.2cm}
+
+\begin{tabularx}{\textwidth}{|X|}
+\hline
+\cellcolor{black}\color{white}
+\centering \textbf{ATENÇÃO:} Somente serão passíveis de \textbf{REVISÃO} avaliações resolvidas à \textbf{TINTA}. \tabularnewline
+\hline
+\end{tabularx}
+
+\vspace{0.3cm}
+
+\textbf{ORIENTAÇÕES PARA A RESOLUÇÃO}  
+
+\begin{itemize}
+    \item A avaliação é individual, sem consulta;
+    \item A interpretação de texto faz parte da avaliação;
+\end{itemize}
+
+\vspace{0.5cm}
+
+\begin{center}
+    \rule{\textwidth}{0.4pt}
+    \textbf{QUESTÕES TEÓRICAS}
+\end{center}
+
+\vspace{0.2cm}
+
+\textbf{INSTRUÇÕES:} Esta seção contém \textbf{5 exercícios}. Recomenda-se reservar \textbf{40 minutos} para sua resolução. Nesta etapa teórica, \textbf{não é permitido} o uso de aparelhos celulares nem o acesso a qualquer ferramenta de Inteligência Artificial. A resolução deve ser individual e sem consulta. \textbf{Ao concluir as questões teóricas, o acadêmico deve chamar o professor para autorização e início da parte prática.}
+
+\vspace{0.3cm}
+
+\begin{enumerate}
+    \item \textbf{(Ano: 2026 Banca: Instituto Legalle Órgão: BADESUL - RS Prova: Analista de Sistemas)} \\
+    Os bancos de dados relacionais se baseiam em princípios que garantem integridade, consistência e organização dos dados.
+    
+    Analise as afirmativas:
+    
+    \begin{enumerate}[label=\Roman*.]
+        \item Uma chave primária pode ser composta por mais de um atributo, sendo denominada chave primária composta.
+        \item Uma chave estrangeira em uma tabela deve referenciar obrigatoriamente a chave primária de uma tabela diferente, nunca podendo referenciar a própria tabela.
+        \item A normalização é um processo que visa reduzir a redundância de dados e eliminar anomalias de inserção, atualização e exclusão.
+        \item Na Primeira Forma Normal (1FN), cada atributo de uma tupla deve conter apenas valores atômicos, ou seja, indivisíveis.
+    \end{enumerate}
+    
+    Estão corretas:
+    
+    \begin{enumerate}[label=\Alph*)]
+        \item I e II, apenas.
+        \item II e III, apenas.
+        \item I, II e IV, apenas.
+        \item I, III e IV, apenas.
+        \item I, II, III e IV.
+    \end{enumerate}
+
+    \item A tabela abaixo viola a Primeira Forma Normal (1FN). Identifique o motivo e realize a normalização, separando os valores em novos registros.
+    
+    \begin{center}
+        \begin{tabular}{|c|c|L{8cm}|}
+            \hline
+            \cellcolor{gray!20}\textbf{ID} & \cellcolor{gray!20}\textbf{Nome} & \cellcolor{gray!20}\textbf{Contatos} \\ \hline
+            1 & Carlos & car@email.com, (11) 9111-1111 \\ \hline
+            2 & Ana & ana@email.com \\ \hline
+            3 & Bia & bia@work.com, 98460-1364 \\ \hline
+        \end{tabular}
+    \end{center}
+    \begin{enumerate}[label=(\Alph*)]
+        \item Motivo da violação:\\
+        \resposta{2cm}
+
+        \item Tabela normalizada:\\
+        \resposta{6cm}
+    \end{enumerate}
+
+
+    \item A tabela \textbf{VENDAS} registra vendas de uma farmácia. Considere que a Chave Primária é o atributo \textbf{ID\_Venda}.
+
+    \begin{center}
+        \small
+        \begin{tabular}{|c|c|c|l|c|}
+            \hline
+            \cellcolor{gray!20}\textbf{ID\_Venda} & \cellcolor{gray!20}\textbf{Data} & \cellcolor{gray!20}\textbf{ID\_Prod} & \cellcolor{gray!20}\textbf{Nome\_Prod} & \cellcolor{gray!20}\textbf{Preco\_Unit} \\ \hline
+            V001 & 01/03 & P10 & Dipirona 500mg & R\$ 4,50 \\ \hline
+            V002 & 01/03 & P20 & Amoxicilina & R\$ 18,00 \\ \hline
+            V003 & 02/03 & P10 & Dipirona 500mg & R\$ 4,50 \\ \hline
+            V004 & 02/03 & P30 & Ibuprofeno & R\$ 12,00 \\ \hline
+            V005 & 03/03 & P20 & Amoxicilina & R\$ 18,00 \\ \hline
+            V006 & 03/03 & P40 & Losartana & R\$ 8,00 \\ \hline
+            V007 & 04/03 & P10 & Dipirona 500mg & R\$ 4,50 \\ \hline
+            V008 & 04/03 & P30 & Ibuprofeno & R\$ 12,00 \\ \hline
+            V009 & 05/03 & P40 & Losartana & R\$ 8,00 \\ \hline
+            V010 & 05/03 & P20 & Amoxicilina & R\$ 18,00 \\ \hline
+        \end{tabular}
+    \end{center}
+
+    Com base na tabela apresentada e nas regras de normalização, julgue as afirmativas a seguir como Verdadeiras (V) ou Falsas (F):
+
+    \begin{enumerate}[label=( \quad )]
+        \item A tabela está na Primeira Forma Normal (1FN).
+        \item A tabela está na Segunda Forma Normal (2NF).
+        \item A tabela está na Terceira Forma Normal (3NF).
+        \item A tabela está na Forma Normal de Boyce-Codd (FNBC).
+        \item A tabela está na Quarta Forma Normal (4FN).
+    \end{enumerate}
+
+    \item Em uma empresa, cada representante atende a várias regiões e vende várias linhas de produtos. Sabe-se que as regiões atendidas e as linhas de produtos vendidas são \textbf{independentes} entre si. Considere a tabela abaixo, onde todos os atributos compõem a Chave Primária:
+
+    \begin{center}
+        \small
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \cellcolor{gray!20}\textbf{Representante (PK)} & \cellcolor{gray!20}\textbf{Região (PK)} & \cellcolor{gray!20}\textbf{Linha\_Produto (PK)} \\ \hline
+            Carlos Silva & Norte & Máquinas \\ \hline
+            Carlos Silva & Norte & EPIs \\ \hline
+            Carlos Silva & Sul & Ferramentas \\ \hline
+            Carlos Silva & Sul & Máquinas \\ \hline
+            Carlos Silva & Sul & EPIs \\ \hline
+            Carlos Silva & Leste & Ferramentas \\ \hline
+            Carlos Silva & Leste & Máquinas \\ \hline
+            Carlos Silva & Leste & EPIs \\ \hline
+            João Paulo & Centro & Ferramentas \\ \hline
+            João Paulo & Centro & Máquinas \\ \hline
+            João Paulo & Oeste & Máquinas \\ \hline
+            Maria Alice & Sul & Eletrônicos \\ \hline
+            Maria Alice & Sul & Papelaria \\ \hline
+            Maria Alice & Norte & Papelaria \\ \hline
+            Ricardo Lima & Centro & Móveis \\ \hline
+            Ricardo Lima & Centro & Decoração \\ \hline
+        \end{tabular}
+    \end{center}
+
+    A partir do cenário apresentado, identifique qual Forma Normal está sendo violada e realize a \textbf{decomposição} necessária para que o banco de dados atinja a \textbf{Quarta Forma Normal (4FN)}.
+
+    \resposta{8cm}
+
+    \item Os diagramas de Venn abaixo representam visualmente as operações de \textbf{JOIN} entre duas tabelas, \textbf{A} (esquerda) e \textbf{B} (direita). Assinale a alternativa que identifica corretamente os tipos de JOIN representados nas Figuras I e II, respectivamente:
+
+    \begin{center}
+        \begin{tikzpicture}[thick]
+            % Figura I: INNER JOIN
+            \begin{scope}
+                \clip (0,0) circle (1cm);
+                \fill[gray!40] (1.2,0) circle (1cm);
+            \end{scope}
+            \draw (0,0) circle (1cm) node[xshift=-0.5cm] {A};
+            \draw (1.2,0) circle (1cm) node[xshift=0.5cm] {B};
+            \node at (0.6, -1.5) {\textbf{Figura I}};
+        \end{tikzpicture}
+        \hspace{2.5cm}
+        \begin{tikzpicture}[thick]
+            % Figura II: LEFT JOIN
+            \fill[gray!40] (0,0) circle (1cm);
+            \draw (0,0) circle (1cm) node[xshift=-0.5cm] {A};
+            \draw (1.2,0) circle (1cm) node[xshift=0.5cm] {B};
+            \node at (0.6, -1.5) {\textbf{Figura II}};
+        \end{tikzpicture}
+    \end{center}
+
+    \begin{enumerate}[label=\Alph*)]
+        \item Figura I: LEFT JOIN; Figura II: INNER JOIN.
+        \item Figura I: INNER JOIN; Figura II: LEFT JOIN.
+        \item Figura I: RIGHT JOIN; Figura II: FULL JOIN.
+        \item Figura I: INNER JOIN; Figura II: RIGHT JOIN.
+        \item Figura I: FULL JOIN; Figura II: LEFT JOIN.
+    \end{enumerate}
+
+\end{enumerate}
+\vspace{0.5cm}
+\newpage
+\begin{center}
+    \rule{\textwidth}{0.4pt}
+    \textbf{QUESTÕES PRÁTICAS}
+\end{center}
+
+\vspace{0.2cm}
+
+\textbf{INSTRUÇÕES:} Esta seção contém \textbf{5 exercícios}. Recomenda-se reservar \textbf{60 minutos} para sua resolução. Para a resolução desta seção, é permitida a utilização do \textbf{Google Colab} exclusivamente com a Inteligência Artificial \textbf{Gemini 2.5} integrada ao Colab. \textbf{É terminantemente proibido o uso de aparelhos celulares}, bem como o acesso a qualquer outra ferramenta de IA (ex: ChatGPT, DeepSeek, Claude.ai, etc.). Utilize o cabeçalho abaixo para configurar o ambiente SQLite no seu notebook:
+
+\begin{verbatim}
+!pip install jupysql
+%load_ext sql
+%sql sqlite:///meu_banco.db
+%config SqlMagic.displaylimit = 50
+\end{verbatim}
+
+\vspace{0.3cm}
+
+Considere o seguinte esquema de banco de dados relacional (modelo lógico) para as questões de \textbf{1 a 5}. Utilize o banco de dados \textbf{SQLite} para as implementações:
+
+\begin{itemize}[label={}]
+    \item \textbf{tbEmpregado} (\underline{cod\_emp}, nome\_emp, rua\_emp, cidade\_emp, fone\_emp, cod\_gerente)
+    \item \textit{cod\_gerente referencia tbGerente}
+    \item \textbf{tbTrabalha} (\underline{cod\_emp}, \underline{cod\_companhia}, salário)
+    \item \textit{cod\_emp referencia tbEmpregado}
+    \item \textit{cod\_companhia referencia tbCompanhia}
+    \item \textbf{tbCompanhia} (\underline{cod\_companhia}, nome\_companhia, cidade\_companhia)
+    \item \textbf{tbGerente} (\underline{cod\_gerente}, nome\_gerente)
+\end{itemize}
+
+\vspace{0.3cm}
+
+\begin{enumerate}
+    \item Escreva os comandos de definição de dados (\textbf{DDL}) para a criação das tabelas \textbf{tbGerente}, \textbf{tbCompanhia} e \textbf{tbEmpregado}, respeitando as chaves primárias e estrangeiras indicadas no esquema.\\
+    \resposta{8cm}
+
+    \item Escreva o comando \textbf{DDL} para a criação da tabela \textbf{tbTrabalha}, garantindo a integridade referencial com as tabelas criadas anteriormente.\\
+    \resposta{4cm}
+
+    \item Implemente comandos de inserção (\textbf{INSERT}) para adicionar pelo menos \textbf{2 registros} em cada uma das tabelas do banco de dados.\\
+    \resposta{6cm}
+
+    \item Escreva o comando \textbf{DDL} (\textit{ALTER TABLE}) para adicionar a coluna \texttt{data\_nascimento} na tabela \textbf{tbEmpregado}.\\
+    \resposta{2cm}
+
+    \item Escreva as consultas SQL solicitadas abaixo:
+    \begin{enumerate}[label=\alph*)]
+        \item Liste o nome e a cidade de residência de todos os empregados que trabalham para a companhia `Petrobras' e possuem salário superior a R\$ 5.000,00.\\
+        \resposta{2.5cm}
+
+        \item Utilizando \textbf{LEFT JOIN}, liste o nome de todas as companhias e o nome dos empregados que nelas trabalham, garantindo que mesmo as companhias sem nenhum empregado vinculado apareçam no resultado.\\
+        \resposta{2.5cm}
+    \end{enumerate}
+\end{enumerate}
+
+\vspace{0.5cm} 
+
+
+\end{document} 

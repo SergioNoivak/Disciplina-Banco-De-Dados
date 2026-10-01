@@ -1,0 +1,65 @@
+@startuml
+left to right direction
+skinparam linetype ortho
+
+skinparam usecase {
+    BackgroundColor white
+    BorderColor black
+}
+skinparam rectangle {
+    BackgroundColor white
+    BorderColor black
+}
+skinparam diamond {
+    BackgroundColor white
+    BorderColor black
+}
+
+rectangle "VACA" as Vaca
+rectangle "FUNCIONÁRIO" as Func
+rectangle "ORDENHA" as Ord
+rectangle "EQUIPAMENTO" as Equip
+rectangle "SUPERVISOR" as Super
+rectangle "VETERINÁRIO" as Vet
+rectangle "PROPRIETÁRIO" as Prop
+
+usecase "<u>id_vaca</u>" as v1
+usecase "nome" as v2
+usecase "status_saude" as v3
+
+usecase "<u>id_ord</u>" as o1
+usecase "data" as o2
+usecase "quantidade" as o3
+
+usecase "<u>id_func</u>" as f1
+usecase "funcao" as f2
+
+usecase "<u>id_prop</u>" as p1
+
+diamond "Possui" as Rel1
+diamond "Realiza" as Rel2
+diamond "Utiliza" as Rel3
+
+Vaca -- v1
+Vaca -- v2
+Vaca -- v3
+
+Ord -- o1
+Ord -- o2
+Ord -- o3
+
+Func -- f1
+Func -- f2
+
+Prop -- p1
+
+Vaca "1" -- Rel1
+Rel1 "N" -- Ord
+
+Func "1" -- Rel2
+Rel2 "N" -- Ord
+
+Ord "N" -- Rel3
+Rel3 "M" -- Equip
+
+@enduml

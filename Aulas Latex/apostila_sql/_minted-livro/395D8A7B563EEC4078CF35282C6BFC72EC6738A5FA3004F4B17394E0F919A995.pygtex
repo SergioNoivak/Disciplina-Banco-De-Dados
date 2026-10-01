@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{coluna1}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{coluna2}\PYG{p}{,}\PYG{+w}{ }\PYG{p}{...}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{nome\PYGZus{}da\PYGZus{}tabela}\PYG{p}{;}
+\end{Verbatim}

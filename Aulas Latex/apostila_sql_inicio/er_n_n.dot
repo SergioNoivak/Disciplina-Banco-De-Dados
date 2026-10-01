@@ -1,0 +1,42 @@
+digraph G {
+
+  rankdir=LR;
+  splines=polyline;
+  graph [forcelabels=true, nodesep=0.4, ranksep=1.2];
+
+  node [fontname="Arial", fontsize=18];
+  edge [dir=none, fontsize=16];
+
+  // ENTIDADES
+  Clube [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+  Cliente [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+
+  // RELACIONAMENTO
+  acao [shape=diamond, label="ação", style=filled, fillcolor="#c9d3e8"];
+
+  Clube -> acao [label="(1,n)"];
+  acao -> Cliente [label="(1,n)"];
+
+  // ATRIBUTOS
+  node [shape=ellipse, fontsize=15];
+
+  id_clube [label="id_clube", style=filled, fillcolor="#004628", fontcolor=white];
+  nome_clube [label="nome"];
+
+  id_cliente [label="id_cliente", style=filled, fillcolor="#004628", fontcolor=white];
+  nome_cliente [label="nome"];
+  telefone [label="telefone"];
+
+  data_adesao [label="data_adesao"];
+  valor [label="valor"];
+
+  Clube -> id_clube;
+  Clube -> nome_clube;
+
+  Cliente -> id_cliente;
+  Cliente -> nome_cliente;
+  Cliente -> telefone;
+
+  acao -> data_adesao;
+  acao -> valor;
+}

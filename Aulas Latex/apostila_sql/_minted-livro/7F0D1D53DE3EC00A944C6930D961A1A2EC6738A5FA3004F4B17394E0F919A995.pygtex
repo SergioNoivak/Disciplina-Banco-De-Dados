@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Rastreando todos os alunos provados merecedores englobando e atestando que toda média final particular obtida unicamente foi auferida superando a escala limite baseada estritamente pontuada referenciada englobante e acima de sólidos 7 pontos corridos:}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{aluno\PYGZus{}id}\PYG{p}{,}\PYG{+w}{ }\PYG{k}{AVG}\PYG{p}{(}\PYG{n}{nota}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{AS}\PYG{+w}{ }\PYG{n}{media}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{matricula}
+\PYG{k}{GROUP}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{aluno\PYGZus{}id}
+\PYG{k}{HAVING}\PYG{+w}{ }\PYG{k}{AVG}\PYG{p}{(}\PYG{n}{nota}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{7}\PYG{p}{.}\PYG{l+m+mi}{0}\PYG{p}{;}
+\end{Verbatim}

@@ -1,0 +1,6 @@
+-- Código Corrigido
+SELECT departamento, COUNT(id)
+FROM funcionarios
+WHERE salario > 2000
+GROUP BY departamento
+HAVING COUNT(id) > 5;

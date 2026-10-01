@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Consulta A: Contagem por grupo}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{ATIVO}\PYG{p}{,}\PYG{+w}{ }\PYG{k}{COUNT}\PYG{p}{(}\PYG{n}{ID}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{AS}\PYG{+w}{ }\PYG{n}{TOTAL\PYGZus{}PESSOAS}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{PESSOA}
+\PYG{k}{GROUP}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{ATIVO}\PYG{p}{;}
+\end{Verbatim}

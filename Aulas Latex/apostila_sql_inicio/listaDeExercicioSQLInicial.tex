@@ -1,0 +1,242 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática e listas
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+
+% Layout e cores
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+
+% Blocos
+\usepackage[most]{tcolorbox}
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=maincolor,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=6pt,
+  right=6pt,
+  top=6pt,
+  bottom=6pt
+}
+
+% Margens
+\geometry{margin=2.5cm}
+
+% Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+
+\renewcommand{\headrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+
+\renewcommand{\footrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+
+\setlength{\headheight}{52pt}
+\addtolength{\topmargin}{-20pt}
+
+\fancyhead[L]{%
+  \includegraphics[height=1.2cm]{Universidade_de_Rio_Verde.jpg}
+}
+
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{%
+    \small
+    \textbf{Lista de Exercícios de Comandos Básicos de SQL no papel}\\
+    Me.~Sergio Souza Novak\\
+    \textit{Banco de Dados I}
+    }
+    }
+
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+
+% Caixa de resposta
+\newtcolorbox{resposta}[1]{%
+  colback=white,
+  colframe=forestgreen!30,
+  arc=1mm,
+  height=#1,
+  width=\textwidth,
+  boxrule=0.8pt
+}
+
+% =========================
+\begin{document}
+% =========================
+
+\vspace*{0.2cm}
+
+\begin{center}
+  {\Large \textbf{Lista de Exercícios: Modelagem e SQL (DDL + DML)}}\\[0.2cm]
+  \textit{Instruções: Desenvolva os scripts completos utilizando PostgreSQL. Todas as tabelas devem conter chave primária, tipos de dados adequados e pelo menos uma restrição de integridade.}
+\end{center}
+
+\vspace{0.4cm}
+
+\begin{block}{Objetivo da Atividade}
+Nesta lista você deverá:
+\begin{itemize}
+    \item Criar tabelas utilizando o comando \texttt{CREATE TABLE};
+    \item Definir tipos de dados coerentes;
+    \item Aplicar \texttt{PRIMARY KEY}, \texttt{NOT NULL}, \texttt{UNIQUE} e \texttt{DEFAULT};
+    \item Inserir dados utilizando \texttt{INSERT};
+    \item Realizar consultas com \texttt{SELECT}, \texttt{WHERE} e \texttt{ORDER BY}.
+\end{itemize}
+\end{block}
+
+\vspace{0.5cm}
+
+\textbf{1.} Crie a tabela \textbf{Professor} contendo:
+\begin{itemize}
+    \item id (chave primária)
+    \item nome (obrigatório)
+    \item cpf (único e obrigatório)
+    \item titulacao
+    \item salario (decimal com 2 casas)
+    \item ativo (boolean com valor padrão TRUE)
+\end{itemize}
+\begin{resposta}{5cm}
+\end{resposta}
+
+\vspace{0.5cm}
+
+\textbf{2.} Crie a tabela \textbf{Veterinario} contendo:
+\begin{itemize}
+    \item id (chave primária)
+    \item nome (obrigatório)
+    \item crmv (registro profissional único)
+    \item especialidade
+    \item salario
+    \item data\_contratacao
+\end{itemize}
+\begin{resposta}{5cm}
+\end{resposta}
+
+\vspace{0.5cm}
+
+\textbf{3.} Crie a tabela \textbf{FornoIndustrial} contendo:
+\begin{itemize}
+    \item id (chave primária)
+    \item modelo
+    \item temperatura\_maxima
+    \item capacidade\_litros
+    \item data\_instalacao
+    \item ativo (boolean)
+\end{itemize}
+\begin{resposta}{5cm}
+\end{resposta}
+
+\vspace{0.5cm}
+
+\textbf{4.} Crie a tabela \textbf{Caldeira} contendo:
+\begin{itemize}
+    \item id (chave primária)
+    \item fabricante
+    \item pressao\_maxima
+    \item volume
+    \item data\_ultima\_inspecao
+\end{itemize}
+\begin{resposta}{5cm}
+\end{resposta}
+
+\vspace{0.5cm}
+
+\textbf{5.} Crie a tabela \textbf{Drone} contendo:
+\begin{itemize}
+    \item id (chave primária)
+    \item modelo
+    \item autonomia\_minutos
+    \item alcance\_km
+    \item peso
+    \item ativo (boolean com default TRUE)
+\end{itemize}
+\begin{resposta}{5cm}
+\end{resposta}
+
+\vspace{0.8cm}
+
+\begin{block}{Parte II – Inserção de Dados}
+Insira pelo menos \textbf{3 registros em cada tabela}.
+\end{block}
+
+\textbf{6.} Escreva os comandos \texttt{INSERT} da tabela Professor.
+\begin{resposta}{4.5cm}
+\end{resposta}
+
+\vspace{0.5cm}
+
+\textbf{7.} Escreva os comandos \texttt{INSERT} da tabela Drone.
+\begin{resposta}{4.5cm}
+\end{resposta}
+
+\vspace{0.8cm}
+
+\begin{block}{Parte III – Consultas SQL}
+Utilize SELECT com filtros e ordenação.
+\end{block}
+
+\textbf{8.} Liste todos os professores com salário maior que 5.000, ordenando do maior para o menor salário.
+\begin{resposta}{3.5cm}
+\end{resposta}
+
+\vspace{0.5cm}
+
+\textbf{9.} Liste os veterinários contratados após 2020.
+\begin{resposta}{3.5cm}
+\end{resposta}
+
+\vspace{0.5cm}
+
+\textbf{10.} Liste os drones com autonomia superior a 40 minutos.
+\begin{resposta}{3.5cm}
+\end{resposta}
+
+\vspace{0.5cm}
+
+\textbf{11.} Liste os fornos industriais ativos ordenados pela maior temperatura máxima.
+\begin{resposta}{3.5cm}
+\end{resposta}
+
+\vspace{0.5cm}
+
+\textbf{12.} Exiba apenas fabricante e pressão máxima das caldeiras com pressão acima de 100.
+\begin{resposta}{3.5cm}
+\end{resposta}
+
+\vspace{0.8cm}
+
+\begin{block}{Desafio Extra (Opcional)}
+Adicione pelo menos uma restrição \texttt{CHECK} em qualquer tabela criada (ex: salário maior que zero, pressão maior que zero, autonomia positiva, etc.).
+\end{block}
+
+\vspace{0.5cm}
+
+\begin{center}
+\textit{“Boa atividade! Att. Me. Prof. Sergio Souza Novak.”}
+\end{center}
+
+% =========================
+\end{document}
+% =========================

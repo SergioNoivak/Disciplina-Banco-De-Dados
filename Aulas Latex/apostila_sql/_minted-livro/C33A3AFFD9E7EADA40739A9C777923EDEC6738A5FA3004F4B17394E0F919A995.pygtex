@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Recuperando estritamente os cinco estudantes de maior potencial acadêmico}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{aluno\PYGZus{}id}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{nota}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{matricula}\PYG{+w}{ }\PYG{k}{ORDER}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{nota}\PYG{+w}{ }\PYG{k}{DESC}\PYG{+w}{ }\PYG{k}{LIMIT}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{p}{;}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Mecânica focal paginada: Retorna cinco instâncias suprimindo os dez prévios}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{aluno}\PYG{+w}{ }\PYG{k}{ORDER}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{LIMIT}\PYG{+w}{ }\PYG{l+m+mi}{5}\PYG{+w}{ }\PYG{k}{OFFSET}\PYG{+w}{ }\PYG{l+m+mi}{10}\PYG{p}{;}
+\end{Verbatim}

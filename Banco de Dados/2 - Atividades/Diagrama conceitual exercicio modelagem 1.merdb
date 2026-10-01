@@ -1,0 +1,487 @@
+{
+  "entities": [
+    {
+      "id": 0,
+      "x": 604,
+      "y": 265,
+      "width": 166,
+      "height": 88,
+      "name": "MUSICO",
+      "selected": false,
+      "objType": "entity",
+      "resizeHandles": []
+    },
+    {
+      "id": 1,
+      "x": 993,
+      "y": 87,
+      "width": 160,
+      "height": 80,
+      "name": "ENDERECO",
+      "selected": false,
+      "objType": "entity",
+      "resizeHandles": []
+    },
+    {
+      "id": 2,
+      "x": 821,
+      "y": 572,
+      "width": 160,
+      "height": 80,
+      "name": "INSTRUMENTO",
+      "selected": false,
+      "objType": "entity",
+      "resizeHandles": []
+    },
+    {
+      "id": 3,
+      "x": 270,
+      "y": 485,
+      "width": 160,
+      "height": 80,
+      "name": "ALBUM",
+      "selected": false,
+      "objType": "entity",
+      "resizeHandles": []
+    },
+    {
+      "id": 4,
+      "x": 91,
+      "y": 184,
+      "width": 160,
+      "height": 80,
+      "name": "FAIXA",
+      "selected": false,
+      "objType": "entity",
+      "resizeHandles": []
+    }
+  ],
+  "attributes": [
+    {
+      "id": 2,
+      "x": 639,
+      "y": 181,
+      "name": "nome",
+      "parentType": "entity",
+      "parentId": 0,
+      "derived": false,
+      "multivalued": false,
+      "primary": false,
+      "selected": false,
+      "objType": "attribute",
+      "hitBox": {
+        "x": 627,
+        "y": 169,
+        "width": 92.73995971679688,
+        "height": 24
+      },
+      "resizeHandles": []
+    },
+    {
+      "id": 5,
+      "x": 557,
+      "y": 198,
+      "name": "cpf",
+      "parentType": "entity",
+      "parentId": 0,
+      "derived": false,
+      "multivalued": false,
+      "primary": true,
+      "selected": false,
+      "objType": "attribute",
+      "hitBox": {
+        "x": 545,
+        "y": 186,
+        "width": 69.0159912109375,
+        "height": 24
+      },
+      "resizeHandles": []
+    },
+    {
+      "id": 6,
+      "x": 1066,
+      "y": 197,
+      "name": "endereco",
+      "parentType": "entity",
+      "parentId": 1,
+      "derived": false,
+      "multivalued": false,
+      "primary": true,
+      "selected": false,
+      "objType": "attribute",
+      "hitBox": {
+        "x": 1054,
+        "y": 185,
+        "width": 126.32792663574219,
+        "height": 24
+      },
+      "resizeHandles": [],
+      "radiusX": 20,
+      "radiusY": 10
+    },
+    {
+      "id": 10,
+      "x": 990,
+      "y": 245,
+      "name": "telefone",
+      "parentType": "entity",
+      "parentId": 1,
+      "derived": false,
+      "multivalued": false,
+      "primary": false,
+      "selected": false,
+      "objType": "attribute",
+      "hitBox": {
+        "x": 978,
+        "y": 233,
+        "width": 113.42192077636719,
+        "height": 24
+      },
+      "resizeHandles": [],
+      "radiusX": 20,
+      "radiusY": 10
+    },
+    {
+      "id": 11,
+      "x": 1029,
+      "y": 615,
+      "name": "nome",
+      "parentType": "entity",
+      "parentId": 2,
+      "derived": false,
+      "multivalued": false,
+      "primary": true,
+      "selected": false,
+      "objType": "attribute",
+      "hitBox": {
+        "x": 1017,
+        "y": 603,
+        "width": 92.73995971679688,
+        "height": 24
+      },
+      "resizeHandles": [],
+      "radiusX": 20,
+      "radiusY": 10
+    },
+    {
+      "id": 12,
+      "x": 976,
+      "y": 521,
+      "name": "tom",
+      "parentType": "entity",
+      "parentId": 2,
+      "derived": false,
+      "multivalued": false,
+      "primary": false,
+      "selected": false,
+      "objType": "attribute",
+      "hitBox": {
+        "x": 964,
+        "y": 509,
+        "width": 76.61196899414062,
+        "height": 24
+      },
+      "resizeHandles": []
+    },
+    {
+      "id": 14,
+      "x": 451,
+      "y": 575,
+      "name": "data",
+      "parentType": "entity",
+      "parentId": 3,
+      "derived": false,
+      "multivalued": false,
+      "primary": false,
+      "selected": false,
+      "objType": "attribute",
+      "hitBox": {
+        "x": 439,
+        "y": 563,
+        "width": 83.05598449707031,
+        "height": 24
+      },
+      "resizeHandles": []
+    },
+    {
+      "id": 17,
+      "x": 324,
+      "y": 604,
+      "name": "formato",
+      "parentType": "entity",
+      "parentId": 3,
+      "derived": false,
+      "multivalued": false,
+      "primary": false,
+      "selected": false,
+      "objType": "attribute",
+      "hitBox": {
+        "x": 312,
+        "y": 592,
+        "width": 112.93594360351562,
+        "height": 24
+      },
+      "resizeHandles": []
+    },
+    {
+      "id": 18,
+      "x": 182,
+      "y": 128,
+      "name": "titulo",
+      "parentType": "entity",
+      "parentId": 4,
+      "derived": false,
+      "multivalued": false,
+      "primary": true,
+      "selected": false,
+      "objType": "attribute",
+      "hitBox": {
+        "x": 170,
+        "y": 116,
+        "width": 84.99993896484375,
+        "height": 24
+      },
+      "resizeHandles": []
+    },
+    {
+      "id": 19,
+      "x": 287,
+      "y": 160,
+      "name": "autor",
+      "parentType": "entity",
+      "parentId": 4,
+      "derived": false,
+      "multivalued": false,
+      "primary": true,
+      "selected": false,
+      "objType": "attribute",
+      "hitBox": {
+        "x": 275,
+        "y": 148,
+        "width": 88.47395324707031,
+        "height": 24
+      },
+      "resizeHandles": []
+    },
+    {
+      "id": 20,
+      "x": 201,
+      "y": 587,
+      "name": "id",
+      "parentType": "entity",
+      "parentId": 3,
+      "derived": false,
+      "multivalued": false,
+      "primary": true,
+      "selected": false,
+      "objType": "attribute",
+      "hitBox": {
+        "x": 189,
+        "y": 575,
+        "width": 56.59599304199219,
+        "height": 24
+      },
+      "resizeHandles": []
+    },
+    {
+      "id": 21,
+      "x": 460,
+      "y": 525,
+      "name": "titulo",
+      "parentType": "entity",
+      "parentId": 3,
+      "derived": false,
+      "multivalued": false,
+      "primary": false,
+      "selected": false,
+      "objType": "attribute",
+      "hitBox": {
+        "x": 448,
+        "y": 513,
+        "width": 84.99993896484375,
+        "height": 24
+      },
+      "resizeHandles": []
+    }
+  ],
+  "relationships": [
+    {
+      "id": 6,
+      "x": 875,
+      "y": 206,
+      "size": 120,
+      "name": "reside",
+      "connections": [
+        {
+          "entityId": 1,
+          "cardinality": "1,1",
+          "labelRect": {
+            "x": 930.1800294731498,
+            "y": 162.6396254327458,
+            "width": 29.083984375,
+            "height": 29.083984375
+          }
+        },
+        {
+          "entityId": 0,
+          "cardinality": "1,N",
+          "labelRect": {
+            "x": 793.4756273726493,
+            "y": 221.82028756682405,
+            "width": 35.97798156738281,
+            "height": 35.97798156738281
+          },
+          "breakpoints": []
+        }
+      ],
+      "selected": false,
+      "objType": "relationship",
+      "resizeHandles": []
+    },
+    {
+      "id": 8,
+      "x": 799,
+      "y": 455,
+      "size": 102,
+      "name": "toca",
+      "connections": [
+        {
+          "entityId": 0,
+          "cardinality": "1,N",
+          "labelRect": {
+            "x": 736.3528378241455,
+            "y": 377.7958929372388,
+            "width": 35.97798156738281,
+            "height": 35.97798156738281
+          }
+        },
+        {
+          "entityId": 2,
+          "cardinality": "1,N",
+          "labelRect": {
+            "x": 824.0386141642957,
+            "y": 502.23977369507304,
+            "width": 35.97798156738281,
+            "height": 35.97798156738281
+          },
+          "breakpoints": []
+        }
+      ],
+      "selected": false,
+      "objType": "relationship",
+      "resizeHandles": []
+    },
+    {
+      "id": 9,
+      "x": 501,
+      "y": 404,
+      "size": 120,
+      "name": "produz",
+      "connections": [
+        {
+          "entityId": 3,
+          "cardinality": "1,1",
+          "labelRect": {
+            "x": 427.5894796160975,
+            "y": 435.6308019301471,
+            "width": 29.083984375,
+            "height": 29.083984375
+          }
+        },
+        {
+          "entityId": 0,
+          "cardinality": "1,N",
+          "labelRect": {
+            "x": 544.4398348390844,
+            "y": 353.6360713982242,
+            "width": 35.97798156738281,
+            "height": 35.97798156738281
+          }
+        }
+      ],
+      "selected": false,
+      "objType": "relationship",
+      "resizeHandles": []
+    },
+    {
+      "id": 10,
+      "x": 247.5,
+      "y": 383,
+      "size": 120,
+      "name": "contem",
+      "connections": [
+        {
+          "entityId": 4,
+          "cardinality": "1,N",
+          "labelRect": {
+            "x": 196.0110392607744,
+            "y": 294.38362068127674,
+            "width": 35.97798156738281,
+            "height": 35.97798156738281
+          }
+        },
+        {
+          "entityId": 3,
+          "cardinality": "1,1",
+          "labelRect": {
+            "x": 276.05973165247235,
+            "y": 427.16966425421776,
+            "width": 29.083984375,
+            "height": 29.083984375
+          }
+        }
+      ],
+      "selected": false,
+      "objType": "relationship",
+      "resizeHandles": []
+    },
+    {
+      "id": 11,
+      "x": 411,
+      "y": 266.5,
+      "size": 120,
+      "name": "interpreta",
+      "connections": [
+        {
+          "entityId": 0,
+          "cardinality": "1,N",
+          "labelRect": {
+            "x": 502.50943935759585,
+            "y": 264.3721805242967,
+            "width": 35.97798156738281,
+            "height": 35.97798156738281
+          }
+        },
+        {
+          "entityId": 4,
+          "cardinality": "1,N",
+          "labelRect": {
+            "x": 300.2676463844502,
+            "y": 231.0877053815003,
+            "width": 35.97798156738281,
+            "height": 35.97798156738281
+          },
+          "breakpoints": []
+        }
+      ],
+      "selected": false,
+      "objType": "relationship",
+      "resizeHandles": []
+    }
+  ],
+  "specializations": [],
+  "aggregations": [],
+  "postits": [],
+  "entityIdCounter": 5,
+  "attributeIdCounter": 22,
+  "relationshipIdCounter": 12,
+  "specializationIdCounter": 0,
+  "aggregationIdCounter": 1,
+  "postitIdCounter": 0,
+  "fontSize": 18,
+  "panOffset": {
+    "x": 0,
+    "y": 0
+  },
+  "version": "1.0"
+}

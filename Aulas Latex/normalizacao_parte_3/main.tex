@@ -1,0 +1,636 @@
+\documentclass[9pt]{beamer}
+\mode<presentation>
+
+% Theme choice:
+\usetheme{Madrid}%Darmstadt 
+
+\usecolortheme[RGB={0,100,50}]{structure}
+ \usefonttheme{structurebold} 
+\setbeamercovered{invisible}
+%\setbeamertemplate{navigation symbols}{}
+\usepackage{dynblocks}
+\usepackage{textpos}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\newtheorem{teorema}{Teorema}\usepackage{mathtools}
+\renewcommand{\proofname}{Prova}
+\usepackage[portuguese]{babel}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\uselanguage{Portuguese}
+\languagepath{Portuguese}
+
+\deftranslation[to=Portuguese]{Theorem}{Teorema}
+\deftranslation[to=Portuguese]{Lemma}{Lema}
+\deftranslation[to=Portuguese]{Corollary}{Corolário}
+\deftranslation[to=Portuguese]{Proof}{Prova}
+
+\usepackage{dutchcal}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm}
+
+
+\usepackage[affil-it]{authblk} 
+\usepackage{etoolbox}
+\usepackage{lmodern}
+
+% TikZ configuration for diagrams
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, positioning, calc}
+
+\makeatletter
+\patchcmd{\@maketitle}{\LARGE \@title}{\fontsize{18}{19.2}\selectfont\@title}{}{}
+\makeatother
+
+\renewcommand\Authfont{\fontsize{12}{14.4}\selectfont}
+\renewcommand\Affilfont{\fontsize{9}{10.8}\itshape}
+
+% Title page details: 
+\title[Presentation]{Banco de Dados} %add title
+
+
+\institute[UniRV]{\textbf{\large  \textcolor{structure}{\textbf{\large
+Normalização de banco de dados parte 3: 4FN
+}} %add name 
+% \hspace{0.5pt}
+\\ \qquad
+\\Professor: Me. Sergio Souza Novak 
+\\Faculdade de Engenharia de Software}
+} 
+% \titlegraphic{\includegraphics[width=5cm]{msu.eps}}
+\titlegraphic{\includegraphics[width=5cm]{Universidade_de_Rio_Verde.jpg}}
+\date{}
+
+% Logo only on title page
+%\logo{\includegraphics[width=1cm,keepaspectratio]{Logo.png}}
+\usepackage[pscoord]{eso-pic}
+
+
+\begin{document}
+
+% Title page frame
+%\begin{frame}
+    %\titlepage 
+%\end{frame}
+\frame[plain]{\titlepage}
+%logo
+\AddToShipoutPictureFG{
+    \put(\LenToUnit{.92\paperwidth},
+    \LenToUnit{.185\paperheight})
+    {\vtop{{\null}
+    \makebox{\includegraphics[width=.8cm,keepaspectratio]{Universidade_de_Rio_Verde.jpg}}}}}
+
+
+\begin{frame}{Sumário}
+  \tableofcontents
+\end{frame}
+
+\section{4ª Forma Normal (4FN)}
+
+\begin{frame}{4ª Forma Normal (4FN): Definição}
+  \begin{block}{Definição Formal}
+    Uma relação está na \textbf{4ª Forma Normal (4FN)} se, e somente se:
+    \begin{enumerate}
+      \item Já estiver na \textbf{Forma Normal de Boyce-Codd (BCNF)}.
+      \item Para toda dependência multivalorada (DMV) não trivial $X \twoheadrightarrow Y$, $X$ deve ser uma \textbf{superchave}.
+    \end{enumerate}
+  \end{block}
+  \vspace{0.3cm}
+  \begin{itemize}
+    \item A 4FN visa eliminar as \textbf{Dependências Multivaloradas Independentes}.
+    \item Garante que atributos multivalorados sejam isolados se não houver dependência funcional direta entre eles.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{O que é Dependência Multivalorada (DMV)?}
+  \begin{block}{Conceito}
+    Uma dependência multivalorada $X \twoheadrightarrow Y$ ocorre quando, para um valor de $X$, existe um conjunto de valores de $Y$ que é \textbf{independente} de outros atributos da relação.
+  \end{block}
+  \vspace{0.4cm}
+  \centering
+  \begin{tikzpicture}[node distance=1.5cm, font=\small\sffamily]
+    \node (x) [draw, fill=orange!20, circle, thick] {X};
+    \node (y) [draw, fill=blue!10, rectangle, right=of x] {\{Y1, Y2, \ldots\}};
+    \node (z) [draw, fill=green!10, rectangle, left=of x] {\{Z1, Z2, \ldots\}};
+    
+    \draw[->>, thick, blue] (x) -- (y) node[midway, above] {\tiny DMV};
+    \draw[->>, thick, green!60!black] (x) -- (z) node[midway, above] {\tiny DMV};
+    
+    \node [below=0.5cm of x, text width=6cm, align=center] {\textit{Se $Y$ e $Z$ são independentes, mantê-los na mesma tabela gera redundância massiva.}};
+  \end{tikzpicture}
+\end{frame}
+\begin{frame}{Dependência Multivalorada via Lógica de Conjuntos}
+\small
+\begin{block}{Formalização}
+Uma dependência multivalorada $X \twoheadrightarrow Y$ implica que:
+
+\[
+\forall x \in X,\quad Y(x) = \{y_1, y_2, \ldots, y_n\}
+\]
+
+e, para outro conjunto de atributos $Z$:
+
+\[
+Z(x) = \{z_1, z_2, \ldots, z_m\}
+\]
+
+Se $Y$ e $Z$ são independentes, então:
+
+\[
+R(x) = Y(x) \times Z(x)
+\]
+
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{exampleblock}{Interpretação}
+Para cada valor de $X$, os valores de $Y$ e $Z$ se combinam livremente,
+gerando um \textbf{produto cartesiano}.
+\end{exampleblock}
+
+\vspace{0.3cm}
+
+\centering
+\begin{tikzpicture}[node distance=2cm, font=\small\sffamily]
+    \node (x) [draw, circle, fill=orange!20] {$x$};
+    \node (y) [draw, rectangle, right=of x, fill=blue!10] {$Y(x)$};
+    \node (z) [draw, rectangle, left=of x, fill=green!10] {$Z(x)$};
+
+    \draw[->>, thick, blue] (x) -- (y);
+    \draw[->>, thick, green!60!black] (x) -- (z);
+
+    \node [below=1cm of x] {$R(x) = Y(x) \times Z(x)$};
+\end{tikzpicture}
+\end{frame}\begin{frame}{Exemplo: Tabela PESSOA (Violando 4FN)}
+  \small
+  
+  Considere a pessoa Ana com os seguintes conjuntos:
+  
+  \[
+  H(\text{Ana}) = \{\text{Python}, \text{SQL}\}
+  \quad
+  T(\text{Ana}) = \{1111, 2222\}
+  \]
+
+  \vspace{0.2cm}
+  
+  Como habilidades e telefones são independentes:
+  
+  \[
+  R(\text{Ana}) = H(\text{Ana}) \times T(\text{Ana})
+  \]
+
+  \vspace{0.3cm}
+
+  \centering
+  \begin{tabular}{|l|c|l|c|l|l|}
+    \hline
+    \textbf{Pessoa} & \textbf{CPF} & \textbf{Cidade} & \textbf{Telefone} & \textbf{Email} & \textbf{Habilidade} \\ \hline
+    Ana & 123 & Goiânia & 1111 & ana@email.com & \color{red}Python \\ \hline
+    Ana & 123 & Goiânia & 1111 & ana@email.com & \color{red}SQL \\ \hline
+    Ana & 123 & Goiânia & 2222 & ana@email.com & \color{red}Python \\ \hline
+    Ana & 123 & Goiânia & 2222 & ana@email.com & \color{red}SQL \\ \hline
+  \end{tabular}
+
+  \vspace{0.4cm}
+  
+  \begin{alertblock}{Interpretação Formal}
+    A tabela armazena explicitamente:
+    \[
+    H(\text{Ana}) \times T(\text{Ana})
+    \]
+    gerando redundância, pois cada telefone é combinado com todas as habilidades.
+  \end{alertblock}
+
+\end{frame}
+
+\begin{frame}{Análise Técnica: Dependências}
+  \begin{block}{Dependências Funcionais (DF)}
+    \begin{itemize}
+      \item $CPF \to \{Pessoa, Cidade, Email\}$
+    \end{itemize}
+  \end{block}
+  \vspace{0.3cm}
+  \begin{block}{Dependências Multivaloradas (DMV)}
+    \begin{itemize}
+      \item $CPF \twoheadrightarrow Telefone$
+      \item $CPF \twoheadrightarrow Habilidade$
+    \end{itemize}
+  \end{block}
+  \vspace{0.3cm}
+  \begin{exampleblock}{Conceito Chave}
+    Telefones e Habilidades são \textbf{independentes} entre si, mas ambos dependem do CPF da pessoa.
+  \end{exampleblock}
+\end{frame}
+\begin{frame}{Exemplo com Produto Cartesiano (Violação da 4FN)}
+\small
+
+Considere:
+
+\[
+Y(\text{Ana}) = \{\text{Python}, \text{SQL}\}
+\]
+\[
+Z(\text{Ana}) = \{1111, 2222\}
+\]
+
+\vspace{0.3cm}
+
+\begin{block}{Produto Cartesiano}
+\[
+Y(\text{Ana}) \times Z(\text{Ana}) =
+\{
+(\text{Python},1111),
+(\text{Python},2222),
+(\text{SQL},1111),
+(\text{SQL},2222)
+\}
+\]
+\end{block}
+
+\vspace{0.3cm}
+
+\centering
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Habilidade} & \textbf{Telefone} \\ \hline
+Python & 1111 \\ \hline
+Python & 2222 \\ \hline
+SQL & 1111 \\ \hline
+SQL & 2222 \\ \hline
+\end{tabular}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Problema}
+A relação armazena explicitamente o produto cartesiano, gerando
+\textbf{redundância exponencial} e caracterizando violação da 4FN.
+\end{alertblock}
+
+\end{frame}
+\begin{frame}{Por que viola a 4FN?}
+  \small
+  Para verificar a 4FN, primeiro identificamos a \textbf{Chave Primária} da relação completa:
+  \vspace{0.2cm}
+  \begin{itemize}
+    \item \textbf{PK:} $\{CPF, Telefone, Habilidade\}$
+    \item Precisamos dos três para identificar unicamente cada linha.
+  \end{itemize}
+  \vspace{0.4cm}
+  \begin{alertblock}{O Problema}
+    Temos DMVs não triviais:
+    \begin{itemize}
+      \item $CPF \twoheadrightarrow Telefone$
+      \item $CPF \twoheadrightarrow Habilidade$
+    \end{itemize}
+    \textbf{Porém, o determinante $CPF$ não é uma superchave} da relação original (ele sozinho não identifica a linha inteira).
+  \end{alertblock}
+  \vspace{0.2cm}
+  \textit{Violação direta da regra: "Toda DMV não trivial deve ter uma superchave como determinante".}
+\end{frame}
+
+\begin{frame}{Evidência Prática: O Produto Cartesiano}
+  \small
+  Se Ana tem 2 telefones e 2 habilidades, a tabela precisa de $2 \times 2 = 4$ linhas.
+  Se ela tivesse 5 telefones e 10 habilidades, seriam \textbf{50 linhas} para uma única pessoa!
+  \vspace{0.3cm}
+  \centering
+  \begin{tikzpicture}[node distance=1.2cm, font=\footnotesize\sffamily]
+    \node (t1) [draw, fill=blue!10, text width=2cm, align=center] {T1: 1111\\T2: 2222};
+    \node (h1) [draw, fill=green!10, text width=2cm, align=center, right=2cm of t1] {H1: Python\\H2: SQL};
+    
+    \draw[<->, thick, red] (t1) -- (h1) node[midway, above] {Produto Cartesiano};
+    
+    \node [below=0.2cm of t1] {Telefones};
+    \node [below=0.2cm of h1] {Habilidades};
+  \end{tikzpicture}
+  \vspace{0.3cm}
+  \begin{alertblock}{Consequência}
+    A relação força a criação de \textbf{combinações artificiais}: o Telefone "1111" não tem relação real com a Habilidade "Python", mas a tabela exige que eles apareçam juntos.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Problemas Estruturais Gerados}
+  \begin{itemize}
+    \item \textbf{Redundância Massiva:} Cidade e Email repetidos exaustivamente.
+    \item \textbf{Anomalia de Inserção:} Para adicionar um novo telefone, você deve inserir múltiplas linhas (uma para cada habilidade existente).
+    \item \textbf{Anomalia de Exclusão:} Remover uma habilidade pode exigir a remoção de várias linhas; se remover a última habilidade, pode-se perder acidentalmente a informação do telefone se não houver cuidado.
+    \item \textbf{Inconsistência:} Risco de atualizar o Email em uma linha e esquecer nas outras 49.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Decomposição em 4FN: Passo 1}
+  \small
+  Para normalizar, separamos as dependências multivaloradas em suas próprias relações.
+  Primeiro, isolamos os dados atômicos (funcionais):
+  \vspace{0.4cm}
+  \begin{exampleblock}{Tabela 1: PESSOA (Dados Principais)}
+    \centering
+    \begin{tabular}{|c|l|l|l|}
+      \hline
+      \textbf{CPF (PK)} & \textbf{Pessoa} & \textbf{Cidade} & \textbf{Email} \\ \hline
+      123 & Ana & Goiânia & ana@email.com \\ \hline
+    \end{tabular}
+  \end{exampleblock}
+  \vspace{0.4cm}
+  \begin{itemize}
+    \item Esta tabela agora trata apenas de Dependências Funcionais.
+    \item Não há mais repetição desnecessária de Cidade e Email.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Decomposição em 4FN: Passo 2}
+  \small
+  Agora, isolamos cada conjunto independente de valores multivalorados:
+  \vspace{0.3cm}
+  \begin{columns}[t]
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Tabela 2: PESSOA\_FONE}
+        \centering
+        \begin{tabular}{|c|c|}
+          \hline
+          \textbf{CPF (PK, FK)} & \textbf{Telefone (PK)} \\ \hline
+          123 & 1111 \\ \hline
+          123 & 2222 \\ \hline
+        \end{tabular}
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Tabela 3: PESSOA\_HABIL}
+        \centering
+        \begin{tabular}{|c|l|}
+          \hline
+          \textbf{CPF (PK, FK)} & \textbf{Habilidade (PK)} \\ \hline
+          123 & Python \\ \hline
+          123 & SQL \\ \hline
+        \end{tabular}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+  \vspace{0.3cm}
+  \begin{itemize}
+    \item Cada tabela possui sua própria DMV.
+    \item O determinante ($CPF$) agora é parte da superchave de sua respectiva tabela.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Conclusão: Estrutura Final Normalizada}
+  \centering
+  \begin{tikzpicture}[
+    node distance=1.5cm and 2.5cm,
+    tabela/.style={draw, rounded corners, font=\footnotesize\sffamily, align=left, inner sep=6pt, text width=3cm}
+  ]
+    \node (p) [tabela, fill=blue!5] {
+      \textbf{PESSOA} \\ \rule{\textwidth}{0.4pt} \\
+      \textbf{CPF (PK)} \\ Pessoa \\ Cidade \\ Email
+    };
+    \node (f) [tabela, fill=green!5, right=of p, yshift=1cm] {
+      \textbf{PESSOA\_FONE} \\ \rule{\textwidth}{0.4pt} \\
+      \textbf{CPF (FK)} \\ \textbf{Telefone}
+    };
+    \node (h) [tabela, fill=yellow!10, right=of p, yshift=-1cm] {
+      \textbf{PESSOA\_HABIL} \\ \rule{\textwidth}{0.4pt} \\
+      \textbf{CPF (FK)} \\ \textbf{Habilidade}
+    };
+    
+    \draw[->, thick] (f.west) -- (p.east);
+    \draw[->, thick] (h.west) -- (p.east);
+
+    \node [below=0.8cm of p, text width=8cm, font=\itshape\small, align=center]
+      {A 4FN elimina o crescimento explosivo de linhas e garante a integridade dos dados.};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Exemplo em 4FN: Estrutura Normalizada}
+\small
+
+Considere a decomposição correta da relação CARRO:
+
+\vspace{0.2cm}
+
+\begin{block}{Relações em 4FN}
+\[
+R_1(\text{Carro}, \text{Modelo}, \text{Marca}, \text{Ano}, \text{Cor})
+\]
+\[
+R_2(\text{Carro}, \text{Acessório})
+\quad
+R_3(\text{Carro}, \text{Proprietário})
+\]
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Interpretação}
+Cada relação contém apenas:
+\begin{itemize}
+    \item dependências funcionais (em $R_1$)
+    \item ou uma única dependência multivalorada (em $R_2$ e $R_3$)
+\end{itemize}
+\end{alertblock}
+
+\vspace{0.3cm}
+
+\centering
+\[
+A(\text{Carro}) = \{\text{Ar-condicionado}, \text{Airbag}\}
+\quad
+P(\text{Carro}) = \{\text{João}, \text{Maria}\}
+\]
+
+\end{frame}
+\begin{frame}{Instância das Tabelas em 4FN}
+\scriptsize
+
+\centering
+\textbf{Tabela: Dados do Carro}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Carro & Modelo & Marca & Ano & Cor \\ \hline
+C1 & Civic & Honda & 2020 & Preto \\ \hline
+C2 & Corolla & Toyota & 2019 & Branco \\ \hline
+C3 & Gol & Volkswagen & 2018 & Prata \\ \hline
+C4 & Onix & Chevrolet & 2021 & Vermelho \\ \hline
+C5 & HB20 & Hyundai & 2022 & Azul \\ \hline
+C6 & Fiesta & Ford & 2017 & Preto \\ \hline
+C7 & Kwid & Renault & 2023 & Branco \\ \hline
+\end{tabular}
+
+\vspace{0.3cm}
+
+\textbf{Tabela: Acessórios}
+\begin{tabular}{|c|c|}
+\hline
+Carro & Acessório \\ \hline
+C1 & Ar-condicionado \\ \hline
+C2 & Airbag \\ \hline
+C3 & Direção elétrica \\ \hline
+C4 & Sensor de ré \\ \hline
+C5 & Câmera traseira \\ \hline
+C6 & Vidro elétrico \\ \hline
+C7 & Central multimídia \\ \hline
+\end{tabular}
+
+\vspace{0.3cm}
+
+\textbf{Tabela: Proprietários}
+\begin{tabular}{|c|c|}
+\hline
+Carro & Proprietário \\ \hline
+C1 & João \\ \hline
+C2 & Maria \\ \hline
+C3 & Pedro \\ \hline
+C4 & Ana \\ \hline
+C5 & Lucas \\ \hline
+C6 & Carla \\ \hline
+C7 & Bruno \\ \hline
+\end{tabular}
+
+\begin{alertblock}{Por que está na 4FN?}
+Cada relação contém apenas um fato independente (dados do carro, acessórios ou proprietários).  
+Não há combinação entre conjuntos (sem produto cartesiano), logo não há redundância.
+\end{alertblock}
+
+\end{frame}
+
+
+
+
+\begin{frame}{Exemplo: CARRO com Dependências Multivaloradas}
+\small
+
+Considere um carro com múltiplos acessórios e múltiplos proprietários.
+
+\vspace{0.2cm}
+
+\begin{block}{Atributos da relação}
+\[
+R(\text{Carro}, \text{Modelo}, \text{Marca}, \text{Ano}, \text{Cor}, \text{Acessório}, \text{Proprietário})
+\]
+\end{block}
+
+\vspace{0.2cm}
+
+\begin{block}{Conjuntos associados}
+\[
+A(\text{Carro}) = \{\text{Ar-condicionado}, \text{Airbag}\}
+\]
+\[
+P(\text{Carro}) = \{\text{João}, \text{Maria}\}
+\]
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Dependências}
+\[
+\text{Carro} \rightarrow \{\text{Modelo}, \text{Marca}, \text{Ano}, \text{Cor}\}
+\]
+\[
+\text{Carro} \twoheadrightarrow \text{Acessório}
+\quad
+\text{Carro} \twoheadrightarrow \text{Proprietário}
+\]
+\end{alertblock}
+
+\vspace{0.3cm}
+
+\centering
+Se independentes:
+\[
+R(\text{Carro}) = A(\text{Carro}) \times P(\text{Carro})
+\]
+
+\end{frame}\begin{frame}{Tabela CARRO (Violando 4FN)}
+\scriptsize
+
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+Carro & Modelo & Marca & Ano & Cor & Acessório & Proprietário \\ \hline
+C1 & Civic & Honda & 2020 & Preto & Ar-condicionado & João \\ \hline
+C1 & Civic & Honda & 2020 & Preto & Ar-condicionado & Maria \\ \hline
+C1 & Civic & Honda & 2020 & Preto & Airbag & João \\ \hline
+C1 & Civic & Honda & 2020 & Preto & Airbag & Maria \\ \hline
+\end{tabular}
+
+\vspace{0.3cm}
+
+\begin{block}{Produto Cartesiano}
+\[
+A(C1) \times P(C1)
+\]
+\end{block}
+
+\vspace{0.2cm}
+
+\begin{alertblock}{Problema}
+Os atributos fixos (\textit{Modelo, Marca, Ano, Cor}) são repetidos para cada combinação de 
+Acessório $\times$ Proprietário.
+
+\vspace{0.1cm}
+
+Isso gera redundância e caracteriza violação da \textbf{4FN}.
+\end{alertblock}
+
+\end{frame}\begin{frame}{Decomposição para 4FN (Solução)}
+\small
+
+\begin{block}{Separação das relações}
+\[
+R_1(\text{Carro}, \text{Modelo}, \text{Marca}, \text{Ano}, \text{Cor})
+\]
+\[
+R_2(\text{Carro}, \text{Acessório})
+\quad
+R_3(\text{Carro}, \text{Proprietário})
+\]
+\end{block}
+
+\vspace{0.3cm}
+
+\centering
+\textbf{Tabela 1: Dados do Carro}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Carro & Modelo & Marca & Ano & Cor \\ \hline
+C1 & Civic & Honda & 2020 & Preto \\ \hline
+\end{tabular}
+
+\vspace{0.2cm}
+
+\textbf{Tabela 2: Acessórios}
+\begin{tabular}{|c|c|}
+\hline
+Carro & Acessório \\ \hline
+C1 & Ar-condicionado \\ \hline
+C1 & Airbag \\ \hline
+\end{tabular}
+
+\vspace{0.2cm}
+
+\textbf{Tabela 3: Proprietários}
+\begin{tabular}{|c|c|}
+\hline
+Carro & Proprietário \\ \hline
+C1 & João \\ \hline
+C1 & Maria \\ \hline
+\end{tabular}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Resultado}
+Eliminamos o produto cartesiano e a redundância, mantendo apenas dependências válidas.
+\end{alertblock}
+
+\end{frame}
+\end{document}
+
+
+

@@ -1,0 +1,16 @@
+digraph G {
+    graph [pad="0.5", nodesep="0.5", ranksep="2"];
+    node [shape=none, fontname="Arial"];
+
+    pessoa [label=<
+        <table border="0" cellborder="1" cellspacing="0" cellpadding="10">
+            <tr><td bgcolor="#2c3e50"><font color="white"><b>PESSOA</b></font></td></tr>
+            <tr><td align="left">PK: id (SERIAL)</td></tr>
+            <tr><td align="left">nome (VARCHAR 100) [NN]</td></tr>
+            <tr><td align="left">cpf (CHAR 11) [UQ, NN]</td></tr>
+            <tr><td align="left">email (VARCHAR 150) [UQ]</td></tr>
+            <tr><td align="left">data_nascimento (DATE)</td></tr>
+            <tr><td align="left">criado_em (TIMESTAMP)</td></tr>
+        </table>
+    >];
+}

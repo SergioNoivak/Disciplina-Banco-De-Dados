@@ -1,0 +1,150 @@
+\documentclass[12pt,a4paper]{article}
+
+% ------------------------------------------------
+% Pacotes
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{fancyhdr} 
+\usepackage{mathptmx} % Times New Roman
+\usepackage{enumitem} 
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric}
+
+% TikZ Styles for ER Diagrams
+\tikzset{
+    block/.style={rectangle, draw, thick, minimum width=2cm, minimum height=1cm, fill=white},
+    diamond_node/.style={diamond, draw, thick, minimum width=2cm, minimum height=1cm, fill=white, aspect=2},
+    attribute/.style={ellipse, draw, thin, minimum width=1.5cm, minimum height=0.6cm, fill=white, font=\scriptsize},
+    line/.style={draw, thick},
+    specialization/.style={draw, circle, inner sep=1pt, font=\tiny, fill=white}
+}
+
+% ------------------------------------------------ 
+% Configuração de página
+% ------------------------------------------------
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=2cm,
+    bottom=2cm,
+    headheight=15pt
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\parindent}{0pt}
+
+% Caixa para resposta
+\newcommand{\resposta}[1]{
+\noindent
+\framebox[\textwidth]{
+\begin{minipage}{0.98\textwidth}
+\vspace{#1}
+\end{minipage}
+}
+}
+
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% ------------------------------------------------
+% Documento
+% ------------------------------------------------
+\begin{document}
+
+% ------------------------------------------------
+% Cabeçalho
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{@{} L{4cm} X @{}}
+    \raisebox{-0.5cm}{\includegraphics[width=4cm]{Universidade_de_Rio_Verde.jpg}} &
+    \hfill
+    \begin{tabular}{|>{\centering\arraybackslash}m{10cm}|>{\raggedright\arraybackslash}p{1.8cm}|}
+        \hline
+        \cellcolor{black}\color{white}\rule{0pt}{1.2cm}\textbf{ATIVIDADE PRÁTICA: MODELAGEM ER E LÓGICA} 
+        & 
+        \scriptsize Nota \tabularnewline
+        \hline
+    \end{tabular} 
+\end{tabularx}
+\vspace{0.3cm}
+
+\begin{tabularx}{\textwidth}{|X|L{2cm}|}
+\hline
+\textbf{Curso} & \textbf{Campus} \\
+\textit{Engenharia de Software} & \textit{Rio Verde} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Disciplina}} \\  
+\multicolumn{2}{|l|}{ \textit{Banco de Dados I}} \\
+\hline
+\textbf{Nome do(a) acadêmico(a)} & \textbf{Valor} \\
+& 10,0 \\
+\hline
+\textbf{Professor} & \textbf{Turma} \\
+\textit{ Sergio Souza Novak} & \textit{A/B} \\
+\hline
+\textbf{Data} & \textbf{Código} \\
+\textit{17/03/2026} & \textit{ESW} \\
+\hline
+\end{tabularx}
+
+\vspace{0.5cm}
+
+\begin{center}
+    \rule{\textwidth}{0.4pt}
+    \textbf{ENUNCIADO DO CENÁRIO: SISTEMA CLINICARV}
+\end{center}
+
+A Clínica Médica "ClinicaRV" necessita de um novo sistema de banco de dados para gerenciar seus atendimentos. Após o levantamento de requisitos, foram identificadas as seguintes regras de negócio:
+
+\begin{enumerate}
+    \item \textbf{Médicos e Especialidades:} Todo médico possui um CRM (único), nome e telefone de contato. Cada médico deve estar vinculado a exatamente uma especialidade (ex: Cardiologia, Pediatria). Uma especialidade pode ter vários médicos cadastrados.
+    \item \textbf{Pacientes e Atendimento:} Os pacientes são identificados pelo CPF e possuem nome e data de nascimento. Um paciente pode realizar várias consultas na clínica ao longo do tempo.
+    \item \textbf{Convênios:} A clínica atende por diversos convênios (ex: Unimed, Ipasgo). Um registro de convênio contém um código identificador, o nome do plano e a empresa responsável. Um paciente pode utilizar apenas um convênio por vez (ou nenhum), enquanto um convênio atende a milhares de pacientes. 
+    \item \textbf{Credenciamento:} Os médicos podem atender por vários convênios diferentes, e um convênio pode ter diversos médicos credenciados para atendimento.
+    \item \textbf{Consultas:} Uma consulta registra a data, o horário e o valor cobrado. Toda consulta deve estar obrigatoriamente vinculada a um médico e a um paciente.
+    \item \textbf{Exames:} Durante uma consulta, o médico pode solicitar vários exames (ex: Hemograma, Raio-X). Cada exame solicitado possui um código, nome e preço. Um exame solicitado está vinculado diretamente à consulta que o originou.
+    \item \textbf{Receitas e Medicamentos:} Cada consulta gera obrigatoriamente uma única receita médica (prescrição), identificada por um número sequencial e contendo observações gerais do médico.
+    \item \textbf{Prescrição de Medicamentos:} Uma receita pode conter vários medicamentos diferentes, e o mesmo medicamento (identificado por código e nome comercial) pode ser prescrito em diversas receitas de pacientes distintos.
+\end{enumerate}
+
+\vspace{0.8cm}
+
+\begin{center}
+    \rule{\textwidth}{0.4pt}
+    \textbf{QUESTÕES}
+\end{center}
+
+\begin{enumerate}[label=\textbf{Questão \arabic*:}, leftmargin=*]
+    \item \textbf{Modelo Entidade-Relacionamento (Conceitual):} 
+    Com base no cenário acima, desenhe o Diagrama Entidade-Relacionamento (DER). Certifique-se de incluir:
+    \begin{itemize}
+        \item Todas as 8 entidades citadas;
+        \item Os atributos principais (incluindo chaves primárias sublinhadas);
+        \item Os relacionamentos e suas respectivas cardinalidades (mínima e máxima).
+    \end{itemize}
+    
+    \resposta{12cm}
+
+    \newpage
+
+    \item \textbf{Mapeamento para o Modelo Lógico (Relacional):}
+    Converta o DER elaborado na questão anterior para o Modelo Lógico Relacional. Apresente o esquema das tabelas seguindo o padrão: \textbf{TABELA}(\underline{PK}, Atributo, FK\_Referencia). 
+    
+    \textit{Dica: Atenção redobrada aos relacionamentos N:N e para onde as Chaves Estrangeiras (FK) devem ser propagadas nos relacionamentos 1:N.}
+
+    \resposta{15cm}
+
+\end{enumerate}
+
+\end{document}

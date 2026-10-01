@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Criar usuario com senha e privilégios de criação de banco}
+\PYG{k}{CREATE}\PYG{+w}{ }\PYG{k}{USER}\PYG{+w}{ }\PYG{n}{unirv}\PYG{+w}{ }\PYG{k}{WITH}\PYG{+w}{ }\PYG{n}{PASSWORD}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}unirv\PYGZsq{}}\PYG{+w}{ }\PYG{k}{CREATEDB}\PYG{p}{;}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Caso queira que ele seja um superusuario (uso acadêmico)}
+\PYG{k}{ALTER}\PYG{+w}{ }\PYG{k}{USER}\PYG{+w}{ }\PYG{n}{unirv}\PYG{+w}{ }\PYG{k}{WITH}\PYG{+w}{ }\PYG{n}{SUPERUSER}\PYG{p}{;}
+\end{Verbatim}

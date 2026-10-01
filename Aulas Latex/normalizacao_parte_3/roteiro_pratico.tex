@@ -1,0 +1,753 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática e listas
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{longtable}
+
+% Layout e cores
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+\definecolor{sqlblue}{RGB}{0,60,120}
+\definecolor{sqlbg}{RGB}{240,245,255}
+\definecolor{warnyellow}{RGB}{255,200,0}
+\definecolor{warnbg}{RGB}{255,252,230}
+\definecolor{okgreen}{RGB}{0,130,60}
+\definecolor{okbg}{RGB}{230,255,240}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+
+% TikZ para diagramas
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, calc, fit, backgrounds}
+
+% listingsSQL
+\usepackage{listings}
+\lstdefinestyle{sqlstyle}{
+  language=SQL,
+  backgroundcolor=\color{sqlbg},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{sqlblue}\bfseries,
+  stringstyle=\color{red!60!black},
+  commentstyle=\color{gray}\itshape,
+  numberstyle=\tiny\color{gray},
+  numbers=left,
+  stepnumber=1,
+  numbersep=6pt,
+  frame=single,
+  framerule=1pt,
+  rulecolor=\color{sqlblue!40},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=4,
+  showstringspaces=false,
+  captionpos=b,
+  xleftmargin=10pt,
+  xrightmargin=4pt,
+  morekeywords={SERIAL,VARCHAR,DECIMAL,REFERENCES,CASCADE,
+                CONSTRAINT,ADD,IF,NOT,EXISTS,PRIMARY,FOREIGN,
+                KEY,DEFAULT,DATE,TIME,INT,ALTER,TABLE,ONLY}
+}
+\lstset{style=sqlstyle}
+
+% Blocos coloridos
+\usepackage[most]{tcolorbox}
+
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=maincolor,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=6pt, right=6pt, top=6pt, bottom=6pt
+}
+
+\newtcolorbox{dica}{%
+  colback=okbg,
+  colframe=okgreen,
+  coltitle=white,
+  title=\textbf{Dica Prática},
+  fonttitle=\bfseries\small,
+  boxrule=1pt,
+  arc=2mm,
+  left=6pt, right=6pt, top=4pt, bottom=4pt
+}
+
+\newtcolorbox{atencao}{%
+  colback=warnbg,
+  colframe=orange!80!black,
+  coltitle=white,
+  title=\textbf{Atenção},
+  fonttitle=\bfseries\small,
+  boxrule=1pt,
+  arc=2mm,
+  left=6pt, right=6pt, top=4pt, bottom=4pt
+}
+
+\newtcolorbox{exercbox}[1]{%
+  colback=blue!3,
+  colframe=sqlblue,
+  coltitle=white,
+  title=Exercício #1,
+  fonttitle=\bfseries\small,
+  boxrule=1pt,
+  arc=2mm,
+  left=6pt, right=6pt, top=4pt, bottom=4pt
+}
+
+\newtcolorbox{resposta}{%
+  colback=white,
+  colframe=gray!40,
+  arc=0mm,
+  height=5cm,
+  left=6pt, right=6pt, top=6pt, bottom=6pt,
+  title=\textit{Resposta:},
+  coltitle=gray!80,
+  fonttitle=\bfseries\small,
+  attach title to upper
+}
+
+% Margens
+\geometry{margin=2.5cm}
+
+% Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+\renewcommand{\headrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{%
+  \color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+\setlength{\headheight}{52pt}
+\addtolength{\topmargin}{-20pt}
+\fancyhead[L]{%
+  \includegraphics[height=1.2cm]{Universidade_de_Rio_Verde.jpg}
+}
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{%
+    \small
+    \textbf{Roteiro Prático --- Banco de Dados}\\
+    Me.~Sergio Souza Novak\\
+    \textit{Banco de Dados}
+  }
+}
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+
+% ──────────────────────────────────────────────
+\begin{document}
+% ──────────────────────────────────────────────
+
+\vspace*{0.2cm}
+\begin{center}
+  {\Large \textbf{Roteiro Prático: Sistema de Ordenha Bovina}}\\[0.2cm]
+  {\large Banco de Dados --- PostgreSQL}\\[0.2cm]
+  Tema: Modelagem Relacional, DDL e DML em Contexto Real
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{block}{Objetivo da Aula Prática}
+Implementar passo a passo o banco de dados de um sistema de ordenha bovina,
+praticando: criação de tabelas, definição de chaves primárias e estrangeiras,
+relacionamentos 1:N e N:N, inserção de dados e consultas básicas.
+Ao final, o aluno deve ser capaz de executar o script completo no PostgreSQL e
+verificar a integridade referencial do modelo.
+\end{block}
+
+\vspace{0.4cm}
+
+% ══════════════════════════════════════════════
+\section*{1 \enspace Visão Geral do Domínio}
+% ══════════════════════════════════════════════
+
+O sistema modela uma \textbf{fazenda produtora de leite}. As principais entidades
+e relacionamentos são descritos abaixo:
+
+\vspace{0.3cm}
+\begin{center}
+\begin{tikzpicture}[
+  entidade/.style={draw, rectangle, rounded corners=3pt,
+    fill=green!8, minimum width=2.4cm, minimum height=0.7cm,
+    font=\small\bfseries, align=center},
+  assoc/.style={draw, rectangle, fill=blue!8,
+    minimum width=2.8cm, minimum height=0.7cm,
+    font=\small, align=center},
+  linha/.style={->, >=stealth, thick},
+  dupla/.style={<->, >=stealth, thick, blue!60},
+  node distance=1.3cm and 2.2cm
+]
+
+% Entidades principais
+\node[entidade] (prop)    {Proprietário};
+\node[entidade] (ord)     [right=3cm of prop]  {Ordenha};
+\node[entidade] (vaca)    [right=3cm of ord]   {Vaca};
+\node[entidade] (vet)     [above=of vaca]      {Veterinário};
+\node[entidade] (func)    [below=1.8cm of ord] {Funcionário};
+\node[entidade] (sup)     [right=2.5cm of func]{Supervisor};
+\node[entidade] (equip)   [above=of prop]      {Equipamentos};
+
+% Setas 1:N
+\draw[linha, maincolor] (prop) -- node[above, font=\tiny]{1:N} (ord);
+\draw[linha, maincolor] (vaca) -- node[above, font=\tiny]{1:N} (ord);
+
+% Setas N:N (tabelas associativas)
+\draw[dupla] (vaca)  -- node[right, font=\tiny]{N:N} (vet);
+\draw[dupla] (ord)   -- node[left,  font=\tiny]{N:N} (func);
+\draw[dupla] (func)  -- node[below, font=\tiny]{N:N} (sup);
+\draw[dupla] (ord)   -- node[right, font=\tiny]{N:N} (sup);
+\draw[dupla, bend left=20] (ord)   to node[above, font=\tiny]{N:N} (equip);
+\draw[dupla, bend right=20] (prop) to node[left, font=\tiny]{N:N} (equip);
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{0.3cm}
+
+\noindent A tabela resumo das entidades e suas responsabilidades:
+
+\vspace{0.2cm}
+\begin{center}
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Entidade}       & \textbf{Papel no sistema}               & \textbf{Tipo de relação} \\
+\hline
+Proprietário            & Dono do animal/equipamento              & 1:N com Ordenha \\
+Vaca                    & Animal ordenhado                        & 1:N com Ordenha \\
+Veterinário             & Profissional de saúde animal            & N:N com Vaca \\
+Funcionário             & Operador da ordenha                     & N:N com Ordenha \\
+Supervisor              & Responsável pelo turno                  & N:N com Ordenha e Funcionário \\
+Equipamentos            & Máquinas e instrumentos                 & N:N com Ordenha e Proprietário \\
+Ordenha                 & Evento central do sistema               & Tabela fato \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+
+% ══════════════════════════════════════════════
+\section*{2 \enspace Passo 1 — Limpar o Banco (DROP)}
+% ══════════════════════════════════════════════
+
+\begin{atencao}
+Execute o bloco \texttt{DROP} \textbf{apenas} quando quiser recomeçar do zero.
+A cláusula \texttt{CASCADE} remove automaticamente todas as dependências.
+A opção \texttt{IF EXISTS} evita erros se as tabelas ainda não existirem.
+\end{atencao}
+
+\vspace{0.3cm}
+
+\begin{lstlisting}[caption={Remoção segura de todas as tabelas}]
+DROP TABLE IF EXISTS
+    Funcionario_Supervisor,
+    Proprietario_Equipamento,
+    Ordenha_Equipamento,
+    Ordenha_Supervisor,
+    Ordenha_Funcionario,
+    Vaca_Veterinario,
+    Ordenha,
+    Vaca,
+    Equipamentos,
+    Veterinario,
+    Funcionario,
+    Supervisor,
+    Proprietario
+CASCADE;
+\end{lstlisting}
+
+\begin{dica}
+A \textbf{ordem de remoção} importa: tabelas associativas (N:N) devem ser
+dropadas \textbf{antes} das tabelas que elas referenciam. Por isso listamos
+\texttt{Funcionario\_Supervisor}, \texttt{Vaca\_Veterinario}, etc.\ primeiro.
+\end{dica}
+
+\vspace{0.5cm}
+
+% ══════════════════════════════════════════════
+\section*{3 \enspace Passo 2 — Criar as Tabelas Principais (DDL)}
+% ══════════════════════════════════════════════
+
+\subsection*{3.1 \enspace Entidades independentes}
+
+As tabelas a seguir \textbf{não possuem chaves estrangeiras} e devem ser criadas
+primeiro, pois serão referenciadas pelas demais.
+
+\begin{lstlisting}[caption={Proprietário, Equipamentos, Vaca, Veterinário, Funcionário, Supervisor}]
+CREATE TABLE Proprietario (
+    id               SERIAL PRIMARY KEY,
+    nome_completo    VARCHAR(100),
+    telefone         VARCHAR(20)
+);
+
+CREATE TABLE Equipamentos (
+    codigo_equipamento SERIAL PRIMARY KEY,
+    tipo               VARCHAR(50),
+    ultima_manutencao  DATE,
+    situacao           VARCHAR(50)
+);
+
+CREATE TABLE Vaca (
+    id              SERIAL PRIMARY KEY,
+    data_nascimento DATE,
+    raca            VARCHAR(50),
+    peso            DECIMAL(6,2),
+    status_saude    VARCHAR(50)
+);
+
+CREATE TABLE Veterinario (
+    id                    SERIAL PRIMARY KEY,
+    nome_completo         VARCHAR(100),
+    telefone              VARCHAR(20),
+    registro_profissional VARCHAR(50)
+);
+
+CREATE TABLE Funcionario (
+    id            SERIAL PRIMARY KEY,
+    nome_completo VARCHAR(100),
+    telefone      VARCHAR(20),
+    turno_periodo VARCHAR(50)
+);
+
+CREATE TABLE Supervisor (
+    id               SERIAL PRIMARY KEY,
+    nome_completo    VARCHAR(100),
+    telefone         VARCHAR(20),
+    turno_supervisao VARCHAR(50)
+);
+\end{lstlisting}
+
+\vspace{0.3cm}
+
+\subsection*{3.2 \enspace Tabela fato: Ordenha}
+
+A tabela \texttt{Ordenha} representa o \textbf{evento central} do sistema.
+Ela depende de \texttt{Proprietario} (1:N) e \texttt{Vaca} (1:N).
+As FKs são adicionadas separadamente com \texttt{ALTER TABLE} para maior clareza.
+
+\begin{lstlisting}[caption={Criação da tabela Ordenha e suas FKs 1:N}]
+CREATE TABLE Ordenha (
+    id              SERIAL PRIMARY KEY,
+    data            DATE,
+    horario         TIME,
+    quantidade_leite DECIMAL(6,2),
+    id_proprietario INT,          -- FK -> Proprietario
+    id_vaca         INT NOT NULL  -- FK -> Vaca (obrigatorio)
+);
+
+-- Chave estrangeira: Ordenha -> Proprietario (1:N)
+ALTER TABLE Ordenha
+ADD CONSTRAINT fk_ordenha_proprietario
+FOREIGN KEY (id_proprietario) REFERENCES Proprietario(id);
+
+-- Chave estrangeira: Ordenha -> Vaca (1:N)
+ALTER TABLE Ordenha
+ADD CONSTRAINT fk_ordenha_vaca
+FOREIGN KEY (id_vaca) REFERENCES Vaca(id);
+\end{lstlisting}
+
+\begin{dica}
+Observe que \texttt{id\_vaca} é declarado \texttt{NOT NULL}: toda ordenha
+obrigatoriamente pertence a uma vaca. Já \texttt{id\_proprietario} pode ser
+nulo --- um evento pode ser registrado antes de vincular um proprietário.
+\end{dica}
+
+\vspace{0.5cm}
+
+% ══════════════════════════════════════════════
+\section*{4 \enspace Passo 3 — Tabelas Associativas (N:N)}
+% ══════════════════════════════════════════════
+
+Relacionamentos N:N são implementados com uma \textbf{tabela intermediária}
+cuja chave primária é composta pelas duas FKs envolvidas.
+
+\begin{lstlisting}[caption={Todas as tabelas associativas (N:N)}]
+-- Vaca <-> Veterinario
+CREATE TABLE Vaca_Veterinario (
+    id_veterinario INT NOT NULL,
+    id_vaca        INT NOT NULL,
+    PRIMARY KEY (id_veterinario, id_vaca),
+    FOREIGN KEY (id_veterinario) REFERENCES Veterinario(id),
+    FOREIGN KEY (id_vaca)        REFERENCES Vaca(id)
+);
+
+-- Ordenha <-> Funcionario
+CREATE TABLE Ordenha_Funcionario (
+    id_ordenha    INT NOT NULL,
+    id_funcionario INT NOT NULL,
+    PRIMARY KEY (id_ordenha, id_funcionario),
+    FOREIGN KEY (id_ordenha)     REFERENCES Ordenha(id),
+    FOREIGN KEY (id_funcionario) REFERENCES Funcionario(id)
+);
+
+-- Ordenha <-> Supervisor
+CREATE TABLE Ordenha_Supervisor (
+    id_ordenha   INT NOT NULL,
+    id_supervisor INT NOT NULL,
+    PRIMARY KEY (id_ordenha, id_supervisor),
+    FOREIGN KEY (id_ordenha)    REFERENCES Ordenha(id),
+    FOREIGN KEY (id_supervisor) REFERENCES Supervisor(id)
+);
+
+-- Ordenha <-> Equipamentos
+CREATE TABLE Ordenha_Equipamento (
+    id_ordenha         INT NOT NULL,
+    codigo_equipamento INT NOT NULL,
+    PRIMARY KEY (id_ordenha, codigo_equipamento),
+    FOREIGN KEY (id_ordenha)         REFERENCES Ordenha(id),
+    FOREIGN KEY (codigo_equipamento) REFERENCES Equipamentos(codigo_equipamento)
+);
+
+-- Proprietario <-> Equipamentos
+CREATE TABLE Proprietario_Equipamento (
+    id_proprietario    INT NOT NULL,
+    codigo_equipamento INT NOT NULL,
+    PRIMARY KEY (id_proprietario, codigo_equipamento),
+    FOREIGN KEY (id_proprietario)    REFERENCES Proprietario(id),
+    FOREIGN KEY (codigo_equipamento) REFERENCES Equipamentos(codigo_equipamento)
+);
+
+-- Funcionario <-> Supervisor
+CREATE TABLE Funcionario_Supervisor (
+    id_funcionario INT NOT NULL,
+    id_supervisor  INT NOT NULL,
+    PRIMARY KEY (id_funcionario, id_supervisor),
+    FOREIGN KEY (id_funcionario) REFERENCES Funcionario(id),
+    FOREIGN KEY (id_supervisor)  REFERENCES Supervisor(id)
+);
+\end{lstlisting}
+
+\vspace{0.3cm}
+
+\noindent Resumo das tabelas associativas criadas:
+
+\vspace{0.2cm}
+\begin{center}
+\small
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Tabela Associativa}  & \textbf{Entidade A}  & \textbf{Entidade B} \\
+\hline
+Vaca\_Veterinario             & Vaca                 & Veterinário \\
+Ordenha\_Funcionario          & Ordenha              & Funcionário \\
+Ordenha\_Supervisor           & Ordenha              & Supervisor  \\
+Ordenha\_Equipamento          & Ordenha              & Equipamentos \\
+Proprietario\_Equipamento     & Proprietário         & Equipamentos \\
+Funcionario\_Supervisor       & Funcionário          & Supervisor  \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+
+% ══════════════════════════════════════════════
+\section*{5 \enspace Passo 4 — Inserir Dados (DML)}
+% ══════════════════════════════════════════════
+
+\subsection*{5.1 \enspace Inserção nas tabelas principais}
+
+\begin{lstlisting}[caption={INSERT nas entidades independentes}]
+-- Proprietarios
+INSERT INTO Proprietario (nome_completo, telefone) VALUES
+('Joao Silva',    '62999990001'),
+('Maria Souza',   '62999990002'),
+('Carlos Pereira','62999990003');
+
+-- Equipamentos
+INSERT INTO Equipamentos (tipo, ultima_manutencao, situacao) VALUES
+('Ordenhadeira', '2026-03-01', 'Ativo'),
+('Resfriador',   '2026-02-15', 'Ativo'),
+('Bomba de Leite','2026-01-10', 'Manutencao');
+
+-- Vacas
+INSERT INTO Vaca (data_nascimento, raca, peso, status_saude) VALUES
+('2020-05-10', 'Holandesa', 550.00, 'Saudavel'),
+('2019-08-20', 'Jersey',    480.00, 'Saudavel'),
+('2021-02-15', 'Gir',       520.00, 'Tratamento');
+
+-- Veterinarios
+INSERT INTO Veterinario (nome_completo, telefone, registro_profissional) VALUES
+('Dr. Carlos Lima', '62988880001', 'CRMV123'),
+('Dra. Ana Paula',  '62988880002', 'CRMV456');
+
+-- Funcionarios
+INSERT INTO Funcionario (nome_completo, telefone, turno_periodo) VALUES
+('Pedro Santos',  '62977770001', 'Manha'),
+('Lucas Oliveira','62977770002', 'Tarde'),
+('Bruno Alves',   '62977770003', 'Noite');
+
+-- Supervisores
+INSERT INTO Supervisor (nome_completo, telefone, turno_supervisao) VALUES
+('Marcos Silva',   '62966660001', 'Manha'),
+('Fernanda Costa', '62966660002', 'Noite');
+\end{lstlisting}
+
+\vspace{0.3cm}
+\subsection*{5.2 \enspace Inserção na tabela Ordenha (1:N)}
+
+\begin{lstlisting}[caption={INSERT na tabela fato Ordenha}]
+-- Relacionamento Ordenha -> Proprietario (id) e Ordenha -> Vaca (id)
+INSERT INTO Ordenha (data, horario, quantidade_leite, id_proprietario, id_vaca) VALUES
+('2026-04-10', '06:00', 25.5, 1, 1),   -- Joao Silva / Vaca Holandesa
+('2026-04-10', '18:00', 27.0, 1, 2),   -- Joao Silva / Vaca Jersey
+('2026-04-11', '06:00', 26.3, 2, 1),   -- Maria Souza / Vaca Holandesa
+('2026-04-11', '18:00', 24.8, 3, 3);   -- Carlos Pereira / Vaca Gir
+\end{lstlisting}
+
+\vspace{0.3cm}
+\subsection*{5.3 \enspace Inserção nas tabelas associativas (N:N)}
+
+\begin{lstlisting}[caption={INSERT nas tabelas N:N}]
+-- Vaca <-> Veterinario
+INSERT INTO Vaca_Veterinario (id_veterinario, id_vaca) VALUES
+(1, 1),  -- Dr. Carlos Lima atende Vaca 1 (Holandesa)
+(1, 2),  -- Dr. Carlos Lima atende Vaca 2 (Jersey)
+(2, 3),  -- Dra. Ana Paula atende Vaca 3 (Gir)
+(2, 1);  -- Dra. Ana Paula atende Vaca 1 (Holandesa)
+
+-- Ordenha <-> Funcionario
+INSERT INTO Ordenha_Funcionario (id_ordenha, id_funcionario) VALUES
+(1, 1),  -- Ordenha 1 com Pedro Santos
+(1, 2),  -- Ordenha 1 com Lucas Oliveira
+(2, 1),  -- Ordenha 2 com Pedro Santos
+(3, 2),  -- Ordenha 3 com Lucas Oliveira
+(4, 3);  -- Ordenha 4 com Bruno Alves
+
+-- Ordenha <-> Supervisor
+INSERT INTO Ordenha_Supervisor (id_ordenha, id_supervisor) VALUES
+(1, 1),  -- Ordenha 1 supervisionada por Marcos Silva
+(2, 1),  -- Ordenha 2 supervisionada por Marcos Silva
+(3, 2),  -- Ordenha 3 supervisionada por Fernanda Costa
+(4, 2);  -- Ordenha 4 supervisionada por Fernanda Costa
+
+-- Ordenha <-> Equipamentos
+INSERT INTO Ordenha_Equipamento (id_ordenha, codigo_equipamento) VALUES
+(1, 1),  -- Ordenha 1 usou Ordenhadeira
+(1, 2),  -- Ordenha 1 usou Resfriador
+(2, 1),  -- Ordenha 2 usou Ordenhadeira
+(3, 2),  -- Ordenha 3 usou Resfriador
+(4, 3);  -- Ordenha 4 usou Bomba de Leite
+
+-- Proprietario <-> Equipamentos
+INSERT INTO Proprietario_Equipamento (id_proprietario, codigo_equipamento) VALUES
+(1, 1),  -- Joao Silva possui Ordenhadeira
+(1, 2),  -- Joao Silva possui Resfriador
+(2, 2),  -- Maria Souza possui Resfriador
+(3, 3);  -- Carlos Pereira possui Bomba de Leite
+
+-- Funcionario <-> Supervisor
+INSERT INTO Funcionario_Supervisor (id_funcionario, id_supervisor) VALUES
+(1, 1),  -- Pedro Santos supervisionado por Marcos Silva
+(2, 1),  -- Lucas Oliveira supervisionado por Marcos Silva
+(2, 2),  -- Lucas Oliveira supervisionado por Fernanda Costa
+(3, 2);  -- Bruno Alves supervisionado por Fernanda Costa
+\end{lstlisting}
+
+\vspace{0.5cm}
+
+% ══════════════════════════════════════════════
+\section*{6 \enspace Passo 5 — Consultas de Verificação (SELECT)}
+% ══════════════════════════════════════════════
+
+Após inserir os dados, execute as consultas abaixo para verificar a integridade.
+
+\begin{lstlisting}[caption={Consultas básicas de verificação}]
+-- (a) Todas as ordenhas com nome do proprietario e raca da vaca
+SELECT
+    o.id          AS ordenha_id,
+    o.data,
+    o.horario,
+    o.quantidade_leite,
+    p.nome_completo AS proprietario,
+    v.raca
+FROM Ordenha o
+JOIN Proprietario p ON o.id_proprietario = p.id
+JOIN Vaca        v ON o.id_vaca          = v.id
+ORDER BY o.data, o.horario;
+
+-- (b) Funcionarios por ordenha
+SELECT
+    o.id   AS ordenha_id,
+    o.data,
+    f.nome_completo AS funcionario,
+    f.turno_periodo
+FROM Ordenha_Funcionario of_
+JOIN Ordenha    o ON of_.id_ordenha    = o.id
+JOIN Funcionario f ON of_.id_funcionario = f.id
+ORDER BY o.id;
+
+-- (c) Quais vacas cada veterinario atende
+SELECT
+    vet.nome_completo AS veterinario,
+    v.raca,
+    v.status_saude
+FROM Vaca_Veterinario vv
+JOIN Veterinario vet ON vv.id_veterinario = vet.id
+JOIN Vaca        v   ON vv.id_vaca        = v.id
+ORDER BY vet.nome_completo;
+
+-- (d) Total de leite produzido por proprietario
+SELECT
+    p.nome_completo AS proprietario,
+    SUM(o.quantidade_leite) AS total_litros
+FROM Ordenha o
+JOIN Proprietario p ON o.id_proprietario = p.id
+GROUP BY p.nome_completo
+ORDER BY total_litros DESC;
+
+-- (e) Equipamentos utilizados em cada ordenha
+SELECT
+    o.id     AS ordenha_id,
+    o.data,
+    e.tipo   AS equipamento,
+    e.situacao
+FROM Ordenha_Equipamento oe
+JOIN Ordenha     o ON oe.id_ordenha         = o.id
+JOIN Equipamentos e ON oe.codigo_equipamento = e.codigo_equipamento
+ORDER BY o.id;
+\end{lstlisting}
+
+\vspace{0.5cm}
+
+% ══════════════════════════════════════════════
+\section*{7 \enspace Exercícios Práticos}
+% ══════════════════════════════════════════════
+
+\begin{block}{Instruções}
+Para cada exercício: execute o SQL no terminal do PostgreSQL (\texttt{psql}),
+observe o resultado e responda a pergunta correspondente. Registre o resultado
+na caixa abaixo de cada item.
+\end{block}
+
+\vspace{0.4cm}
+
+\begin{enumerate}[label=\textbf{Ex.\,\arabic*:}, leftmargin=*]
+
+  % ---- Ex 1 ----
+  \item \textbf{(Integridade Referencial)} Tente inserir uma ordenha para uma
+  vaca com \texttt{id = 99} (que não existe). O banco aceita? Por quê?
+
+  \begin{lstlisting}[caption={Teste de integridade}]
+INSERT INTO Ordenha (data, horario, quantidade_leite, id_proprietario, id_vaca)
+VALUES ('2026-04-12', '06:00', 20.0, 1, 99);
+  \end{lstlisting}
+
+  O que aconteceu? Qual mensagem de erro apareceu? 
+  \begin{resposta}
+  \end{resposta}
+
+  \vspace{0.4cm}
+
+  % ---- Ex 2 ----
+  \item \textbf{(SELECT com JOIN)} Escreva uma consulta que liste o nome do
+  supervisor e todos os funcionários sob sua supervisão, mostrando o turno
+  de cada funcionário.
+
+  \begin{lstlisting}[caption={Modelo inicial --- complete o SELECT}]
+SELECT
+    s.nome_completo  AS supervisor,
+    -- complete aqui
+FROM Funcionario_Supervisor fs
+JOIN Supervisor   s ON fs.id_supervisor  = s.id
+JOIN Funcionario  f ON fs.id_funcionario = f.id
+ORDER BY s.nome_completo;
+  \end{lstlisting}
+
+  \begin{resposta}
+  \end{resposta}
+
+  \vspace{0.4cm}
+
+  % ---- Ex 3 ----
+  \item \textbf{(Agregação)} Quantas ordenhas foram realizadas por cada
+  supervisor? Escreva a consulta usando \texttt{COUNT} e \texttt{GROUP BY}.
+
+  \begin{resposta}
+  \end{resposta}
+
+  \vspace{0.4cm}
+
+  % ---- Ex 4 ----
+  \item \textbf{(Atualização)} O equipamento ``Bomba de Leite'' (código 3)
+  concluiu a manutenção. Atualize seu status para \texttt{'Ativo'} e a data
+  de última manutenção para hoje.
+
+  \begin{lstlisting}[caption={Modelo UPDATE --- complete}]
+UPDATE Equipamentos
+SET situacao = _____, ultima_manutencao = _____
+WHERE codigo_equipamento = _____;
+  \end{lstlisting}
+
+  \begin{resposta}
+  \end{resposta}
+
+  \vspace{0.4cm}
+
+  % ---- Ex 5 ----
+  \item \textbf{(Análise de Dados)} Qual vaca produziu o maior volume total de
+  leite nas quatro ordenhas registradas? Escreva a consulta usando \texttt{SUM},
+  \texttt{GROUP BY} e \texttt{ORDER BY}.
+
+  \begin{resposta}
+  \end{resposta}
+
+  \vspace{0.4cm}
+
+  % ---- Ex 6 ----
+  \item \textbf{(Reflexão --- Modelo)} O modelo possui a tabela
+  \texttt{Funcionario\_Supervisor} (N:N). Em que situação real isso seria
+  necessário? Poderia existir um relacionamento 1:N entre Funcionário e
+  Supervisor? Justifique com base nos dados inseridos.
+
+  \begin{resposta}
+  \end{resposta}
+
+  \vspace{0.4cm}
+
+  % ---- Ex 7 ----
+  \item \textbf{(Extensão do Modelo)} Suponha que se queira registrar o
+  \textbf{resultado da consulta veterinária} (data, diagnóstico e medicamento)
+  para cada par Vaca--Veterinário. Como ficaria a nova estrutura da tabela
+  \texttt{Vaca\_Veterinario}? Escreva o \texttt{ALTER TABLE} ou o novo
+  \texttt{CREATE TABLE} correspondente.
+
+  \begin{resposta}
+  \end{resposta}
+
+\end{enumerate}
+
+\vspace{0.8cm}
+
+\begin{block}{Checklist de Entrega}
+\begin{enumerate}
+  \item[$\square$] Script DDL completo executado sem erros.
+  \item[$\square$] Script DML (INSERTs) executado com sucesso.
+  \item[$\square\;$] Todas as 5 consultas de verificação retornaram resultados corretos.
+  \item[$\square$] Exercícios 1 a 7 respondidos com SQL e justificativa.
+  \item[$\square$] Arquivo \texttt{.sql} com o script completo entregue no Classroom.
+\end{enumerate}
+\end{block}
+
+\vspace{0.8cm}
+\begin{center}
+  \textit{``Um banco de dados bem modelado é como uma fazenda bem organizada:\\
+   cada coisa em seu lugar, cada lugar com seu dono.''}
+\end{center}
+
+\end{document}

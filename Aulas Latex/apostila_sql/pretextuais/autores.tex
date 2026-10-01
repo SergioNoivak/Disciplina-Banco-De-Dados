@@ -1,0 +1,99 @@
+\newcommand{\authorpage}{
+\newpage
+\thispagestyle{empty}
+
+% ================= Fundo verde + Logo =================
+\begin{tikzpicture}[remember picture, overlay]
+
+% Fundo
+\fill[verdeuni]
+(current page.north west)
+rectangle
+(current page.south east);
+
+% ===== Logo UniRV no topo =====
+\node at ([yshift=-1.8cm]current page.north)
+{
+\includegraphics[width=5cm]{Universidade_de_Rio_Verde.jpg}
+};
+
+\end{tikzpicture}
+
+
+\begin{center}
+{\color{white}\bfseries\LARGE Conheça os Autores}
+
+\vspace{1.5cm}
+
+\begin{tabular}{ccc}
+
+% ================= Autor 1 =================
+\begin{minipage}[t]{0.30\textwidth}
+\begin{authorcard}
+\centering
+{\small \bfseries Sergio Souza Novak}
+
+\vspace{0.6cm}
+
+\authorphoto{foto_sergio.jpeg}
+
+\vspace{0.7cm}
+
+\justifying\footnotesize
+Sergio Souza Novak é Mestre em Ciências Agrárias pelo
+Instituto Federal Goiano. Atua nas áreas de Banco de Dados,
+Inteligência Artificial e Desenvolvimento de Software,
+com experiência acadêmica e industrial e publicações
+científicas aplicadas à agricultura digital.
+\end{authorcard}
+\end{minipage}
+
+&
+
+% ================= Autor 2 =================
+\begin{minipage}[t]{0.30\textwidth}
+\begin{authorcard}
+\centering
+{\small \bfseries Ronaldo}
+
+\vspace{0.6cm}
+
+\authorphoto{foto_sergio.jpeg}
+
+\vspace{0.7cm}
+
+\justifying\footnotesize
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Donec a diam lectus. Sed sit amet ipsum mauris.
+Maecenas congue ligula ac quam viverra nec
+consectetur ante hendrerit.
+\end{authorcard}
+\end{minipage}
+
+&
+
+% ================= Autor 3 =================
+\begin{minipage}[t]{0.30\textwidth}
+\begin{authorcard}
+\centering
+{\small\bfseries Leandro}
+
+\vspace{0.6cm}
+
+\authorphoto{foto_sergio.jpeg}
+
+\vspace{0.7cm}
+
+\justifying\footnotesize
+Leandro possui experiência em computação aplicada,
+análise de sistemas e desenvolvimento tecnológico,
+participando de projetos acadêmicos e educacionais.
+\end{authorcard}
+\end{minipage}
+
+\end{tabular}
+
+\end{center}
+
+\newpage
+}

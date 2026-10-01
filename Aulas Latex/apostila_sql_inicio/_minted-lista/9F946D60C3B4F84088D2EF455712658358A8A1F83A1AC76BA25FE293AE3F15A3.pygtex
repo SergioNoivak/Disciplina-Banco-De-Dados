@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{psql}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{n}{U}\PYG{+w}{ }\PYG{n}{postgres}
+\end{Verbatim}

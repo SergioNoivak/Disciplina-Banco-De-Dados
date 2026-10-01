@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{aluno}\PYG{+w}{ }\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{cidade}\PYG{+w}{ }\PYG{k}{IN}\PYG{+w}{ }\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}Rio Verde\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}Jataí\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}Mineiros\PYGZsq{}}\PYG{p}{);}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{aluno\PYGZus{}id}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{matricula}\PYG{+w}{ }\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{nota}\PYG{+w}{ }\PYG{k}{BETWEEN}\PYG{+w}{ }\PYG{l+m+mi}{6}\PYG{p}{.}\PYG{l+m+mi}{0}\PYG{+w}{ }\PYG{k}{AND}\PYG{+w}{ }\PYG{l+m+mi}{8}\PYG{p}{.}\PYG{l+m+mi}{5}\PYG{p}{;}
+\end{Verbatim}

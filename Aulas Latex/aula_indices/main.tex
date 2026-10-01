@@ -1,0 +1,1481 @@
+\documentclass[9pt]{beamer}
+\mode<presentation>
+
+% Theme choice:
+\usetheme{Madrid}%Darmstadt 
+
+\usecolortheme[RGB={0,100,50}]{structure}
+ \usefonttheme{structurebold} 
+\setbeamercovered{invisible}
+%\setbeamertemplate{navigation symbols}{}
+\usepackage{dynblocks}
+\usepackage{textpos}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\newtheorem{teorema}{Teorema}\usepackage{mathtools}
+\renewcommand{\proofname}{Prova}
+\usepackage[portuguese]{babel}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\uselanguage{Portuguese}
+\languagepath{Portuguese}
+
+\deftranslation[to=Portuguese]{Theorem}{Teorema}
+\deftranslation[to=Portuguese]{Lemma}{Lema}
+\deftranslation[to=Portuguese]{Corollary}{Corolário}
+\deftranslation[to=Portuguese]{Proof}{Prova}
+
+\usepackage{dutchcal}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm}
+
+
+\usepackage[affil-it]{authblk} 
+\usepackage{etoolbox}
+\usepackage{lmodern}
+\usepackage[normalem]{ulem}
+
+% TikZ configuration for diagrams
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, shapes.misc, arrows, positioning, calc, decorations.pathreplacing, babel}
+\tikzset{smartphone/.style={draw, rectangle, rounded corners=3pt, minimum width=1.2cm, minimum height=2.2cm, fill=white, thick}}
+
+% SQL Syntax Highlighting
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{sqlstyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegray},
+    keywordstyle=\color{structure},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=none,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=SQL,
+    morekeywords={REFERENCES, ON, CASCADE, SET, NULL, NO, ACTION, RESTRICT, OFFSET, LIMIT, DISTINCT},
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {â}{{\^a}}1 {à}{{\`a}}1 {é}{{\'e}}1 {ê}{{\^e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ô}{{\^o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {Â}{{\^A}}1 {À}{{\`A}}1 {É}{{\'E}}1 {Ê}{{\^E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ô}{{\^O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1
+}
+
+\lstset{style=sqlstyle}
+
+\makeatletter
+\patchcmd{\@maketitle}{\LARGE \@title}{\fontsize{18}{19.2}\selectfont\@title}{}{}
+\makeatother
+
+\renewcommand\Authfont{\fontsize{12}{14.4}\selectfont}
+\renewcommand\Affilfont{\fontsize{9}{10.8}\itshape}
+
+% Title page details: 
+\title[Presentation]{Banco de Dados} %add title
+
+
+\institute[UniRV]{\textbf{\large  \textcolor{structure}{\textbf{\large
+Índices
+}} %add name 
+% \hspace{0.5pt}
+\\ \qquad
+\\Professor: Me. Sergio Souza Novak 
+\\Faculdade de Engenharia de Software}
+} 
+% \titlegraphic{\includegraphics[width=5cm]{msu.eps}}
+\titlegraphic{\includegraphics[width=5cm]{Universidade_de_Rio_Verde.jpg}}
+\date{}
+
+% Logo only on title page
+%\logo{\includegraphics[width=1cm,keepaspectratio]{Logo.png}}
+\usepackage[pscoord]{eso-pic}
+
+
+\begin{document}
+\shorthandoff{"}
+
+% Title page frame
+\frame[plain]{\titlepage}
+%logo
+\AddToShipoutPictureFG{
+    \put(\LenToUnit{.92\paperwidth},
+    \LenToUnit{.185\paperheight})
+    {\vtop{{\null}
+    \makebox{\includegraphics[width=.8cm,keepaspectratio]{Universidade_de_Rio_Verde.jpg}}}}}
+% --- Seção: Revisão Complexidade Computacional ---
+\section{Revisão: Complexidade Computacional}
+
+\begin{frame}[fragile]{Revisão 1: O que é Complexidade Computacional?}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Uma forma matemática de analisar como um algoritmo se comporta conforme a quantidade de dados ($N$) aumenta.
+                \item Usamos a \textbf{Notação Big-O} ($O()$) para descrever o limite superior.
+                \vspace{0.3cm}
+                \item Não mede o tempo exato em segundos, mas o \textbf{crescimento das operações}.
+                \item Em BD, traduz-se no número de \textbf{acessos ao disco}.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.85, every node/.style={transform shape}]
+                    \node[draw, thick, fill=structure!10, rounded corners, minimum height=1cm, minimum width=2.5cm, align=center] (dados) at (0,3) {Entrada de Dados \\ ($N$)};
+                    \node[draw, thick, fill=yellow!20, circle, minimum size=1.5cm, align=center] (algo) at (0,1.2) {Algoritmo \\ $O(f(N))$};
+                    \node[draw, thick, fill=red!10, rounded corners, minimum height=1cm, minimum width=2.5cm, align=center] (tempo) at (0,-0.6) {Custo \\ (Tempo/Disco)};
+                    
+                    \draw[->, ultra thick, structure] (dados) -- (algo);
+                    \draw[->, ultra thick, red!80!black] (algo) -- (tempo);
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Revisão 2: Por que isso importa em BD?}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Bancos de dados relacionais lidam com \textbf{milhões} ou \textbf{bilhões} de registros.
+                \item Um algoritmo que parece rápido com 100 linhas pode travar o sistema com 1.000.000 de linhas.
+                \vspace{0.3cm}
+                \item Criar um \textbf{Índice} é trocar um algoritmo ineficiente por um super otimizado!
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.9, every node/.style={transform shape}]
+                    \node[align=center, draw, thick, rounded corners, fill=green!10, text width=2.5cm] (db1) at (0,2) {\textbf{Tabela Pequena} \\ 100 linhas};
+                    \node[align=center, right=0.8cm of db1] (t1) {\textcolor{green!60!black}{\textbf{1 ms}} \\ \footnotesize Instantâneo};
+                    
+                    \node[align=center, draw, thick, rounded corners, fill=red!10, text width=2.5cm] (db2) at (0,0) {\textbf{Tabela Gigante} \\ 10.000.000 linhas};
+                    \node[align=center, right=0.8cm of db2] (t2) {\textcolor{red}{\textbf{Timeout}} \\ \footnotesize Travamento!};
+                    
+                    \draw[->, thick, dashed] (db1) -- (t1);
+                    \draw[->, thick, dashed] (db2) -- (t2);
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Revisão 3: $O(1)$ - Complexidade Constante}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item O tempo de execução é \textbf{sempre o mesmo}, não importa o volume de dados.
+                \item \textbf{Cenário:} O "Santo Graal". Acesso direto via endereço físico ou Hash.
+            \end{itemize}
+            \vspace{0.2cm}
+            \textbf{Consulta $O(1)$:}
+            \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+SELECT * FROM clientes 
+WHERE rowid = 42;
+            \end{lstlisting}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.75, every node/.style={transform shape}]
+                    \foreach \x in {1,...,5} {
+                        \draw[thick, fill=gray!10] (\x*1.2, 0) rectangle ++(1, 0.8);
+                    }
+                    \draw[thick, fill=structure!20] (3*1.2, 0) rectangle ++(1, 0.8) node[midway] {42};
+                    
+                    \node[font=\bfseries, text=structure] (busca) at (3*1.2 + 0.5, 2.5) {Acesso Direto $O(1)$};
+                    \draw[->, ultra thick, structure] (busca) -- (3*1.2 + 0.5, 0.8);
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Revisão 4: $O(\log N)$ - Complexidade Logarítmica}
+    \begin{columns}
+        \begin{column}{0.55\textwidth}
+            \begin{itemize}
+                \item O tamanho do problema reduz pela metade a cada passo.
+                \item \textbf{Cenário:} Altamente escalável.
+                \item \textbf{Exemplo em BD:} Busca B-Tree!
+            \end{itemize}
+            \vspace{0.2cm}
+            \textbf{Consulta $O(\log N)$:}
+            \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+-- 'cpf' possui um índice B-Tree
+SELECT * FROM clientes 
+WHERE cpf = '123.456';
+            \end{lstlisting}
+        \end{column}
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.9, every node/.style={transform shape}]
+                    \node[draw, circle, thick, fill=structure!20] (r) at (0,2) {50};
+                    \node[draw, circle, thick, fill=yellow!20] (n1) at (-1.5,0.5) {25};
+                    \node[draw, circle, thick, fill=gray!10] (n2) at (1.5,0.5) {75};
+                    \node[draw, circle, thick, fill=gray!10] (n3) at (-2.5,-1) {10};
+                    \node[draw, circle, thick, fill=green!20] (n4) at (-0.5,-1) {30};
+                    
+                    \draw[->, thick, structure] (r) -- (n1);
+                    \draw[->, thick, dashed, gray] (r) -- (n2);
+                    \draw[->, thick, dashed, gray] (n1) -- (n3);
+                    \draw[->, thick, structure] (n1) -- (n4) node[midway, right, font=\footnotesize, text=structure] {\textbf{Achou!}};
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Revisão 5: $O(N)$ - Complexidade Linear}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \begin{itemize}
+                \item O tempo cresce proporcionalmente.
+                \item \textbf{Cenário:} Péssimo para Big Data.
+                \item \textbf{Exemplo em BD:} Busca sem índice (\textit{Full Table Scan}). Lê todas as linhas do disco.
+            \end{itemize}
+            \vspace{0.2cm}
+            \textbf{Consulta $O(N)$:}
+            \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+-- Coluna sem índice!
+SELECT * FROM clientes 
+WHERE nome LIKE '%Silva%';
+            \end{lstlisting}
+        \end{column}
+        \begin{column}{0.52\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.6, every node/.style={transform shape}]
+                    \foreach \x in {1,...,6} {
+                        \draw[thick, fill=gray!10] (\x*1.2, 0) rectangle ++(1, 0.8);
+                    }
+                    \draw[thick, fill=structure!20] (6*1.2, 0) rectangle ++(1, 0.8) node[midway] {Alvo};
+                    
+                    \node[font=\bfseries, text=red] (busca) at (1*1.2 + 0.5, 2.5) {Busca Linear};
+                    \draw[->, thick, red] (busca) -- (1*1.2 + 0.5, 0.8);
+                    \draw[->, thick, red] (1*1.2 + 0.5, -0.2) to[bend right=45] (2*1.2 + 0.5, -0.2);
+                    \draw[->, thick, red] (2*1.2 + 0.5, -0.2) to[bend right=45] (3*1.2 + 0.5, -0.2);
+                    \draw[->, thick, red] (3*1.2 + 0.5, -0.2) to[bend right=45] (4*1.2 + 0.5, -0.2);
+                    \draw[->, thick, red] (4*1.2 + 0.5, -0.2) to[bend right=45] (5*1.2 + 0.5, -0.2);
+                    \draw[->, thick, structure] (5*1.2 + 0.5, -0.2) to[bend right=45] (6*1.2 + 0.5, -0.2);
+                \end{tikzpicture}
+                \vspace{0.2cm} \\
+                \footnotesize Lê bloco por bloco até o final!
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Revisão 6: $O(N \log N)$ - Linearítmica}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Executa uma operação $\log N$ para cada um dos $N$ itens.
+                \item \textbf{Cenário:} Pior que Linear, mas é o melhor para \textbf{ordenar dados}.
+                \item \textbf{Exemplo em BD:} Ordenar na memória colunas sem índice ou criar um índice novo.
+            \end{itemize}
+            \vspace{0.2cm}
+            \textbf{Consulta $O(N \log N)$:}
+            \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+SELECT * FROM clientes 
+ORDER BY data_cadastro DESC;
+            \end{lstlisting}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.9, every node/.style={transform shape}]
+                    \node[draw, thick, fill=gray!10, minimum width=3cm] (unsorted) at (0,2) {Dados Desordenados};
+                    
+                    \node[draw, thick, fill=yellow!20] (m1) at (-1,0.5) {Sort};
+                    \node[draw, thick, fill=yellow!20] (m2) at (1,0.5) {Sort};
+                    
+                    \node[draw, thick, fill=structure!20, minimum width=3cm] (sorted) at (0,-1) {Dados Ordenados};
+                    
+                    \draw[->, thick, dashed] (unsorted) -- (m1);
+                    \draw[->, thick, dashed] (unsorted) -- (m2);
+                    \draw[->, thick, structure] (m1) -- (sorted);
+                    \draw[->, thick, structure] (m2) -- (sorted);
+                    
+                    \node[right=0.2cm of sorted, font=\footnotesize, text=red] {Custo em RAM!};
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Revisão 7: $O(N^2)$ - Complexidade Quadrática}
+    \begin{columns}
+        \begin{column}{0.55\textwidth}
+            \begin{itemize}
+                \item O tempo cresce ao quadrado. $1000$ linhas = $1.000.000$ de operações.
+                \item \textbf{Cenário:} Inaceitável para BD.
+                \item \textbf{Exemplo em BD:} \textit{Nested Loop Join} sem índices. Para cada linha da Tab A, varre toda a Tab B!
+            \end{itemize}
+            \vspace{0.2cm}
+            \textbf{Consulta $O(N^2)$:}
+            \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+SELECT * FROM t1 
+JOIN t2 ON t1.fk = t2.id;
+-- Sem índice em fk e id!
+            \end{lstlisting}
+        \end{column}
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.9, every node/.style={transform shape}]
+                    % Tabela A
+                    \node[font=\bfseries] at (-2, 2.5) {Tab A};
+                    \foreach \y in {0,1,2} {
+                        \draw[thick, fill=structure!20] (-2, \y*0.8) rectangle ++(1, 0.6) node[midway] (a\y) {};
+                    }
+                    
+                    % Tabela B
+                    \node[font=\bfseries] at (2, 2.5) {Tab B};
+                    \foreach \y in {-1,0,1,2,3} {
+                        \draw[thick, fill=gray!20] (2, \y*0.8) rectangle ++(1, 0.6) node[midway] (b\y) {};
+                    }
+                    
+                    % Loop Setas
+                    \draw[->, thick, red] (a2.east) -- (b3.west);
+                    \draw[->, thick, red] (a2.east) -- (b2.west);
+                    \draw[->, thick, red] (a2.east) -- (b1.west);
+                    \draw[->, thick, red] (a2.east) -- (b0.west);
+                    \draw[->, thick, red] (a2.east) -- (b-1.west);
+                    
+                    \node[font=\footnotesize, text=red, align=center] at (0, -2) {Escaneia Tab B \\ inteira para CADA \\ linha da Tab A!};
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Revisão 8: Resumo Comparativo em BD}
+    \textbf{Imagine buscar um registro específico em uma tabela com 1 Milhão de linhas:}
+    
+    \vspace{0.5cm}
+    \begin{center}
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|l|l|l|}
+        \hline
+        \textbf{Complexidade} & \textbf{Cenário (BD)} & \textbf{Operações Estimadas} \\
+        \hline
+        $O(1)$ & Chave Hash (Ideal) & $1$ \\
+        $O(\log N)$ & \textbf{Busca com Índice (B-Tree)} & \textbf{$\sim 20$} \\
+        $O(N)$ & Busca sem Índice (Full Scan) & $1.000.000$ \\
+        $O(N^2)$ & JOIN sem índice (Nested Loop) & $1.000.000.000.000$ \\
+        \hline
+    \end{tabular}
+    \end{center}
+    
+    \vspace{0.3cm}
+    \textit{Conclusão:} Índices $O(\log N)$ são a diferença técnica entre um sistema instantâneo e um sistema fora do ar!
+\end{frame}
+
+\begin{frame}{9. Comparação Visual das Complexidades}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth, scale=1.15]
+            % Grid e Eixos
+            \draw[gray!30, thin, dashed] (0,0) grid (5,5);
+            \draw[->, thick] (0,0) -- (5.5,0) node[right, font=\scriptsize] {Volume de Dados ($N$)};
+            \draw[->, thick] (0,0) -- (0,5.5) node[above, font=\scriptsize] {Tempo / Operações};
+            
+            \begin{scope}
+                \clip (0,0) rectangle (5,5);
+                
+                % O(1)
+                \draw[domain=0:5, smooth, variable=\x, green!70!black, ultra thick] plot ({\x}, {0.5});
+                
+                % O(log n)
+                \draw[domain=0:5, smooth, variable=\x, blue, ultra thick] plot ({\x}, {ln(\x+1)});
+                
+                % O(n)
+                \draw[domain=0:5, smooth, variable=\x, orange, ultra thick] plot ({\x}, {\x});
+                
+                % O(n log n)
+                \draw[domain=0:3.5, smooth, variable=\x, red, ultra thick] plot ({\x}, {\x*ln(\x+1)});
+                
+                % O(n^2)
+                \draw[domain=0:2.3, smooth, variable=\x, purple, ultra thick] plot ({\x}, {\x*\x});
+            \end{scope}
+            
+            % Labels (fora do clip)
+            \node[font=\footnotesize, text=green!70!black, right] at (5, 0.5) {$O(1)$ Excelente};
+            \node[font=\footnotesize, text=blue, right] at (5, 1.8) {$O(\log N)$ Ótimo};
+            \node[font=\footnotesize, text=orange, right] at (4.5, 4.5) {$O(N)$ Regular};
+            \node[font=\footnotesize, text=red, left] at (3.4, 4.7) {$O(N \log N)$};
+            \node[font=\footnotesize, text=purple, left] at (2.2, 4.8) {$O(N^2)$ };
+            
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+% --- Seção: Introdução ---
+\section{Introdução}
+
+
+\begin{frame}{A Pergunta Inicial}
+    \begin{center}
+        \Large \textit{``Como o banco encontra um registro específico em uma tabela com milhões de linhas?''}
+    \end{center}
+    
+    \vspace{0.5cm}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Imagine um sistema com $10.000.000$ de usuários.
+                \item O usuário tenta fazer login, o sistema precisa verificar a senha daquele e-mail específico.
+                \item Como a resposta é devolvida em frações de segundo?
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.8, every node/.style={transform shape}]
+                    % User
+                    \node[draw, circle, minimum size=1cm, fill=structure!20, thick] (user) at (0,0) {\textbf{Usuário}};
+                    \node[below=0.1cm of user, font=\scriptsize] {joao@email.com};
+                    
+                    % Database
+                    \node[draw, cylinder, shape border rotate=90, aspect=0.25, minimum height=3cm, minimum width=2cm, fill=gray!20, thick] (db) at (4,0) {};
+                    \node[font=\bfseries, align=center] at (db) {10 Milhões \\ de Linhas};
+                    
+                    % Query
+                    \draw[->, thick, structure] (user) -- (db) node[midway, above, font=\footnotesize, align=center] {Busca \\ Rápida?};
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Conceitos Iniciais: O Cenário Padrão}
+    \begin{block}{Armazenamento Físico}
+        \textbf{Tabelas são conjuntos desordenados.}
+    \end{block}
+    
+    \vspace{0.3cm}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \begin{itemize}
+                \item Na prática física, quando você insere dados, eles são colocados no próximo espaço disponível no disco (estrutura chamada de \textit{Heap}).
+                \item Eles não têm uma ordem natural.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.8, every node/.style={transform shape}]
+                    % Disco / Heap
+                    \draw[thick, fill=gray!10, rounded corners] (0,0) rectangle (4.5,3.5);
+                    \node[above, font=\bfseries] at (2.25,3.5) {Espaço Físico (Heap)};
+                    
+                    % Blocos Desordenados
+                    \node[draw, fill=red!20, minimum width=3cm, minimum height=0.5cm] at (2.25,2.8) {Registro A (Zacarias)};
+                    \node[draw, fill=blue!20, minimum width=3cm, minimum height=0.5cm] at (2.25,2.1) {Registro B (Ana)};
+                    \node[draw, fill=green!20, minimum width=3cm, minimum height=0.5cm] at (2.25,1.4) {Registro C (Pedro)};
+                    
+                    \node[font=\footnotesize, text=gray] at (2.25,0.7) {Próximo espaço livre...};
+                    
+                    % Inserção
+                    \node[draw, fill=yellow!20, minimum width=2.5cm, minimum height=0.5cm, text=black] (novo) at (-1.5,-0.5) {Novo (Beto)};
+                    \draw[->, thick, dashed] (novo.north) to[out=90, in=180] (1, 0.7);
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{A Busca Sem Índice}
+    Como o banco procura dados em um conjunto desordenado?
+    
+    \begin{alertblock}{Busca Linear (Full Table Scan)}
+        A \textbf{busca sem índice percorre todas as linhas} da tabela sequencialmente, do início ao fim, verificando se cada linha atende à condição da consulta.
+    \end{alertblock}
+
+    \vspace{0.2cm}
+    \begin{center}
+        \begin{tikzpicture}[
+            box/.style={draw, rectangle, minimum width=1cm, minimum height=0.6cm, align=center},
+            >=stealth, scale=0.8, every node/.style={transform shape}
+        ]
+        
+        \node[box, fill=gray!10] (b1) at (0,0) {Z};
+        \node[box, fill=gray!10] (b2) at (1.2,0) {A};
+        \node[box, fill=gray!10] (b3) at (2.4,0) {X};
+        \node[box, fill=structure!40] (b4) at (3.6,0) {J};
+        \node[box, fill=gray!10] (b5) at (4.8,0) {C};
+        \node[box, fill=gray!10] (b6) at (6.0,0) {M};
+        
+        \node[above=0.2cm of b1, font=\footnotesize, text=red] (start) {Início};
+        \draw[->, thick, red] (start) -- (b1);
+        
+        \draw[->, thick, red] (b1) -- (b2);
+        \draw[->, thick, red] (b2) -- (b3);
+        \draw[->, thick, red] (b3) -- (b4);
+        
+        \node[below=0.3cm of b4, font=\bfseries, text=structure, align=center] (found) {Encontrou \\ "João"!};
+        \draw[->, thick, structure] (b4) -- (found);
+        
+        \end{tikzpicture}
+    \end{center}
+
+    \begin{itemize}
+        \item Tabela grande (milhões de linhas) $\rightarrow$ \textbf{Lentidão extrema}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Discussão: Soluções do Cotidiano}
+    \textbf{Como resolvemos problemas semelhantes no mundo real?}
+    
+    \vspace{0.5cm}
+    Vamos refletir sobre duas situações cotidianas que lidam com grandes volumes de informação:
+    
+    \begin{enumerate}
+        \item Encontrar um assunto específico em um livro grande.
+        \item Encontrar o número de uma pessoa na lista telefônica.
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Analogia 1: O Índice de Livro}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \begin{itemize}
+                \item \textbf{O Problema:} Você quer ler sobre "Normalização". Você lê página por página desde o sumário?
+                \pause
+                \vspace{0.3cm}
+                \item \textbf{A Solução:} Você vai ao \textbf{Índice} no final do livro!
+                \begin{itemize}
+                    \item Ordenado alfabeticamente.
+                    \item Encontra a palavra e a \textbf{página exata}.
+                    \item Acesso direto à informação desejada.
+                \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \pause
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.85, every node/.style={transform shape}]
+                    % Página de Índice
+                    \draw[thick, fill=gray!5, rounded corners=2pt] (0,0) rectangle (3.0,4);
+                    \node[font=\bfseries] at (1.5, 3.6) {Índice Remissivo};
+                    \draw (0.2, 3.3) -- (2.8, 3.3);
+                    
+                    \node[right, font=\tiny] at (0.2, 2.9) {Join ........................... 150};
+                    \node[right, font=\tiny] at (0.2, 2.5) {Modelagem ............... 200};
+                    \node[right, font=\footnotesize, text=structure, fill=structure!10] (norm) at (0.2, 1.9) {\textbf{Normalização ...... 345}};
+                    \node[right, font=\tiny] at (0.2, 1.3) {Relacional ................. 400};
+                    \node[right, font=\tiny] at (0.2, 0.9) {Transação ................. 520};
+
+                    % Página do Livro
+                    \draw[thick, fill=gray!5, rounded corners=2pt] (5.0,0) rectangle (7.8,4);
+                    \node[font=\bfseries] at (6.4, 3.6) {Capítulo 5};
+                    \draw (5.2, 3.3) -- (7.6, 3.3);
+                    
+                    \node[right, font=\footnotesize, text=structure] (title) at (5.2, 2.8) {\textbf{Normalização}};
+                    \draw[gray] (5.2, 2.3) -- (7.3, 2.3);
+                    \draw[gray] (5.2, 2.0) -- (7.5, 2.0);
+                    \draw[gray] (5.2, 1.7) -- (7.0, 1.7);
+                    \draw[gray] (5.2, 1.4) -- (7.4, 1.4);
+                    
+                    \node[font=\bfseries] (page) at (6.4, 0.4) {345};
+
+                    % Arrow
+                    \draw[->, thick, structure, dashed] (norm.east) to[out=0, in=180] node[midway, above, font=\tiny] {Acesso Direto} (title.west);
+                    
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Analogia 2: A Lista Telefônica}
+    \begin{columns}
+        \begin{column}{0.45\textwidth}
+            \begin{itemize}
+                \item \textbf{O Problema:} Achar o número do "João Silva".
+                \pause
+                \vspace{0.3cm}
+                \item \textbf{A Solução:} A lista já está \textbf{ordenada alfabeticamente}. 
+                \begin{itemize}
+                    \item Você não lê desde a letra A.
+                    \item Abre no meio (letra M), sabe que J vem antes, foca na primeira metade e refina a busca.
+                    \item Essa é a base lógica da busca em estruturas ordenadas (\textbf{busca binária} ou \textbf{árvores}).
+                \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.55\textwidth}
+            \pause
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.85, every node/.style={transform shape}]
+                    % Representação da Lista
+                    \draw[thick, fill=gray!5, rounded corners=2pt] (0,0) rectangle (6,1.2);
+                    
+                    % Divisões da Lista (Letras)
+                    \draw[gray] (1.5,0) -- (1.5,1.2);
+                    \draw[gray] (3.0,0) -- (3.0,1.2);
+                    \draw[gray] (4.5,0) -- (4.5,1.2);
+                    
+                    \node[font=\bfseries] at (0.75, 0.6) {A - F};
+                    \node[font=\bfseries, text=structure] (blockJ) at (2.25, 0.6) {G - L};
+                    \node[font=\bfseries] at (3.75, 0.6) {M - R};
+                    \node[font=\bfseries] at (5.25, 0.6) {S - Z};
+                    
+                    % Passo 1: Abre no meio
+                    \node[font=\footnotesize, text=red, align=center] (passo1) at (3.75, 2.8) {1º Passo: \\ Abre no meio (M)};
+                    \draw[->, thick, red] (passo1) -- (3.75, 1.2);
+                    
+                    % Passo 2: Sabe que J é antes, vai pra esquerda
+                    \node[font=\footnotesize, text=structure, align=center] (passo2) at (1.5, 2.8) {2º Passo: \\ Foca na 1ª metade};
+                    \draw[->, thick, structure] (passo2) -- (2.25, 1.2);
+                    
+                    % Destacando João
+                    \draw[thick, structure, fill=structure!10, rounded corners=2pt] (1.3, -1.8) rectangle (3.2, -0.4);
+                    \node[font=\scriptsize] at (2.25, -0.7) {Jéssica \dots};
+                    \node[font=\scriptsize, text=structure] at (2.25, -1.1) {\textbf{João \dots}};
+                    \node[font=\scriptsize] at (2.25, -1.5) {Juliana \dots};
+                    
+                    \draw[->, thick, structure, dashed] (2.25, 0) -- (2.25, -0.4);
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Conclusão da Introdução}
+    \begin{block}{O Papel dos Índices}
+        Da mesma forma que as analogias anteriores, \textbf{índices aceleram consultas} no banco de dados.
+    \end{block}
+    
+    \vspace{0.5cm}
+    \begin{itemize}
+        \item O banco cria uma estrutura de dados adicional que mantém cópia de uma ou mais colunas de forma \textbf{ordenada}.
+        \item Em vez de ler a tabela inteira (Busca Linear), o banco pesquisa no Índice rapidamente.
+        \item O Índice aponta exatamente onde o registro real está no disco!
+    \end{itemize}
+\end{frame}
+% --- Seção: Diagramas e Exemplos Práticos ---
+\section{Índices na Prática}
+
+\begin{frame}[fragile]{O Cenário sem Índice (Full Table Scan)}
+    Imagine a busca:
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+SELECT * FROM Clientes WHERE id = 80;
+    \end{lstlisting}
+    
+    \vspace{0.3cm}
+    \textbf{Busca Linear:} Em um \textit{Heap} (dados desordenados), o banco lê linha por linha.
+    
+    \vspace{0.3cm}
+    \begin{center}
+        \begin{tikzpicture}[
+            box/.style={draw, rectangle, minimum width=1.2cm, minimum height=0.8cm, align=center},
+            >=stealth
+        ]
+        
+        \node[box] (b1) at (0,0) {10};
+        \node[box] (b2) at (1.5,0) {50};
+        \node[box] (b3) at (3,0) {20};
+        \node[box, fill=structure!40] (b4) at (4.5,0) {80};
+        \node[box] (b5) at (6,0) {30};
+        \node[box] (b6) at (7.5,0) {90};
+        
+        \node[above=0.2cm of b1, font=\footnotesize, text=red] (start) {Início};
+        \draw[->, thick, red] (start) -- (b1);
+        
+        \draw[->, thick, red] (b1) -- (b2);
+        \draw[->, thick, red] (b2) -- (b3);
+        \draw[->, thick, red] (b3) -- (b4);
+        
+        \node[below=0.2cm of b4, font=\footnotesize, text=structure] (found) {\textbf{Encontrado!} (4 operações)};
+        \draw[->, thick, structure] (b4) -- (found);
+        
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Criando o Índice na Prática}
+    \begin{columns}
+        \begin{column}{0.25\textwidth}
+            \textbf{Comando SQL}
+            \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+CREATE INDEX idx_email 
+ON Clientes(email);
+            \end{lstlisting}
+            \vspace{0.2cm}
+            \scriptsize
+            O índice é uma estrutura separada que armazena uma \textbf{cópia} dos dados (ordenada) e um \textbf{apontamento} para a linha real no disco.
+        \end{column}
+        \begin{column}{0.75\textwidth}
+            \scriptsize
+            \begin{center}
+                \begin{tikzpicture}[
+                    box/.style={draw, rectangle, minimum width=2.5cm, minimum height=0.6cm, align=center},
+                    header/.style={box, fill=structure!20, font=\bfseries},
+                    >=stealth, scale=0.8, every node/.style={transform shape}
+                ]
+                
+                % Índice
+                \node[header] (i_h1) at (0, 0) {Email \tiny(Cópia)};
+                \node[header] (i_h2) [right=0cm of i_h1] {Ponteiro \tiny(Aponta)};
+                \node[box] (i_r11) [below=0cm of i_h1] {ana@...};
+                \node[box] (i_r12) [below=0cm of i_h2] {\textbullet};
+                \node[box] (i_r21) [below=0cm of i_r11] {joao@...};
+                \node[box] (i_r22) [below=0cm of i_r12] {\textbullet};
+                \node[box] (i_r31) [below=0cm of i_r21] {maria@...};
+                \node[box] (i_r32) [below=0cm of i_r22] {\textbullet};
+                
+                \node[above=0.2cm of i_h1, xshift=1.25cm, font=\bfseries] {Índice (Ordenado)};
+                
+                % Tabela
+                \node[header] (d_h1) at (6.5, -0) {ID};
+                \node[header] (d_h2) [right=0cm of d_h1] {Email};
+                \node[box] (d_r11) [below=0cm of d_h1] {2};
+                \node[box] (d_r12) [below=0cm of d_h2] {maria@...};
+                \node[box] (d_r21) [below=0cm of d_r11] {1};
+                \node[box] (d_r22) [below=0cm of d_r12] {ana@...};
+                \node[box] (d_r31) [below=0cm of d_r21] {3};
+                \node[box] (d_r32) [below=0cm of d_r22] {joao@...};
+                
+                \node[above=0.2cm of d_h1, xshift=1.25cm, font=\bfseries] {Tabela (Heap)};
+                
+                % Links
+                \draw[->, thick, structure] (i_r12.center) -- (d_r21.west);
+                \draw[->, thick, structure] (i_r22.center) -- (d_r31.west);
+                \draw[->, thick, structure] (i_r32.center) -- (d_r11.west);
+                
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Seção: Estrutura B-Tree ---
+\section{Estrutura B-Tree}
+
+
+
+\begin{frame}[fragile]{A Estrutura Padrão do SQLite}
+    No \textbf{SQLite} (e em outros bancos relacionais), os índices usam a estrutura \textbf{B-Tree} (\textit{Árvore B}).
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{Importante:} Não é uma Árvore Binária comum nem Rubro-Negra. A Árvore B é larga e rasa, projetada especificamente para minimizar acessos a blocos no disco.
+        \vspace{0.2cm}
+        \item \textbf{Árvore Balanceada:} A distância da raiz até qualquer folha é sempre a mesma. Isso garante um tempo de busca previsível e muito rápido ($O(\log N)$).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Explicação Conceitual: Composição}
+    \begin{columns}
+        \begin{column}{0.4\textwidth}
+            Uma B-Tree possui:
+            \vspace{0.2cm}
+            \begin{itemize}
+                \item \textbf{Nós (Internos):} Funcionam como guias de busca. Contêm chaves que direcionam o caminho.
+                \vspace{0.2cm}
+                \item \textbf{Folhas (Leaves):} Nível mais baixo. Contêm os apontamentos reais para os dados no disco.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.6\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[
+                    node/.style={draw, rectangle, rounded corners, minimum height=0.5cm, align=center, fill=white},
+                    >=stealth, thick, scale=0.75, every node/.style={transform shape}
+                ]
+                
+                % Root
+                \node[node, fill=structure!20] (root) at (0, 0) {50};
+                \node[above=0.1cm of root, font=\footnotesize] {Nó Raiz};
+                
+                % Level 1
+                \node[node, fill=yellow!20] (l1) at (-3, -1.5) {20};
+                \node[node, fill=yellow!20] (r1) at (3, -1.5) {80};
+                \node[right=0.2cm of r1, font=\footnotesize, align=left] {Nós \\ Internos};
+                
+                % Level 2 (Leaves)
+                \node[node, fill=green!20] (ll1) at (-4.5, -3) {10};
+                \node[node, fill=green!20] (ll2) at (-1.5, -3) {30};
+                \node[node, fill=green!20] (rl1) at (1.5, -3) {60};
+                \node[node, fill=green!20] (rl2) at (4.5, -3) {90};
+                
+                \node[right=0.2cm of rl2, font=\footnotesize, align=left] {Nós \\ Folhas};
+                
+                % Connections
+                \draw[->] (root) -- (l1);
+                \draw[->] (root) -- (r1);
+                \draw[->] (l1) -- (ll1);
+                \draw[->] (l1) -- (ll2);
+                \draw[->] (r1) -- (rl1);
+                \draw[->] (r1) -- (rl2);
+                
+                % Data pages
+                \node[font=\footnotesize] (d1) at (-4.5, -4) {Pág 1};
+                \node[font=\footnotesize] (d2) at (-1.5, -4) {Pág 2};
+                \node[font=\footnotesize] (d3) at (1.5, -4) {Pág 3};
+                \node[font=\footnotesize] (d4) at (4.5, -4) {Pág 4};
+                
+                \draw[->, dashed, draw=gray] (ll1) -- (d1);
+                \draw[->, dashed, draw=gray] (ll2) -- (d2);
+                \draw[->, dashed, draw=gray] (rl1) -- (d3);
+                \draw[->, dashed, draw=gray] (rl2) -- (d4);
+                
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Reorganização Automática}
+    O que acontece ao fazer \texttt{INSERT} ou \texttt{DELETE}?
+    
+    \vspace{0.3cm}
+    \begin{block}{Manutenção do Balanceamento}
+        A B-Tree se \textbf{reorganiza automaticamente} para garantir que continue perfeitamente balanceada e eficiente.
+    \end{block}
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{Split (Divisão):} Quando um nó fica cheio (atinge o limite de tamanho do bloco no SQLite), ele é dividido em dois e a árvore cresce para cima se necessário.
+        \item \textbf{Merge (Fusão):} Quando muitos registros são apagados, os nós quase vazios são mesclados para economizar espaço de armazenamento e manter as rotas rápidas.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Operações Eficientes na B-Tree}
+    A B-Tree é versátil. Ela é \textbf{otimizada para} resolver com extrema rapidez as seguintes operações no \textbf{SQLite}:
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{Igualdade (\texttt{=}):} Encontrar um único registro exato usando as chaves dos nós.
+        \item \textbf{Intervalos (\texttt{<}, \texttt{>}, \texttt{BETWEEN}):} Ao achar o início, a estrutura permite caminhar lateralmente pelas folhas que já estão ordenadas.
+        \item \textbf{Ordenação (\texttt{ORDER BY}):} Os dados na árvore já estão ordenados! O banco resolve consultas sem a necessidade de gastar memória extra.
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    \begin{alertblock}{Operadores Otimizados pelo Índice B-Tree}
+        \centering
+        \Large \texttt{=} \qquad \texttt{<} \qquad \texttt{>} \qquad \texttt{BETWEEN} \qquad \texttt{ORDER BY}
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}[fragile]{Índices Compostos e Manutenção}
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+CREATE INDEX idx_nome_cidade 
+ON Clientes (nome, cidade);
+    \end{lstlisting}
+    
+    \vspace{0.3cm}
+    \textbf{Manutenção de Índices:} O Índice cobra seu preço!
+    
+    \vspace{0.3cm}
+    \begin{center}
+        \begin{tikzpicture}[
+            box/.style={draw, rectangle, rounded corners, minimum height=0.6cm, minimum width=2.5cm, align=center, fill=white},
+            >=stealth
+        ]
+        
+        \node[box, fill=green!20] (sel) at (0, 0) {\texttt{SELECT}};
+        \node[box, fill=red!20] (ins) at (0, -1.2) {\texttt{INSERT} / \texttt{UPDATE}};
+        
+        \node[right=0.5cm of sel, align=left] (s_text) {\textbf{Muito Rápido:} Usa a estrutura da \\ Árvore B para localizar o registro.};
+        \node[right=0.5cm of ins, align=left] (i_text) {\textbf{Mais Lentidão:} O índice precisa ser \\ atualizado junto com a tabela (overhead).};
+        
+        \draw[->, thick] (sel) -- (s_text);
+        \draw[->, thick] (ins) -- (i_text);
+        
+        \end{tikzpicture}
+    \end{center}
+    
+    Se o índice não for mais útil, podemos excluí-lo:
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+DROP INDEX idx_nome_cidade;
+    \end{lstlisting}
+\end{frame}
+
+% --- Seção: Analisando Consultas ---
+\section{Analisando Consultas}
+
+\begin{frame}[fragile]{O comando EXPLAIN QUERY PLAN}
+    \begin{itemize}
+        \item Como ter certeza de que o banco de dados está realmente usando o índice que criamos?
+        \item O SQLite fornece o comando \textbf{EXPLAIN QUERY PLAN}.
+        \item Ele não executa a consulta, apenas \textquotedblleft lê a mente\textquotedblright{} do otimizador do banco e nos diz \textbf{como} ele planeja buscar os dados no disco.
+    \end{itemize}
+    
+    \vspace{0.3cm}
+    \begin{block}{Sintaxe}
+        Basta adicionar as palavras antes de qualquer \texttt{SELECT}, \texttt{UPDATE} ou \texttt{DELETE}:
+        \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+EXPLAIN QUERY PLAN
+SELECT * FROM clientes WHERE email = 'joao@email.com';
+        \end{lstlisting}
+    \end{block}
+\end{frame}
+
+\begin{frame}{Lendo o Resultado: SCAN vs SEARCH}
+    O \texttt{EXPLAIN QUERY PLAN} devolve uma mensagem indicando o método de acesso escolhido pelo SQLite. Os dois mais comuns são:
+    
+    \vspace{0.3cm}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{alertblock}{SCAN TABLE}
+                \textbf{O que significa:} Busca Linear $O(N)$.
+                \begin{itemize}
+                    \item O banco vai ler \textbf{todas} as linhas da tabela.
+                    \item Sinal de alerta vermelho! Faltam índices ou a consulta está mal escrita.
+                \end{itemize}
+            \end{alertblock}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{exampleblock}{SEARCH TABLE}
+                \textbf{O que significa:} Busca Logarítmica $O(\log N)$.
+                \begin{itemize}
+                    \item O banco vai usar um \textbf{Índice} (Árvore B).
+                    \item Caminho feliz! A consulta será incrivelmente rápida e eficiente.
+                \end{itemize}
+            \end{exampleblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Exemplo Prático: Tabela Sem Índice (SCAN)}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Consulta:}
+            \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+EXPLAIN QUERY PLAN
+SELECT * FROM clientes 
+WHERE telefone = '555-1234';
+            \end{lstlisting}
+            \vspace{0.2cm}
+            \textbf{Saída do SQLite:}
+            \begin{lstlisting}[basicstyle=\ttfamily\scriptsize, backgroundcolor=\color{red!10}]
+SCAN TABLE clientes
+            \end{lstlisting}
+            \vspace{0.2cm}
+            \textbf{Veredito:} O banco fará um \textit{Full Table Scan} $O(N)$. Desempenho péssimo para tabelas grandes.
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.7, every node/.style={transform shape}]
+                    \node[draw, thick, fill=red!10, text width=3cm, align=center, rounded corners, minimum height=1cm] (scan) at (0, 0) {\textbf{SCAN TABLE} \\ \footnotesize Leitura Sequencial};
+                    \node[font=\Huge, text=red] (lupa) at (0, 1.5) {$\bigotimes$};
+                    \draw[->, thick, red] (lupa) -- (scan);
+                    
+                    \foreach \x in {-2,-1,0,1,2} {
+                        \draw[thick, fill=gray!20] (\x*1.2, -1.5) rectangle ++(1, 0.5);
+                        \draw[->, red] (\x*1.2+0.5, -0.3) -- (\x*1.2+0.5, -1);
+                    }
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Exemplo Prático: Com Índice (SEARCH)}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Criando o Índice e Consultando:}
+            \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+CREATE INDEX idx_tel 
+ON clientes(telefone);
+
+EXPLAIN QUERY PLAN
+SELECT * FROM clientes 
+WHERE telefone = '555-1234';
+            \end{lstlisting}
+            \vspace{0.2cm}
+            \textbf{Saída do SQLite:}
+            \begin{lstlisting}[basicstyle=\ttfamily\scriptsize, backgroundcolor=\color{green!10}]
+SEARCH TABLE clientes 
+USING INDEX idx_tel (telefone=?)
+            \end{lstlisting}
+            \vspace{0.2cm}
+            \textbf{Veredito:} O banco agora vai usar a Árvore B $O(\log N)$ do índice criado para pular direto para o dado!
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.7, every node/.style={transform shape}]
+                    \node[draw, thick, fill=green!10, text width=3.5cm, align=center, rounded corners, minimum height=1cm] (search) at (0, 2) {\textbf{SEARCH TABLE} \\ \footnotesize Usando \texttt{idx\_tel}};
+                    
+                    \node[draw, circle, thick, fill=structure!20] (r) at (0, 0) {};
+                    \node[draw, circle, thick, fill=yellow!20] (n1) at (-1, -1) {};
+                    \node[draw, circle, thick, fill=gray!10] (n2) at (1, -1) {};
+                    \node[draw, circle, thick, fill=green!20, minimum size=0.8cm] (n3) at (-1.5, -2) {};
+                    
+                    \draw[->, thick, structure] (r) -- (n1);
+                    \draw[->, thick, dashed, gray] (r) -- (n2);
+                    \draw[->, thick, structure] (n1) -- (n3);
+                    
+                    \draw[->, thick, green!60!black] (search) -- (r);
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Seção: PostgreSQL ---
+\section{PostgreSQL}
+
+\begin{frame}
+    \centering
+    \vspace{1cm}
+    {\Huge \textbf{PostgreSQL}} \\
+    \vspace{0.5cm}
+\end{frame}
+
+\begin{frame}{PostgreSQL 1: A Extensibilidade de Índices}
+    O \textbf{PostgreSQL} é mundialmente famoso pela sua extensibilidade e suporte nativo a múltiplos métodos de acesso a índices:
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{B-Tree:} O padrão confiável (para dados escalares comuns e comparações de ordenação).
+        \item \textbf{Hash:} Totalmente focado em buscas exatas de igualdade ($O(1)$).
+        \item \textbf{Expression \& Partial:} Índices customizados para subconjuntos de dados ou cálculos específicos.
+        \item \textbf{GIN (Generalized Inverted Index):} Para registros que contêm múltiplos valores internos.
+        \item \textbf{GiST (Generalized Search Tree):} Para estruturas geométricas, espaciais, hierárquicas e faixas.
+        \item \textbf{BRIN (Block Range Index):} Para tabelas gigantes ordenadas fisicamente (Big Data).
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{PostgreSQL 2: Índices HASH - Busca $O(1)$}
+    Diferente de bancos mais simples, o PostgreSQL possui suporte robusto a índices do tipo \textbf{Hash}:
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item \textbf{Como Funciona:} Aplica uma função de espalhamento sobre a coluna. Mapeia diretamente o valor para o endereço do bloco físico ($O(1)$).
+        \item \textbf{Limitação Importante:} Só funciona com o operador de igualdade (\texttt{=}). Não serve para operadores de comparação (\texttt{<}, \texttt{>}), intervalos ou ordenações.
+        \item \textbf{Segurança (WAL):} Desde a versão 10, índices Hash são 100\% seguros contra quedas de energia (WAL-logged) e replicáveis.
+    \end{itemize}
+    
+    \vspace{0.2cm}
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+-- Criando um indice HASH
+CREATE INDEX idx_hash_token 
+ON usuarios USING HASH (token_acesso);
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{PostgreSQL 3: HASH - Funcionamento Interno}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item O valor do campo é transformado em um número inteiro (Hash).
+                \item Esse hash aponta diretamente para um \textbf{Bucket} (balde).
+                \item O balde contém o ponteiro direto da linha física (TID) no disco.
+                \item Evita percorrer qualquer árvore, gerando velocidade instantânea!
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.8, every node/.style={transform shape}]
+                    \node[draw, thick, fill=structure!10, rounded corners] (key) at (0, 3) {Valor: 'tokenXYZ'};
+                    \node[draw, thick, fill=yellow!20, circle] (hash) at (0, 1.5) {Hash()};
+                    \node[draw, thick, fill=gray!20, rectangle split, rectangle split parts=3] (bucket) at (0, -0.5) {Bucket 0 \nodepart{second} Bucket 1 \nodepart{third} Bucket 2};
+                    \node[draw, thick, fill=green!10, rounded corners] (data) at (2.5, -0.5) {Registro (Disco)};
+                    
+                    \draw[->, thick] (key) -- (hash);
+                    \draw[->, thick] (hash) -- (bucket);
+                    \draw[->, ultra thick, structure] (bucket.second east) -- (data.west);
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{PostgreSQL 4: Índices de Expressão}
+    Por padrão, os índices olham apenas o valor bruto da coluna. O que acontece se filtrarmos usando funções?
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item \textbf{O Problema:} Uma busca usando \texttt{LOWER(email)} ignora um índice normal criado na coluna \texttt{email}!
+        \item \textbf{A Solução:} Indexar o resultado da própria função aplicada à coluna.
+    \end{itemize}
+    
+    \vspace{0.2cm}
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+-- Criando indice de Expressao
+CREATE INDEX idx_email_lower 
+ON clientes ( LOWER(email) );
+
+-- Query super rapida O(log N) usando o indice:
+SELECT * FROM clientes 
+WHERE LOWER(email) = 'ana@email.com';
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{PostgreSQL 5: Índices Parciais}
+    Por que gastar disco indexando linhas que raramente ou nunca serão consultadas?
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item \textbf{Conceito:} Um índice parcial contém apenas as referências para um subconjunto dos dados que atende a uma condição lógica (\texttt{WHERE}).
+        \item \textbf{Vantagens:} Reduz drasticamente o tamanho do índice no disco e acelera as atualizações de escrita (\texttt{INSERT} / \texttt{UPDATE}).
+    \end{itemize}
+    
+    \vspace{0.2cm}
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+-- Indexando apenas usuarios ativos
+CREATE INDEX idx_usuarios_ativos 
+ON usuarios (email) 
+WHERE ativo = TRUE;
+
+-- Otimiza perfeitamente queries com o mesmo filtro:
+SELECT * FROM usuarios 
+WHERE email = 'admin@sistema.com' AND ativo = TRUE;
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{PostgreSQL 6: Índices Parciais - Economia de Recursos}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item \textbf{Sem Índice Parcial:}
+                O índice B-Tree guarda ponteiros para todos os 10 milhões de clientes, incluindo inativos e excluídos.
+                \vspace{0.2cm}
+                \item \textbf{Com Índice Parcial:}
+                Indexamos apenas os 1\% de clientes ativos.
+                \item Redução enorme em I/O e uso de RAM!
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[scale=0.8, every node/.style={transform shape}]
+                    % Stack 1 (Full Index)
+                    \draw[fill=red!20, thick] (0,0) rectangle (1.5,3.5);
+                    \node[align=center, font=\scriptsize] at (0.75, 1.75) {Índice Global\\(10M registros)\\100\% do Tamanho};
+                    
+                    % Stack 2 (Partial Index)
+                    \draw[fill=green!20, thick] (3.0,0) rectangle (4.5,0.35);
+                    \node[right=0.1cm, font=\scriptsize] at (4.5, 0.17) {1\%};
+                    
+                    \node[font=\scriptsize, align=center] at (3.75, 2.2) {Índice Parcial\\(Ativos)\\Mínimo espaço\\físico!};
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{PostgreSQL 7: O que é o GIN?}
+    O \textbf{GIN} (\textit{Generalized Inverted Index}) é projetado para lidar com casos em que \textbf{um único registro contém múltiplos valores internos}.
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{Onde B-Tree Falha:} Uma árvore B assume uma relação de 1 valor chave por linha. Mas e se tivermos uma coluna com uma lista (Array) de tags ou um objeto JSON?
+        \item \textbf{Abordagem GIN:} O GIN 'inverte' a relação. Ele mapeia os elementos individuais internos (ex: palavras, chaves, tags) de volta para todas as linhas (TIDs) que os contêm.
+        \item \textbf{Usos principais:} Arrays indexados, documentos JSONB e buscas por texto completo.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{PostgreSQL 8: GIN - Estrutura Interna}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item Cada elemento interno (ex: 'SQL', 'Python') torna-se uma chave na Árvore do GIN.
+                \item Abaixo de cada chave, existe uma lista (Postings List) contendo os IDs de todos os registros que contêm aquele valor.
+                \item Encontrar dados em Arrays é incrivelmente rápido!
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.75, every node/.style={transform shape}]
+                    % Chaves GIN
+                    \node[draw, thick, fill=structure!10, rounded corners] (k1) at (-1.5, 2) {'SQL'};
+                    \node[draw, thick, fill=structure!10, rounded corners] (k2) at (1.5, 2) {'Python'};
+                    
+                    % Listas de apontamento
+                    \node[draw, thick, fill=gray!20, rectangle split, rectangle split parts=3] (l1) at (-1.5, 0) {Linha 1 \nodepart{second} Linha 3 \nodepart{third} Linha 5};
+                    \node[draw, thick, fill=gray!20, rectangle split, rectangle split parts=2] (l2) at (1.5, 0.25) {Linha 1 \nodepart{second} Linha 5};
+                    
+                    \draw[->, thick, structure] (k1) -- (l1);
+                    \draw[->, thick, structure] (k2) -- (l2);
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{PostgreSQL 9: GIN - Arrays Indexados}
+    Suponha que cada desenvolvedor cadastrado possua uma lista (Array) de tecnologias de interesse:
+    
+    \vspace{0.2cm}
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+-- Tabela com coluna tipo Array
+CREATE TABLE desenvolvedores (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    tecnologias VARCHAR(50)[] -- Lista de stacks
+);
+
+-- Criando um indice GIN
+CREATE INDEX idx_dev_techs 
+ON desenvolvedores USING GIN (tecnologias);
+
+-- Query usando o operador de contencao (@>)
+SELECT * FROM desenvolvedores 
+WHERE tecnologias @> ARRAY['PostgreSQL', 'Python'];
+    \end{lstlisting}
+    
+    \vspace{0.1cm}
+    \textit{Nota:} Sem o índice GIN, a busca com operador `@>` exigiria ler e varrer linearmente cada linha da tabela!
+\end{frame}
+
+\begin{frame}[fragile]{PostgreSQL 10: GIN - Documentos JSONB}
+    O tipo \texttt{JSONB} armazena objetos JSON binários. Combinado com o GIN, entrega performance excelente para consultas semi-estruturadas:
+    
+    \vspace{0.2cm}
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+CREATE TABLE produtos (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    atributos JSONB
+);
+
+-- Indexando todas as chaves e valores internos do JSONB
+CREATE INDEX idx_prod_atributos ON produtos USING GIN (atributos);
+
+-- Busca direta no JSON com velocidade incrivel
+SELECT * FROM produtos 
+WHERE atributos @> '{"categoria": "Eletro", "voltagem": "220v"}';
+    \end{lstlisting}
+    
+    \vspace{0.15cm}
+    \begin{itemize}
+        \item \textbf{jsonb\_ops (padrão):} Indexa todas as chaves, valores e subchaves do documento JSON.
+        \item \textbf{jsonb\_path\_ops:} Ocupa menos espaço físico, porém focado em caminhos de navegação completos.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{PostgreSQL 11: O que é o GiST?}
+    A árvore \textbf{GiST} (\textit{Generalized Search Tree}) é um \textbf{template estrutural} altamente flexível.
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{Customização Total:} Permite definir novas regras de indexação para tipos de dados complexos que precisam ser buscados de forma balanceada.
+        \item \textbf{Como Funciona:} Ao contrário de uma B-Tree tradicional que divide dados rigidamente de forma linear, a árvore GiST agrupa dados baseado em predicados de exclusão mútua (ex: 'contido em', 'sobreposto com').
+        \item \textbf{Usos típicos:} Dados geográficos (coordenadas), intervalos de datas ou numéricos e buscas textuais especiais.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{PostgreSQL 12: GiST - A Estrutura Hierárquica}
+    A árvore do GiST é estruturada em torno de caixas delimitadoras ou condições que podem se sobrepor:
+    
+    \vspace{0.3cm}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item \textbf{Nós Superiores:} Guardam predicados gerais abrangentes (ex: 'Região Centro-Oeste').
+                \item \textbf{Nós Inferiores:} Refinam a busca para sub-regiões (ex: 'Goiás' -> 'Cidade de Rio Verde').
+                \item Isso permite descartar ramos inteiros de busca no disco instantaneamente!
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{center}
+                \begin{tikzpicture}[>=stealth, scale=0.75, every node/.style={transform shape}]
+                    \node[draw, thick, fill=structure!20, minimum width=3cm] (r) at (0, 2) {Caixa Geral R1};
+                    
+                    \node[draw, thick, fill=yellow!20] (sub1) at (-1.5, 0.5) {Sub-Caixa A};
+                    \node[draw, thick, fill=yellow!20] (sub2) at (1.5, 0.5) {Sub-Caixa B};
+                    
+                    \node[draw, thick, fill=green!10] (d1) at (-2, -1) {Objeto 1};
+                    \node[draw, thick, fill=green!10] (d2) at (-1, -1) {Objeto 2};
+                    
+                    \draw[->, thick] (r) -- (sub1);
+                    \draw[->, thick] (r) -- (sub2);
+                    \draw[->, thick, dashed] (sub1) -- (d1);
+                    \draw[->, thick, dashed] (sub1) -- (d2);
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{PostgreSQL 13: Índices Espaciais (PostGIS)}
+    O ecossistema de processamento espacial do PostgreSQL (\textbf{PostGIS}) depende fundamentalmente dos índices do tipo GiST:
+    
+    \vspace{0.2cm}
+    \begin{itemize}
+        \item \textbf{Desafio:} Coordenadas no mapa (Latitude, Longitude) não possuem ordem linear. Como indexar duas dimensões geográficas?
+        \item \textbf{Solução:} O GiST agrupa dados geométricos usando \textbf{Bounding Boxes} (Retângulos Mínimos Envolventes).
+    \end{itemize}
+    
+    \vspace{0.2cm}
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+-- Habilitando extensao espacial no PostgreSQL
+CREATE EXTENSION postgis;
+
+-- Tabela com dados geometricos
+CREATE TABLE filiais (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100),
+    localizacao GEOMETRY(Point, 4326) -- Tipo Ponto Geografico
+);
+
+-- Indispensavel para consultas geometricas espaciais rapidas!
+CREATE INDEX idx_filiais_geo ON filiais USING GIST (localizacao);
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{PostgreSQL 14: GiST / R-Tree em Ação}
+    Visualizando o agrupamento geográfico em duas dimensões (R-Tree):
+    
+    \vspace{0.3cm}
+    \begin{center}
+        \begin{tikzpicture}[scale=0.95, every node/.style={transform shape}]
+            % Caixa Maior R1
+            \draw[thick, fill=blue!5, draw=blue] (0,0) rectangle (5,3);
+            \node[below left, font=\scriptsize] at (5,3) {R1};
+            
+            % Sub-Caixas
+            \draw[thick, fill=yellow!10, draw=yellow!80!black] (0.2,0.2) rectangle (2.2,2.5);
+            \node[below right, font=\scriptsize] at (0.2,2.5) {Sub-Caixa A};
+            
+            \draw[thick, fill=green!10, draw=green!60!black] (2.8,0.5) rectangle (4.8,2.2);
+            \node[below right, font=\scriptsize] at (2.8,2.2) {Sub-Caixa B};
+            
+            % Pontos (dados geometricos)
+            \filldraw[red] (0.5, 1) circle (2pt) node[right, font=\tiny] {Filial 1};
+            \filldraw[red] (1.8, 2) circle (2pt) node[right, font=\tiny] {Filial 2};
+            \filldraw[red] (3.5, 1.5) circle (2pt) node[right, font=\tiny] {Filial 3};
+            
+            \node[below=0.2cm, font=\footnotesize, align=center] at (2.5,-0.1) {O banco localiza a Filial 3 navegando apenas pela Sub-Caixa B, ignorando totalmente a Sub-Caixa A!};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+\begin{frame}{PostgreSQL 15: O que são Trigramas?}
+    O módulo \textbf{pg\_trgm} introduz uma técnica poderosa baseada em \textbf{Trigramas} para resolver buscas parciais textuais flexíveis.
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{A Limitação do B-Tree:} Um índice comum B-Tree só serve para buscas com curinga no final (\texttt{LIKE 'Silva\%'}). Se usarmos \texttt{LIKE '\%Silva\%'}, o índice B-Tree é ignorado.
+        \item \textbf{O Conceito do Trigrama:} Qualquer texto é quebrado em pequenas fatias sobrepostas de 3 letras consecutivas.
+        \item \textbf{Exemplo:} A palavra 'BANCO' gera os trigramas:
+        \begin{center}
+            \texttt{'  b'}, \texttt{' ba'}, \texttt{'ban'}, \texttt{'anc'}, \texttt{'nco'}, \texttt{'co '}
+        \end{center}
+        \item \textbf{Poder Máximo:} Permite buscas ultra rápidas mesmo com termos no início e fim (\texttt{\%termo\%}) e até correção ortográfica (Fuzzy Match)!
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{PostgreSQL 16: Trigramas em Ação com GIN}
+    Instalando a extensão e criando um índice que armazena os trigramas das strings:
+    
+    \vspace{0.2cm}
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+-- Ativando o modulo oficial de trigramas
+CREATE EXTENSION pg_trgm;
+
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100)
+);
+
+-- Criando indice GIN usando a classe de operador de trigramas
+CREATE INDEX idx_usuarios_nome_trgm 
+ON usuarios USING GIN (nome gin_trgm_ops);
+
+-- Consulta O(log N) altamente otimizada, mesmo com % no inicio!
+SELECT * FROM usuarios 
+WHERE nome LIKE '%Sergio%';
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{PostgreSQL 17: Como os Trigramas São Mapeados}
+    Funcionamento interno do mapeamento entre trigramas e registros no disco:
+    
+    \vspace{0.3cm}
+    \begin{center}
+        \begin{tikzpicture}[>=stealth, scale=0.8, every node/.style={transform shape}]
+            \node[draw, thick, fill=structure!10, rounded corners] (w) at (0, 3) {Palavra: "BANCO"};
+            
+            \node[draw, thick, fill=yellow!20] (t1) at (-2.5, 1.5) {"ban"};
+            \node[draw, thick, fill=yellow!20] (t2) at (0, 1.5) {"anc"};
+            \node[draw, thick, fill=yellow!20] (t3) at (2.5, 1.5) {"nco"};
+            
+            \node[draw, thick, fill=gray!20, circle] (r) at (0, -0.3) {Linha 42};
+            
+            \draw[->, thick, dashed] (w) -- (t1);
+            \draw[->, thick, dashed] (w) -- (t2);
+            \draw[->, thick, dashed] (w) -- (t3);
+            
+            \draw[->, thick, structure] (t1) -- (r);
+            \draw[->, thick, structure] (t2) -- (r);
+            \draw[->, thick, structure] (t3) -- (r);
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.3cm}
+    Ao buscar por \texttt{'\%banco\%'}, o banco decompõe a palavra em trigramas, intersecta suas listas no índice GIN e encontra a \textbf{Linha 42} de forma instantânea!
+\end{frame}
+
+\begin{frame}{PostgreSQL 18: Busca Textual Avançada (Full-Text Search)}
+    A busca por texto completo nativa do PostgreSQL é capaz de substituir sistemas externos inteiros (como Elasticsearch) em projetos de médio porte:
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{tsvector:} Tipo de dados que representa um documento analisado, aplicando radicalização (\textit{stemming}) e eliminando palavras irrelevantes (\textit{stop words} como 'e', 'de', 'um').
+        \item \textbf{tsquery:} Representa a nossa consulta contendo operadores booleanos (\texttt{\&} (E), \texttt{|} (OU), \texttt{!} (NÃO)).
+        \item \textbf{Exemplo:} As palavras 'correndo', 'corri', 'correu' são todas simplificadas e convertidas para o mesmo radical: \texttt{'corr'}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{PostgreSQL 19: FTS na Prática}
+    Implementando busca de artigos usando indexação por texto completo com o GIN:
+    
+    \vspace{0.2cm}
+    \begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+CREATE TABLE artigos (
+    id SERIAL PRIMARY KEY,
+    titulo VARCHAR(200),
+    conteudo TEXT
+);
+
+-- Criando indice GIN usando a funcao to_tsvector em portugues
+CREATE INDEX idx_artigos_fts 
+ON artigos USING GIN (to_tsvector('portuguese', conteudo));
+
+-- Query extremamente rapida usando o operador @@
+SELECT * FROM artigos 
+WHERE to_tsvector('portuguese', conteudo) @@ to_tsquery('portuguese', 'bancos & indices');
+    \end{lstlisting}
+    
+    \vspace{0.1cm}
+    \begin{itemize}
+        \item A query acima busca e encontra artigos que contêm radicais de 'bancos' e 'índices', mesmo em flexões gramaticais diferentes.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{PostgreSQL 20: Matriz de Decisão de Índices}
+    \begin{center}
+    \renewcommand{\arraystretch}{1.3}
+    \scriptsize
+    \begin{tabular}{|l|l|l|p{3.5cm}|}
+        \hline
+        \textbf{Método} & \textbf{Complexidade} & \textbf{Melhor Operador} & \textbf{Cenário Ideal (BD)} \\
+        \hline
+        \textbf{B-Tree} & $O(\log N)$ & \texttt{=}, \texttt{<}, \texttt{>}, \texttt{BETWEEN} & Dados comuns ordenáveis (Datas, IDs, Nomes). \\
+        \hline
+        \textbf{Hash} & $O(1)$ & \texttt{=} & Chaves de token, UUIDs (busca exata). \\
+        \hline
+        \textbf{GIN} & $O(\log N)$ & \texttt{@>}, \texttt{?}, \texttt{@@} & Documentos JSONB, Arrays, Busca Textual (FTS). \\
+        \hline
+        \textbf{GiST} & $O(\log N)$ & \texttt{\&\&}, \texttt{<<}, \texttt{>>} & Dados Geográficos (PostGIS), Intervalos numéricos/datas. \\
+        \hline
+        \textbf{BRIN} & $O(N)$ parcial & Limites de bloco & Logs gigantes ou dados históricos ordenados fisicamente. \\
+        \hline
+    \end{tabular}
+    \end{center}
+    
+    \vspace{0.25cm}
+    \textit{Dica de Ouro:} Use sempre o comando \texttt{EXPLAIN ANALYZE} no PostgreSQL para certificar suas escolhas de índice em ambiente de produção!
+\end{frame}
+
+\end{document}
+

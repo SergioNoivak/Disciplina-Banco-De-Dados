@@ -1,0 +1,1145 @@
+\documentclass[9pt]{beamer}
+\mode<presentation>
+
+% Theme choice:
+\usetheme{Madrid}%Darmstadt 
+
+\usecolortheme[RGB={0,100,50}]{structure}
+ \usefonttheme{structurebold} 
+\setbeamercovered{invisible}
+%\setbeamertemplate{navigation symbols}{}
+\usepackage{dynblocks}
+\usepackage{textpos}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\newtheorem{teorema}{Teorema}\usepackage{mathtools}
+\renewcommand{\proofname}{Prova}
+\usepackage[portuguese]{babel}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\uselanguage{Portuguese}
+\languagepath{Portuguese}
+
+\deftranslation[to=Portuguese]{Theorem}{Teorema}
+\deftranslation[to=Portuguese]{Lemma}{Lema}
+\deftranslation[to=Portuguese]{Corollary}{Corolário}
+\deftranslation[to=Portuguese]{Proof}{Prova}
+
+\usepackage{dutchcal}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm}
+
+
+\usepackage[affil-it]{authblk} 
+\usepackage{etoolbox}
+\usepackage{lmodern}
+
+% TikZ configuration for diagrams
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, arrows, positioning, calc}
+
+\makeatletter
+\patchcmd{\@maketitle}{\LARGE \@title}{\fontsize{18}{19.2}\selectfont\@title}{}{}
+\makeatother
+
+\renewcommand\Authfont{\fontsize{12}{14.4}\selectfont}
+\renewcommand\Affilfont{\fontsize{9}{10.8}\itshape}
+
+% Title page details: 
+\title[Presentation]{Banco de Dados} %add title
+
+
+\institute[UniRV]{\textbf{\large  \textcolor{structure}{\textbf{\large
+Normalização de banco de dados parte 1: 3FN
+}} %add name 
+% \hspace{0.5pt}
+\\ \qquad
+\\Professor: Me. Sergio Souza Novak 
+\\Faculdade de Engenharia de Software}
+} 
+% \titlegraphic{\includegraphics[width=5cm]{msu.eps}}
+\titlegraphic{\includegraphics[width=5cm]{Universidade_de_Rio_Verde.jpg}}
+\date{}
+
+% Logo only on title page
+%\logo{\includegraphics[width=1cm,keepaspectratio]{Logo.png}}
+\usepackage[pscoord]{eso-pic}
+
+
+\begin{document}
+
+% Title page frame
+%\begin{frame}
+    %\titlepage 
+%\end{frame}
+\frame[plain]{\titlepage}
+%logo
+\AddToShipoutPictureFG{
+    \put(\LenToUnit{.92\paperwidth},
+    \LenToUnit{.185\paperheight})
+    {\vtop{{\null}
+    \makebox{\includegraphics[width=.8cm,keepaspectratio]{Universidade_de_Rio_Verde.jpg}}}}}
+
+
+\begin{frame}{Sumário}
+  \tableofcontents
+\end{frame}
+
+
+% ===================================================
+%          3ª FORMA NORMAL — DEFINIÇÃO E CONCEITOS
+% ===================================================
+\section{3NF: Definição e Dependência Transitiva}
+
+\begin{frame}{3ª Forma Normal (3NF)}
+  \begin{block}{Definição}
+    Uma relação está na \textbf{3NF} se, e somente se:
+    \begin{enumerate}
+      \item Já estiver na \textbf{2ª Forma Normal (2NF)}.
+      \item \textbf{Não existirem dependências transitivas} entre atributos não-chave.
+    \end{enumerate}
+  \end{block}
+  \vspace{0.3cm}
+  \begin{itemize}
+    \item A 3NF visa eliminar as \textbf{Dependências Funcionais Transitivas}.
+    \item Todo atributo não-chave deve depender \textbf{diretamente} da chave primária, e \textbf{somente} dela.
+  \end{itemize}
+  \vspace{0.3cm}
+  \begin{exampleblock}{Intuição}
+    Se um atributo depende de outro atributo que \textbf{não é chave}, estamos perante uma dependência transitiva --- um problema a ser eliminado.
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{O que é Dependência Transitiva?}
+  \begin{block}{Definição}
+    Dados os atributos $A$, $B$ e $C$ de uma relação, existe uma \textbf{dependência transitiva} quando:
+    \[
+      A \to B \quad \text{e} \quad B \to C \quad \Rightarrow \quad A \to C \text{ (transitivamente)}
+    \]
+    sendo $B$ um atributo \textbf{não-chave}.
+  \end{block}
+  \vspace{0.4cm}
+  \begin{itemize}
+    \item $A$ é a chave primária.
+    \item $B$ é um atributo intermediário (não-chave) que determina $C$.
+    \item $C$ não depende diretamente de $A$, mas sim de $B$.
+  \end{itemize}
+  \vspace{0.3cm}
+  \begin{alertblock}{Problema}
+    A dependência $B \to C$ torna os dados de $C$ redundantes: se mudar o valor de $B$ em uma linha, $C$ precisa ser atualizado em todas as linhas com o mesmo $B$.
+  \end{alertblock}
+\end{frame}
+
+% ===================================================
+%     3ª FORMA NORMAL — ALGORITMO DE VERIFICAÇÃO
+% ===================================================
+\section{3NF: Algoritmo de Verificação}
+
+\begin{frame}{Algoritmo: Verificação de Dependências Transitivas}
+\small
+
+% \begin{block}{Ideia}
+% Dado um conjunto de dependências funcionais $F$, queremos verificar se existe:
+% \[
+% A \to B \quad \text{e} \quad B \to C \quad \Rightarrow \quad A \to C \text{ (transitiva)}
+% \]
+% onde $B$ não é chave.
+% \end{block}
+
+\vspace{0.3cm}
+\begin{block}{Pseudocódigo (Detecção de Dependência Transitiva)}
+\begin{algorithmic}[1]
+\Procedure{ExisteDependenciaTransitiva}{$R, F, K$}
+    \State \Comment{$R$: relação, $F$: dependências funcionais, $K$: chave candidata}
+
+    \ForAll{$(X \to Y) \in F$}
+        \State \Comment{Procura uma primeira dependência}
+
+        \ForAll{$(Y \to Z) \in F$}
+            \State \Comment{Procura uma segunda dependência encadeada}
+
+            \If{$X \neq Y$ \textbf{and} $Y \neq Z$}
+                \State \Comment{Evita dependências triviais ou repetidas}
+
+                \If{$Y \not\subseteq K$}
+                    \State \Comment{$Y$ NÃO é chave (condição essencial)}
+
+                    \If{$Z \not\subseteq X$}
+                        \State \Comment{$Z$ não depende diretamente de $X$}
+
+                        \State \Comment{Encontramos: $X \to Y$ e $Y \to Z$}
+                        \State \Comment{Logo: $X \to Z$ (dependência transitiva)}
+
+                        \State \Return \textbf{true}
+                    \EndIf
+                \EndIf
+
+            \EndIf
+
+        \EndFor
+    \EndFor
+
+    \State \Comment{Nenhuma dependência transitiva encontrada}
+    \State \Return \textbf{false}
+\EndProcedure
+\end{algorithmic}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Interpretação}
+\begin{itemize}
+    \item Detecta cadeias do tipo $X \to Y \to Z$
+    \item Garante que $Y$ é atributo não-chave
+    \item Identifica quando $Z$ depende indiretamente de $X$
+\end{itemize}
+\end{alertblock}
+
+\end{frame}
+
+\begin{frame}{Exemplo: Tabela FUNCIONARIOS (Não está na 3NF)}
+  \small
+  Chave Primária Simples: \textbf{ID\_Fun}
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|c|l|c|l|}
+    \hline
+    \textbf{ID\_Fun} & \textbf{Nome} & \textbf{Cod\_Cargo} & \textbf{Salario\_Cargo} \\ \hline
+    101 & Alice   & C1 & \color{red}R\$ 5.000 \\ \hline
+    102 & Bob     & C2 & \color{red}R\$ 8.000 \\ \hline
+    103 & Carol   & C1 & \color{red}R\$ 5.000 \\ \hline
+    104 & David   & C2 & \color{red}R\$ 8.000 \\ \hline
+  \end{tabular}
+\end{frame}
+
+\begin{frame}{Execução do Algoritmo (Com Dependência Transitiva)}
+\small
+
+\begin{block}{Entrada}
+\begin{itemize}
+    \item $F = \{\, \text{ID\_Fun} \to \text{Cod\_Cargo},\ \text{Cod\_Cargo} \to \text{Salario} \,\}$
+    \item $K = \{\text{ID\_Fun}\}$
+\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{block}{Execução}
+\begin{enumerate}
+    \item Seleciona $\text{ID\_Fun} \to \text{Cod\_Cargo}$
+    \item Seleciona $\text{Cod\_Cargo} \to \text{Salario}$
+
+    \item Verifica:
+    \begin{itemize}
+        \item $\text{Cod\_Cargo} \notin K$ \checkmark
+        \item Dependência indireta detectada \checkmark
+    \end{itemize}
+
+    \item \textbf{Retorna true}
+\end{enumerate}
+\end{block}
+
+\begin{alertblock}{Conclusão}
+Existe:
+\[
+\text{ID\_Fun} \to \text{Cod\_Cargo} \to \text{Salario}
+\]
+Violação da 3FN.
+\end{alertblock}
+
+\end{frame}
+
+
+
+
+
+
+\begin{frame}{Execução do Algoritmo (Sem Dependência Transitiva)}
+\small
+
+\begin{block}{Entrada}
+\begin{itemize}
+    \item $F = \{\, \text{ID\_Fun} \to \text{Nome},\ \text{ID\_Fun} \to \text{Cod\_Cargo} \,\}$
+    \item $K = \{\text{ID\_Fun}\}$
+\end{itemize}
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{block}{Execução}
+\begin{enumerate}
+    \item Avalia $\text{ID\_Fun} \to \text{Nome}$
+    \item Não existe $\text{Nome} \to Z$
+
+    \item Avalia $\text{ID\_Fun} \to \text{Cod\_Cargo}$
+    \item Não existe $\text{Cod\_Cargo} \to Z$
+
+    \item Nenhuma cadeia transitiva encontrada
+\end{enumerate}
+\end{block}
+
+\begin{alertblock}{Conclusão}
+\begin{itemize}
+    \item Retorno: \textbf{false}
+    \item Relação está na \textbf{3FN}
+\end{itemize}
+\end{alertblock}
+
+\end{frame}
+\begin{frame}{Exemplo: Tabela FUNCIONARIOS (Não está na 3NF)}
+  \small
+  Chave Primária Simples: \textbf{ID\_Fun}
+  \vspace{0.2cm}
+  \centering
+  \begin{tabular}{|c|l|c|l|}
+    \hline
+    \textbf{ID\_Fun} & \textbf{Nome} & \textbf{Cod\_Cargo} & \textbf{Salario\_Cargo} \\ \hline
+    101 & Alice   & C1 & \color{red}R\$ 5.000 \\ \hline
+    102 & Bob     & C2 & \color{red}R\$ 8.000 \\ \hline
+    103 & Carol   & C1 & \color{red}R\$ 5.000 \\ \hline
+    104 & David   & C2 & \color{red}R\$ 8.000 \\ \hline
+  \end{tabular}
+
+  \vspace{0.4cm}
+  \flushleft
+  \textbf{Dependências identificadas:}
+  \begin{itemize}
+    \item \textbf{OK:} $\text{ID\_Fun} \to \text{Nome}$ e $\text{ID\_Fun} \to \text{Cod\_Cargo}$ \quad (diretas)
+    \item \textbf{ERRO:} $\text{Cod\_Cargo} \to \text{Salario\_Cargo}$ \quad (transitiva!)
+  \end{itemize}
+  \textit{O \textbf{Cod\_Cargo} não é chave, mas determina o \textbf{Salario\_Cargo}: dependência transitiva.}
+\end{frame}
+
+\begin{frame}{Diagrama de Dependência Transitiva}
+  \centering
+  \begin{tikzpicture}[node distance=2cm, align=center, font=\footnotesize\sffamily]
+    % Nós
+    \node (pk) [draw, fill=orange!20, thick, minimum width=3cm, minimum height=0.8cm] {\textbf{ID\_Fun (PK)}};
+
+    \node (nome) [draw, fill=blue!5, minimum width=2.5cm, minimum height=0.8cm, below right=1.2cm and 0.5cm of pk] {Nome};
+    \node (cod) [draw, fill=yellow!20, minimum width=2.5cm, minimum height=0.8cm, below left=1.2cm and 0.5cm of pk] {Cod\_Cargo};
+    \node (sal) [draw, fill=red!10, minimum width=2.5cm, minimum height=0.8cm, below=2cm of cod] {Salario\_Cargo};
+
+    % Setas
+    \draw[->, thick, blue] (pk.south) -- (nome.north west);
+    \draw[->, thick, blue] (pk.south) -- (cod.north east);
+    \draw[->, thick, red, line width=1.5pt] (cod) -- (sal) node[midway, right, text=red] {Dep. Transitiva!};
+
+    \node [below=0.3cm of sal, text width=7cm, align=center] {\textit{ID\_Fun $\to$ Cod\_Cargo $\to$ Salario\_Cargo: a chave alcança Salario\_Cargo de forma \textbf{indireta}.}};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Solução: Decomposição para a 3NF}
+\small
+
+\begin{block}{Processo de Normalização}
+Para eliminar a dependência transitiva $\text{Cod\_Cargo} \to \text{Salario\_Cargo}$, decompomos a relação em duas:
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{columns}[t]
+    \begin{column}{0.48\textwidth}
+        \begin{exampleblock}{R1: FUNCIONARIOS (3FN)}
+        \textbf{Chave:} $\underline{\text{ID\_Fun}}$
+
+        \centering
+        \vspace{0.1cm}
+        \begin{tabular}{|c|l|c|}
+        \hline
+        \textbf{ID\_Fun} & \textbf{Nome} & \textbf{Cod\_Cargo} \\ \hline
+        101 & Alice & C1 \\ \hline
+        102 & Bob   & C2 \\ \hline
+        103 & Carol & C1 \\ \hline
+        \end{tabular}
+        \end{exampleblock}
+    \end{column}
+
+    \begin{column}{0.48\textwidth}
+        \begin{exampleblock}{R2: CARGOS (3FN)}
+        \textbf{Chave:} $\underline{\text{Cod\_Cargo}}$
+
+        \centering
+        \vspace{0.1cm}
+        \begin{tabular}{|c|r|}
+        \hline
+        \textbf{Cod\_Cargo} & \textbf{Salario} \\ \hline
+        C1 & R\$ 5.000 \\ \hline
+        C2 & R\$ 8.000 \\ \hline
+        \end{tabular}
+        \end{exampleblock}
+    \end{column}
+\end{columns}
+
+\vspace{0.4cm}
+
+\begin{block}{Resultado}
+\begin{itemize}
+  \item O salário é armazenado \textbf{uma única vez} na tabela CARGOS.
+  \item Não há mais redundância nem risco de inconsistência.
+  \item \textbf{Cod\_Cargo} em FUNCIONARIOS passa a ser uma \textbf{Chave Estrangeira (FK)}.
+\end{itemize}
+\end{block}
+\end{frame}
+
+\begin{frame}{Resultado: Diagrama das Tabelas (3NF)}
+  \centering
+  \begin{tikzpicture}[
+    node distance=3.5cm,
+    tabela/.style={draw, rounded corners, font=\footnotesize\sffamily, align=left, inner sep=8pt, text width=3.5cm}
+  ]
+    \node (t1) [tabela, fill=blue!5] {
+      \textbf{FUNCIONARIOS} \\ \rule{\textwidth}{0.4pt} \\
+      \textbf{ID\_Fun (PK)} \\ Nome \\ Cod\_Cargo (FK)
+    };
+    \node (t2) [tabela, fill=green!5, right=of t1] {
+      \textbf{CARGOS} \\ \rule{\textwidth}{0.4pt} \\
+      \textbf{Cod\_Cargo (PK)} \\ Salario\_Cargo
+    };
+    \draw[->, thick] (t1.east) -- (t2.west) node[midway, above] {$N:1$};
+
+    \node [below=1.2cm of t1, text width=8cm, font=\itshape\small, align=center]
+      {Agora o \textbf{Salario\_Cargo} aparece apenas uma vez, eliminando a redundância.};
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Comparando as Três Formas Normais}
+\small
+\centering
+\begin{tabular}{|l|l|l|}
+  \hline
+  \textbf{Forma Normal} & \textbf{Elimina} & \textbf{Condição Principal} \\ \hline
+  1FN & Atributos multivalorados & Valores atômicos e chave primária \\ \hline
+  2FN & Dependência parcial & Depender de \textbf{toda} a chave \\ \hline
+  3FN & Dependência transitiva & Não depender de atributo não-chave \\ \hline
+\end{tabular}
+
+\vspace{0.5cm}
+
+\begin{tikzpicture}[node distance=0cm]
+  \node (fn1) [draw, fill=blue!10, minimum width=8cm, minimum height=0.7cm, font=\small\bfseries] {1ª Forma Normal};
+  \node (fn2) [draw, fill=green!10, minimum width=6cm, minimum height=0.7cm, font=\small\bfseries, below=-\pgflinewidth of fn1] {2ª Forma Normal};
+  \node (fn3) [draw, fill=orange!10, minimum width=4cm, minimum height=0.7cm, font=\small\bfseries, below=-\pgflinewidth of fn2] {3ª Forma Normal};
+\end{tikzpicture}
+
+\vspace{0.4cm}
+\begin{block}{Hierarquia}
+  Cada forma normal é um subconjunto mais restrito da anterior: toda relação em 3FN está também em 2FN e 1FN.
+\end{block}
+\end{frame}
+
+% ===================================================
+%     3ª FORMA NORMAL — EXEMPLOS PRÁTICOS
+% ===================================================
+\section{3NF: Exemplos Práticos}
+
+% SLIDE 1 — Tabela maior violando a 3NF
+\begin{frame}{Tabela PEDIDOS — Violação da 3NF}
+\small
+Chave Primária: \textbf{ID\_Pedido} \quad (chave simples)
+
+\vspace{0.2cm}
+\centering
+\begin{tabular}{|c|l|c|l|c|l|}
+  \hline
+  \textbf{ID\_Ped} & \textbf{Data} & \textbf{ID\_Cli} & \textbf{Nome\_Cli} & \textbf{Cod\_Cid} & \textbf{Nome\_Cidade} \\ \hline
+  1001 & 01/03/2025 & 201 & Ana Lima     & SP & \color{red}São Paulo \\ \hline
+  1002 & 05/03/2025 & 202 & Bruno Costa  & RJ & \color{red}Rio de Janeiro \\ \hline
+  1003 & 10/03/2025 & 203 & Carla Dias   & SP & \color{red}São Paulo \\ \hline
+  1004 & 12/03/2025 & 204 & Diego Melo   & BH & \color{red}Belo Horizonte \\ \hline
+  1005 & 15/03/2025 & 205 & Eva Santos   & RJ & \color{red}Rio de Janeiro \\ \hline
+\end{tabular}
+
+\vspace{0.4cm}
+\flushleft
+\textbf{Dependências funcionais identificadas:}
+\begin{itemize}
+  \item $\text{ID\_Ped} \to \text{Data},\ \text{ID\_Cli},\ \text{Nome\_Cli},\ \text{Cod\_Cid}$ \quad \textcolor{green!60!black}{(diretas — OK)}
+  \item $\text{ID\_Cli} \to \text{Nome\_Cli}$ \quad \textcolor{red}{\textbf{(intermediária — atributo não-chave determina outro!)}}
+  \item $\text{Cod\_Cid} \to \text{Nome\_Cidade}$ \quad \textcolor{red}{\textbf{(intermediária — atributo não-chave determina outro!)}}
+\end{itemize}
+\end{frame}
+
+% SLIDE 2 — Teste 3NF: violação
+\begin{frame}{Testando a 3NF — Violação Encontrada}
+\small
+
+\begin{block}{Regra da 3NF}
+Para toda DF $X \to Y$: $X$ deve ser superchave \textbf{ou} $Y$ deve ser atributo primo.
+\end{block}
+
+\vspace{0.2cm}
+
+\begin{alertblock}{Teste das Dependências Suspeitas}
+\begin{tabular}{|l|l|l|}
+  \hline
+  \textbf{Dependência} & \textbf{$X$ é superchave?} & \textbf{Resultado} \\ \hline
+  $\text{ID\_Ped} \to \text{Data}$       & Sim (\texttt{ID\_Ped} é PK) & \textcolor{green!60!black}{\checkmark\ OK} \\ \hline
+  $\text{ID\_Ped} \to \text{Cod\_Cid}$   & Sim (\texttt{ID\_Ped} é PK) & \textcolor{green!60!black}{\checkmark\ OK} \\ \hline
+  $\text{ID\_Cli} \to \text{Nome\_Cli}$   & \textbf{Não} (não é chave)  & \textcolor{red}{\textbf{x VIOLA 3NF}} \\ \hline
+  $\text{Cod\_Cid} \to \text{Nome\_Cidade}$ & \textbf{Não} (não é chave) & \textcolor{red}{\textbf{x VIOLA 3NF}} \\ \hline
+\end{tabular}
+\end{alertblock}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Cadeias Transitivas Detectadas}
+\[
+  \text{ID\_Ped} \to \text{ID\_Cli} \to \text{Nome\_Cli}
+\]
+\[
+  \text{ID\_Ped} \to \text{Cod\_Cid} \to \text{Nome\_Cidade}
+\]
+\textbf{Conclusão: a tabela PEDIDOS \underline{não} está na 3NF.}
+\end{alertblock}
+\end{frame}
+
+% SLIDE 3 — Tabela NÃO violando a 3NF
+\begin{frame}{Tabela CLIENTES — Sem Violação da 3NF}
+\small
+Chave Primária: \textbf{ID\_Cli} \quad (chave simples)
+
+\vspace{0.2cm}
+\centering
+\begin{tabular}{|c|l|l|l|}
+  \hline
+  \textbf{ID\_Cli} & \textbf{Nome} & \textbf{CPF} & \textbf{Email} \\ \hline
+  201 & Ana Lima    & 111.222.333-44 & ana@email.com \\ \hline
+  202 & Bruno Costa & 222.333.444-55 & bruno@email.com \\ \hline
+  203 & Carla Dias  & 333.444.555-66 & carla@email.com \\ \hline
+  204 & Diego Melo  & 444.555.666-77 & diego@email.com \\ \hline
+  205 & Eva Santos  & 555.666.777-88 & eva@email.com \\ \hline
+\end{tabular}
+
+\vspace{0.4cm}
+\flushleft
+\textbf{Dependências funcionais identificadas:}
+\begin{itemize}
+  \item $\text{ID\_Cli} \to \text{Nome}$ \quad \textcolor{green!60!black}{(direta — PK determina)}
+  \item $\text{ID\_Cli} \to \text{CPF}$ \quad \textcolor{green!60!black}{(direta — PK determina)}
+  \item $\text{ID\_Cli} \to \text{Email}$ \quad \textcolor{green!60!black}{(direta — PK determina)}
+\end{itemize}
+\textit{Nenhum atributo não-chave determina outro atributo não-chave.}
+\end{frame}
+
+% SLIDE 4 — Teste 3NF: sem violação
+\begin{frame}{Testando a 3NF — Nenhuma Violação}
+\small
+
+\begin{block}{Regra da 3NF}
+Para toda DF $X \to Y$: $X$ deve ser superchave \textbf{ou} $Y$ deve ser atributo primo.
+\end{block}
+
+\vspace{0.2cm}
+
+\begin{exampleblock}{Teste das Dependências}
+\begin{tabular}{|l|l|l|}
+  \hline
+  \textbf{Dependência} & \textbf{$X$ é superchave?} & \textbf{Resultado} \\ \hline
+  $\text{ID\_Cli} \to \text{Nome}$  & Sim (\texttt{ID\_Cli} é PK) & \textcolor{green!60!black}{\checkmark\ OK} \\ \hline
+  $\text{ID\_Cli} \to \text{CPF}$   & Sim (\texttt{ID\_Cli} é PK) & \textcolor{green!60!black}{\checkmark\ OK} \\ \hline
+  $\text{ID\_Cli} \to \text{Email}$ & Sim (\texttt{ID\_Cli} é PK) & \textcolor{green!60!black}{\checkmark\ OK} \\ \hline
+\end{tabular}
+\end{exampleblock}
+
+\vspace{0.3cm}
+
+\begin{block}{Verificação de Cadeias Transitivas}
+\begin{itemize}
+  \item $\text{Nome} \to ?$: Nenhuma dependência. \textcolor{green!60!black}{\checkmark}
+  \item $\text{CPF} \to ?$: Nenhuma dependência. \textcolor{green!60!black}{\checkmark}
+  \item $\text{Email} \to ?$: Nenhuma dependência. \textcolor{green!60!black}{\checkmark}
+\end{itemize}
+\end{block}
+
+\begin{exampleblock}{Conclusão}
+Nenhuma cadeia transitiva detectada. \\
+\textbf{A tabela CLIENTES \underline{está} na 3NF.} \quad \textcolor{green!60!black}{\Large\checkmark}
+\end{exampleblock}
+\end{frame}
+
+% ===================================================
+%     3NF — CHECKLIST E RESUMO COMPARATIVO
+% ===================================================
+\section{3NF: Checklist e Resumo}
+
+\begin{frame}{Checklist para 3NF}
+  Para garantir que uma tabela está na \textbf{3NF}, verifique:
+  \vspace{0.4cm}
+  \begin{itemize}
+    \item[$\square$] A tabela já está na \textbf{2NF}?
+    \item[$\square$] Existe algum atributo não-chave que depende de outro atributo não-chave?
+    \item[$\square$] Se mudar um valor em uma coluna não-chave, isso força a repetição de um valor em outra coluna?
+    \item[$\square$] Todos os atributos dependem \textbf{diretamente} da chave primária?
+  \end{itemize}
+  \vspace{0.4cm}
+  \begin{block}{Dica de Ouro}
+    Se você percebe que a mesma informação se repete em várias linhas por causa de um campo que \textbf{não é a chave}, esse campo intermediário provavelmente cria uma dependência transitiva --- e a 3NF está sendo violada.
+  \end{block}
+\end{frame}
+
+
+% ===================================================
+%  6 SLIDES: EXEMPLO VACA_ORDENHA — VIOLAÇÃO DA 3NF
+% ===================================================
+\subsection{Exemplo: Tabela VACA\_ORDENHA}
+
+% SLIDE 1 — Tabela vaca_ordenha violando a 3NF
+\begin{frame}{Tabela VACA\_ORDENHA — Violação da 3NF}
+\tiny
+Chave Primária: \textbf{ID\_Ordenha} \quad (chave simples)
+\vspace{0.15cm}
+\centering
+\begin{tabular}{|c|c|l|c|l|c|r|}
+  \hline
+  \textbf{ID\_Ord} & \textbf{Data} & \textbf{ID\_Vaca} & \textbf{Brinco} & \textbf{Raca} & \textbf{Cod\_Lote} & \textbf{Prod\_Lote (L)} \\ \hline
+  1 & 01/03/2025 & 101 & V-001 & Holandês    & L1 & \color{red}320,0 \\ \hline
+  2 & 01/03/2025 & 102 & V-002 & Girolando   & L2 & \color{red}280,5 \\ \hline
+  3 & 02/03/2025 & 101 & V-001 & Holandês    & L1 & \color{red}320,0 \\ \hline
+  4 & 02/03/2025 & 103 & V-003 & Jersey      & L1 & \color{red}320,0 \\ \hline
+  5 & 03/03/2025 & 104 & V-004 & Holandês    & L2 & \color{red}280,5 \\ \hline
+  6 & 03/03/2025 & 102 & V-002 & Girolando   & L2 & \color{red}280,5 \\ \hline
+  7 & 04/03/2025 & 105 & V-005 & Jersey      & L3 & \color{red}195,0 \\ \hline
+  8 & 04/03/2025 & 101 & V-001 & Holandês    & L1 & \color{red}320,0 \\ \hline
+  9 & 05/03/2025 & 103 & V-003 & Jersey      & L1 & \color{red}320,0 \\ \hline
+  10& 05/03/2025 & 105 & V-005 & Jersey      & L3 & \color{red}195,0 \\ \hline
+\end{tabular}
+
+\vspace{0.2cm}
+\flushleft
+\textbf{Dependências identificadas:}
+\begin{itemize}
+  \item $\text{ID\_Ord} \to \text{Data},\ \text{ID\_Vaca},\ \text{Brinco},\ \text{Raca},\ \text{Cod\_Lote}$ \quad \textcolor{green!60!black}{(diretas — OK)}
+  \item $\text{ID\_Vaca} \to \text{Brinco},\ \text{Raca}$ \quad \textcolor{red}{\textbf{(transitiva! ID\_Vaca não é chave)}}
+  \item $\text{Cod\_Lote} \to \text{Prod\_Lote}$ \quad \textcolor{red}{\textbf{(transitiva! Cod\_Lote não é chave)}}
+\end{itemize}
+\end{frame}
+
+% SLIDE 2 — Dependências em destaque
+\begin{frame}{VACA\_ORDENHA — Dependências Transitivas}
+\small
+\begin{block}{Cadeias Transitivas Detectadas}
+\[
+  \text{ID\_Ord} \to \text{ID\_Vaca} \to \text{Brinco}
+\]
+\[
+  \text{ID\_Ord} \to \text{ID\_Vaca} \to \text{Raca}
+\]
+\[
+  \text{ID\_Ord} \to \text{Cod\_Lote} \to \text{Prod\_Lote}
+\]
+\end{block}
+
+\vspace{0.3cm}
+
+\begin{alertblock}{Problemas Concretos}
+\begin{itemize}
+  \item \textbf{Redundância de Raça:} a raça \textit{Holandês} repete nas linhas 1, 3, 4 e 8, podendo ficar inconsistente.
+  \item \textbf{Redundância de Produção do Lote:} o valor 320,0 L repete para o lote L1 em 4 registros distintos.
+  \item \textbf{Anomalia de atualização:} mudar a produção média do Lote L2 exige corrigir \textbf{todas} as linhas onde \texttt{Cod\_Lote = L2}.
+  \item \textbf{Anomalia de exclusão:} deletar todas as ordenhas da vaca 105 apagaria que ela é da raça Jersey e pertence ao Lote L3.
+\end{itemize}
+\end{alertblock}
+\end{frame}
+
+% SLIDE 3 — Testando a 3NF na tabela
+\begin{frame}{Testando a 3NF — Violação Encontrada}
+\small
+
+\begin{block}{Regra da 3NF}
+Para toda DF $X \to Y$: $X$ deve ser superchave \textbf{ou} $Y$ deve ser atributo primo.
+\end{block}
+
+\vspace{0.2cm}
+
+\begin{alertblock}{Teste das Dependências}
+\begin{tabular}{|l|l|l|}
+  \hline
+  \textbf{Dependência} & \textbf{$X$ é superchave?} & \textbf{Resultado} \\ \hline
+  $\text{ID\_Ord} \to \text{Data}$       & Sim (\texttt{ID\_Ord} é PK) & \textcolor{green!60!black}{\checkmark\ OK} \\ \hline
+  $\text{ID\_Ord} \to \text{ID\_Vaca}$   & Sim (\texttt{ID\_Ord} é PK) & \textcolor{green!60!black}{\checkmark\ OK} \\ \hline
+  $\text{ID\_Ord} \to \text{Cod\_Lote}$  & Sim (\texttt{ID\_Ord} é PK) & \textcolor{green!60!black}{\checkmark\ OK} \\ \hline
+  $\text{ID\_Vaca} \to \text{Brinco}$    & \textbf{Não} (não é chave)  & \textcolor{red}{\textbf{x VIOLA 3NF}} \\ \hline
+  $\text{ID\_Vaca} \to \text{Raca}$      & \textbf{Não} (não é chave)  & \textcolor{red}{\textbf{x VIOLA 3NF}} \\ \hline
+  $\text{Cod\_Lote} \to \text{Prod\_Lote}$ & \textbf{Não} (não é chave) & \textcolor{red}{\textbf{x VIOLA 3NF}} \\ \hline
+\end{tabular}
+\end{alertblock}
+
+\vspace{0.2cm}
+\begin{alertblock}{Conclusão}
+A tabela \textbf{VACA\_ORDENHA}, na forma atual, \underline{não} está na 3NF.
+\end{alertblock}
+\end{frame}
+
+% SLIDE 4 — Diagrama de dependências
+\begin{frame}{Diagrama de Dependência Transitiva — VACA\_ORDENHA}
+  \centering
+  \begin{tikzpicture}[node distance=1.8cm, align=center, font=\footnotesize\sffamily]
+    \node (pk) [draw, fill=orange!20, thick, minimum width=3cm, minimum height=0.8cm] {\textbf{ID\_Ord (PK)}};
+
+    \node (data)  [draw, fill=blue!5,   minimum width=2.2cm, minimum height=0.7cm, below right=1.2cm and 2.0cm of pk] {Data};
+    \node (idv)   [draw, fill=yellow!20, minimum width=2.2cm, minimum height=0.7cm, below=1.4cm of pk] {ID\_Vaca};
+    \node (lote)  [draw, fill=yellow!20, minimum width=2.2cm, minimum height=0.7cm, below left=1.2cm and 2.0cm of pk] {Cod\_Lote};
+
+    \node (brinco)[draw, fill=red!10, minimum width=2.2cm, minimum height=0.7cm, below left=1.2cm and 0.2cm of idv] {Brinco};
+    \node (raca)  [draw, fill=red!10, minimum width=2.2cm, minimum height=0.7cm, below right=1.2cm and 0.2cm of idv] {Raça};
+    \node (prod)  [draw, fill=red!10, minimum width=2.2cm, minimum height=0.7cm, below=1.4cm of lote] {Prod\_Lote};
+
+    \draw[->, thick, blue] (pk.south) -- (data.north west);
+    \draw[->, thick, blue] (pk.south) -- (idv.north);
+    \draw[->, thick, blue] (pk.south) -- (lote.north east);
+
+    \draw[->, thick, red, line width=1.4pt] (idv) -- (brinco) node[midway, left, text=red] {\tiny transitiva};
+    \draw[->, thick, red, line width=1.4pt] (idv) -- (raca)   node[midway, right, text=red] {\tiny transitiva};
+    \draw[->, thick, red, line width=1.4pt] (lote) -- (prod)  node[midway, right, text=red] {\tiny transitiva};
+  \end{tikzpicture}
+
+  \vspace{0.2cm}
+  \small
+  \textit{Atributos em \textcolor{red}{vermelho} dependem de atributos não-chave --- violação da 3NF.}
+\end{frame}
+
+% SLIDE 5 — Decomposição para a 3NF
+\begin{frame}{Solução: Decomposição para a 3NF}
+\small
+
+\begin{block}{Estratégia}
+Extrair cada dependência transitiva para uma tabela própria.
+\end{block}
+
+\vspace{0.2cm}
+
+\begin{columns}[t]
+    \begin{column}{0.32\textwidth}
+        \begin{exampleblock}{\small R1: ORDENHA}
+        \textbf{Chave:} $\underline{\text{ID\_Ord}}$
+        \vspace{0.1cm}
+
+        \tiny
+        \centering
+        \begin{tabular}{|c|c|c|c|}
+        \hline
+        \textbf{ID\_Ord} & \textbf{Data} & \textbf{ID\_Vaca} & \textbf{Cod\_Lote} \\ \hline
+        1  & 01/03 & 101 & L1 \\ \hline
+        2  & 01/03 & 102 & L2 \\ \hline
+        3  & 02/03 & 101 & L1 \\ \hline
+        \ldots & \ldots & \ldots & \ldots \\ \hline
+        \end{tabular}
+        \end{exampleblock}
+    \end{column}
+
+    \begin{column}{0.31\textwidth}
+        \begin{exampleblock}{\small R2: VACA}
+        \textbf{Chave:} $\underline{\text{ID\_Vaca}}$
+        \vspace{0.1cm}
+
+        \tiny
+        \centering
+        \begin{tabular}{|c|l|l|}
+        \hline
+        \textbf{ID\_Vaca} & \textbf{Brinco} & \textbf{Raça} \\ \hline
+        101 & V-001 & Holandês  \\ \hline
+        102 & V-002 & Girolando \\ \hline
+        103 & V-003 & Jersey    \\ \hline
+        104 & V-004 & Holandês  \\ \hline
+        105 & V-005 & Jersey    \\ \hline
+        \end{tabular}
+        \end{exampleblock}
+    \end{column}
+
+    \begin{column}{0.31\textwidth}
+        \begin{exampleblock}{\small R3: LOTE}
+        \textbf{Chave:} $\underline{\text{Cod\_Lote}}$
+        \vspace{0.1cm}
+
+        \tiny
+        \centering
+        \begin{tabular}{|c|r|}
+        \hline
+        \textbf{Cod\_Lote} & \textbf{Prod\_Lote (L)} \\ \hline
+        L1 & 320,0 \\ \hline
+        L2 & 280,5 \\ \hline
+        L3 & 195,0 \\ \hline
+        \end{tabular}
+        \end{exampleblock}
+    \end{column}
+\end{columns}
+
+\vspace{0.3cm}
+\begin{block}{Resultado}
+\begin{itemize}
+  \item Raça e produção de lote são armazenadas \textbf{uma única vez}.
+  \item \texttt{ID\_Vaca} e \texttt{Cod\_Lote} em ORDENHA são \textbf{Chaves Estrangeiras (FK)}.
+  \item Anomalias de atualização e exclusão eliminadas.
+\end{itemize}
+\end{block}
+\end{frame}
+
+% SLIDE 6 — Diagrama das tabelas normalizadas
+\begin{frame}{Resultado: Diagrama das Tabelas (3NF) — VACA\_ORDENHA}
+  \centering
+  \begin{tikzpicture}[
+    node distance=0.8cm and 3.2cm,
+    tabela/.style={draw, rounded corners, font=\footnotesize\sffamily, align=left, inner sep=7pt, text width=3.2cm}
+  ]
+    \node (ord) [tabela, fill=blue!5] {
+      \textbf{ORDENHA} \\ \rule{\textwidth}{0.4pt} \\
+      \textbf{ID\_Ord (PK)} \\ Data \\ ID\_Vaca (FK) \\ Cod\_Lote (FK)
+    };
+    \node (vaca) [tabela, fill=green!5, right=of ord] {
+      \textbf{VACA} \\ \rule{\textwidth}{0.4pt} \\
+      \textbf{ID\_Vaca (PK)} \\ Brinco \\ Raça
+    };
+    \node (lote) [tabela, fill=yellow!8, below=of vaca] {
+      \textbf{LOTE} \\ \rule{\textwidth}{0.4pt} \\
+      \textbf{Cod\_Lote (PK)} \\ Prod\_Lote
+    };
+
+    \draw[->, thick] (ord.east) -- (vaca.west) node[midway, above] {\tiny $N{:}1$};
+    \draw[->, thick] (ord.south east) -- (lote.north west) node[midway, right] {\tiny $N{:}1$};
+
+    \node [below=0.4cm of ord, text width=9cm, font=\itshape\small, align=center]
+      {Cada dependência transitiva foi movida para sua própria tabela. Sem redundância.};
+  \end{tikzpicture}
+\end{frame}
+
+% ===================================================
+%  2 SLIDES: EXEMPLO MECÂNICA — VIOLAÇÃO DA 3NF
+% ===================================================
+\subsection{Exemplo: Tabela ORDENS\_SERVICO (Mecânica)}
+
+% SLIDE 1 — Tabela ORDENS_SERVICO violando a 3NF
+\begin{frame}{Tabela ORDENS\_SERVICO — Mecânica (Viola 3NF)}
+\tiny
+Chave Primária: \textbf{ID\_OS} \quad (chave simples)
+\vspace{0.1cm}
+\centering
+\begin{tabular}{|c|c|c|l|c|l|c|l|r|}
+  \hline
+  \textbf{ID\_OS} & \textbf{Data} & \textbf{ID\_Cli} & \textbf{Nome\_Cli} & \textbf{ID\_Vei} & \textbf{Modelo} & \textbf{Cod\_Serv} & \textbf{Desc\_Serv} & \textbf{Preco\_Serv} \\ \hline
+  1001 & 01/03/25 & 10 & Ana Lima     & V01 & \color{red}Fiat Uno       & S1 & \color{red}Troca de óleo     & \color{red}R\$150 \\ \hline
+  1002 & 02/03/25 & 11 & Bruno Costa  & V02 & \color{red}Ford Ka        & S2 & \color{red}Alinhamento       & \color{red}R\$120 \\ \hline
+  1003 & 03/03/25 & 10 & Ana Lima     & V01 & \color{red}Fiat Uno       & S3 & \color{red}Troca de pastilha & \color{red}R\$200 \\ \hline
+  1004 & 04/03/25 & 12 & Carla Dias   & V03 & \color{red}VW Gol         & S1 & \color{red}Troca de óleo     & \color{red}R\$150 \\ \hline
+  1005 & 05/03/25 & 13 & Diego Melo   & V04 & \color{red}Honda Civic    & S4 & \color{red}Injeção eletr.    & \color{red}R\$350 \\ \hline
+  1006 & 06/03/25 & 11 & Bruno Costa  & V02 & \color{red}Ford Ka        & S1 & \color{red}Troca de óleo     & \color{red}R\$150 \\ \hline
+  1007 & 07/03/25 & 14 & Eva Santos   & V05 & \color{red}Toyota Corolla & S2 & \color{red}Alinhamento       & \color{red}R\$120 \\ \hline
+  1008 & 08/03/25 & 12 & Carla Dias   & V03 & \color{red}VW Gol         & S4 & \color{red}Injeção eletr.    & \color{red}R\$350 \\ \hline
+  1009 & 09/03/25 & 15 & Fábio Rocha  & V06 & \color{red}Renault Sandero& S3 & \color{red}Troca de pastilha & \color{red}R\$200 \\ \hline
+  1010 & 10/03/25 & 14 & Eva Santos   & V05 & \color{red}Toyota Corolla & S1 & \color{red}Troca de óleo     & \color{red}R\$150 \\ \hline
+\end{tabular}
+
+\vspace{0.15cm}
+\flushleft
+\textbf{Dependências transitivas identificadas (violam a 3NF):}
+\begin{itemize}
+  \item $\text{ID\_Cli} \to \text{Nome\_Cli}$ \quad \textcolor{red}{(ID\_Cli não é chave da tabela OS)}
+  \item $\text{ID\_Vei} \to \text{Modelo}$ \quad \textcolor{red}{(ID\_Vei não é chave da tabela OS)}
+  \item $\text{Cod\_Serv} \to \text{Desc\_Serv},\ \text{Preco\_Serv}$ \quad \textcolor{red}{(Cod\_Serv não é chave da tabela OS)}
+\end{itemize}
+\end{frame}
+
+% SLIDE 2 — Decomposição e diagrama das tabelas na 3NF
+\begin{frame}{Solução e Diagrama — ORDENS\_SERVICO (3NF)}
+\small
+
+\begin{columns}[t]
+  \begin{column}{0.50\textwidth}
+
+  \end{column}
+
+  \begin{column}{0.56\textwidth}
+    \centering
+    \begin{tikzpicture}[
+      node distance=0.2cm and 0.6cm,
+      tabela/.style={draw, rounded corners, font=\tiny\sffamily, align=left, inner sep=5pt, text width=2.4cm}
+    ]
+      \node (os) [tabela, fill=blue!5] {
+        \textbf{ORDENS\_SERVICO} \\ \rule{\textwidth}{0.4pt} \\
+        \textbf{ID\_OS (PK)} \\ Data \\ ID\_Cli (FK) \\ ID\_Vei (FK) \\ Cod\_Serv (FK)
+      };
+      \node (cli) [tabela, fill=green!5, right=of os] {
+        \textbf{CLIENTES} \\ \rule{\textwidth}{0.4pt} \\
+        \textbf{ID\_Cli (PK)} \\ Nome\_Cli
+      };
+      \node (vei) [tabela, fill=yellow!8, below=of cli] {
+        \textbf{VEICULOS} \\ \rule{\textwidth}{0.4pt} \\
+        \textbf{ID\_Vei (PK)} \\ Modelo \\ ID\_Cli (FK)
+      };
+      \node (srv) [tabela, fill=orange!8, below=of vei] {
+        \textbf{SERVICOS} \\ \rule{\textwidth}{0.4pt} \\
+        \textbf{Cod\_Serv (PK)} \\ Desc\_Serv \\ Preco\_Serv
+      };
+
+      \draw[->, thick] (os.east) -- (cli.west)     node[midway, above] {\tiny $N{:}1$};
+      \draw[->, thick] (os.east) -- (vei.north west) node[midway, right] {\tiny $N{:}1$};
+      \draw[->, thick] (os.south east) -- (srv.north west) node[midway, right] {\tiny $N{:}1$};
+    \end{tikzpicture}
+  \end{column}
+\end{columns}
+\end{frame}
+\begin{frame}
+
+
+    \begin{block}{Decomposição}
+    \tiny
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Tabela}     & \textbf{Atributos} \\ \hline
+    \textbf{ORDENS\_SERVICO} & \underline{ID\_OS}, Data, ID\_Cli (FK), \\ & ID\_Vei (FK), Cod\_Serv (FK) \\ \hline
+    \textbf{CLIENTES}   & \underline{ID\_Cli}, Nome\_Cli \\ \hline
+    \textbf{VEICULOS}   & \underline{ID\_Vei}, Modelo, ID\_Cli (FK) \\ \hline
+    \textbf{SERVICOS}   & \underline{Cod\_Serv}, Desc\_Serv, Preco\_Serv \\ \hline
+    \end{tabular}
+    \end{block}
+
+    \vspace{0.2cm}
+    \begin{exampleblock}{Ganhos}
+    \tiny
+    \begin{itemize}
+      \item Preço do serviço armazenado \textbf{uma vez} em SERVICOS.
+      \item Nome do cliente guardado \textbf{uma vez} em CLIENTES.
+      \item Modelo do veículo armazenado \textbf{uma vez} em VEICULOS.
+      \item Sem anomalias de atualização.
+    \end{itemize}
+    \end{exampleblock}
+  \end{frame}
+
+% ===================================================
+%   BCNF — BOYCE-CODD NORMAL FORM
+% ===================================================
+\section{Forma Normal de Boyce-Codd (BCNF)}
+
+% SLIDE 1 — Definição da BCNF
+\begin{frame}{Forma Normal de Boyce-Codd (BCNF)}
+  \begin{block}{Definição}
+    Uma relação está na \textbf{BCNF} se, e somente se, para toda dependência funcional não trivial
+    \[
+      X \to Y
+    \]
+    $X$ for uma \textbf{superchave} da relação.
+  \end{block}
+  \vspace{0.3cm}
+  \begin{itemize}
+    \item A BCNF é uma versão \textbf{mais restrita} da 3NF.
+    \item Na 3NF, $Y$ pode ser atributo primo (parte de alguma chave candidata) mesmo que $X$ não seja superchave.
+    \item Na BCNF, \textbf{não há exceção}: todo determinante deve ser superchave.
+  \end{itemize}
+  \vspace{0.3cm}
+  \begin{alertblock}{Quando a 3NF não basta?}
+    Quando existem \textbf{múltiplas chaves candidatas sobrepostas} (que compartilham atributos), a 3NF pode ainda permitir anomalias que a BCNF elimina.
+  \end{alertblock}
+\end{frame}
+
+% SLIDE 2 — Comparação 3NF × BCNF
+\begin{frame}{Comparação: 3NF vs BCNF}
+\small
+\centering
+\begin{tabular}{|l|c|c|}
+  \hline
+  \textbf{Critério} & \textbf{3NF} & \textbf{BCNF} \\ \hline
+  Elimina dep. parciais            & \checkmark & \checkmark \\ \hline
+  Elimina dep. transitivas         & \checkmark & \checkmark \\ \hline
+  $X$ deve ser superchave          & Às vezes   & \textbf{Sempre} \\ \hline
+  $Y$ pode ser atributo primo      & \textbf{Sim} & \textbf{Não} \\ \hline
+  Garante preservação de dep.      & \textbf{Sim} & Nem sempre \\ \hline
+  Garante junção sem perdas        & \checkmark & \checkmark \\ \hline
+  Mais restritiva                  & ---        & \textbf{Sim} \\ \hline
+\end{tabular}
+
+\vspace{0.4cm}
+\begin{block}{Relação hierárquica}
+\centering
+\begin{tikzpicture}[node distance=0cm]
+  \node (fn1) [draw, fill=blue!10, minimum width=8cm, minimum height=0.7cm, font=\small\bfseries] {1ª Forma Normal (1NF)};
+  \node (fn2) [draw, fill=green!10, minimum width=6.5cm, minimum height=0.7cm, font=\small\bfseries, below=-\pgflinewidth of fn1] {2ª Forma Normal (2NF)};
+  \node (fn3) [draw, fill=orange!10, minimum width=5cm, minimum height=0.7cm, font=\small\bfseries, below=-\pgflinewidth of fn2] {3ª Forma Normal (3NF)};
+  \node (bcnf)[draw, fill=red!10,    minimum width=3.5cm, minimum height=0.7cm, font=\small\bfseries, below=-\pgflinewidth of fn3] {BCNF};
+\end{tikzpicture}
+\end{block}
+\end{frame}
+
+% SLIDE 3 — Quando 3NF ≠ BCNF: chaves candidatas sobrepostas
+\begin{frame}{Por que a 3NF não é suficiente?}
+\small
+\begin{block}{Situação: múltiplas chaves candidatas sobrepostas}
+Considere a relação \textbf{CONSULTA}(\underline{Aluno, Disciplina}, Professor) com:
+\begin{itemize}
+  \item Cada aluno tem um professor por disciplina: $\{Aluno, Disciplina\} \to Professor$
+  \item Cada professor leciona uma única disciplina: $Professor \to Disciplina$
+\end{itemize}
+Chaves candidatas: $\{Aluno, Disciplina\}$ e $\{Aluno, Professor\}$
+\end{block}
+
+\vspace{0.2cm}
+
+\begin{alertblock}{Análise pela 3NF}
+A dependência $Professor \to Disciplina$:
+\begin{itemize}
+  \item $Professor$ \textbf{não} é superchave. \quad \textcolor{red}{\textsf{Violaria 3NF?}}
+  \item $Disciplina$ \textbf{é} atributo primo (faz parte da chave $\{Aluno, Disciplina\}$).
+  \item Pela 3NF: \textcolor{green!60!black}{\checkmark\ permitido!}
+  \item Pela BCNF: \textcolor{red}{\textbf{x proibido!}} ($Professor$ não é superchave)
+\end{itemize}
+\end{alertblock}
+
+\vspace{0.1cm}
+\begin{exampleblock}{Conclusão}
+Esta relação está na \textbf{3NF}, mas \underline{não} está na \textbf{BCNF}.
+\end{exampleblock}
+\end{frame}
+
+% SLIDE 4 — Tabela concreta + violação da BCNF
+\begin{frame}{Tabela CONSULTA — Viola a BCNF}
+\small
+Chaves candidatas: $\{Aluno, Disciplina\}$ e $\{Aluno, Professor\}$
+\vspace{0.2cm}
+\centering
+\begin{tabular}{|l|l|l|}
+  \hline
+  \textbf{Aluno}  & \textbf{Disciplina} & \textbf{Professor} \\ \hline
+  Ana     & Banco de Dados    & \color{red}Prof. Silva  \\ \hline
+  Bruno   & Banco de Dados    & \color{red}Prof. Silva  \\ \hline
+  Carla   & Banco de Dados    & \color{red}Prof. Silva  \\ \hline
+  Ana     & Redes             & \color{red}Prof. Lima   \\ \hline
+  Diego   & Redes             & \color{red}Prof. Lima   \\ \hline
+  Bruno   & Algoritmos        & Prof. Costa  \\ \hline
+  Eva     & Algoritmos        & Prof. Costa  \\ \hline
+  Diego   & Banco de Dados    & \color{red}Prof. Silva  \\ \hline
+  Carla   & Redes             & \color{red}Prof. Lima   \\ \hline
+  Eva     & Redes             & \color{red}Prof. Lima   \\ \hline
+\end{tabular}
+
+\vspace{0.3cm}
+\flushleft
+\begin{itemize}
+  \item $Professor \to Disciplina$: \textcolor{red}{Professor não é superchave → viola BCNF}
+  \item O nome da disciplina de cada professor se \textbf{repete} em todos os registros daquele professor.
+  \item Mudar o professor de uma disciplina exige atualizar \textbf{todas} as linhas correspondentes.
+\end{itemize}
+\end{frame}
+
+% SLIDE 5 — Algoritmo de decomposição para BCNF
+\begin{frame}{Algoritmo: Decomposição para BCNF}
+\small
+\begin{block}{Procedimento}
+\begin{algorithmic}[1]
+\Procedure{DecompõeBCNF}{$R, F$}
+  \State $resultado \gets \{R\}$
+  \While{existe $S \in resultado$ que \textbf{não} está na BCNF}
+    \State Encontra DF $X \to Y$ em $S$ tal que $X$ não é superchave de $S$
+    \State $S_1 \gets X \cup Y$ \Comment{Nova tabela com o determinante e dependente}
+    \State $S_2 \gets S - Y$ \Comment{Tabela original sem os atributos dependentes}
+    \State $resultado \gets (resultado - \{S\}) \cup \{S_1, S_2\}$
+  \EndWhile
+  \State \Return $resultado$
+\EndProcedure
+\end{algorithmic}
+\end{block}
+
+\vspace{0.2cm}
+\begin{alertblock}{Atenção}
+\begin{itemize}
+  \item A decomposição \textbf{sempre} garante junção sem perdas (\textit{lossless join}).
+  \item Mas pode \textbf{perder} algumas dependências funcionais (não preserva $F$).
+  \item Em casos assim, pode ser preferível manter a 3NF.
+\end{itemize}
+\end{alertblock}
+\end{frame}
+
+% SLIDE 6 — Decomposição da tabela CONSULTA
+\begin{frame}{Decomposição de CONSULTA para BCNF}
+\small
+
+\begin{block}{DF que viola BCNF}
+$Professor \to Disciplina$ \quad ($Professor$ não é superchave)
+\end{block}
+
+\vspace{0.2cm}
+
+\begin{columns}[t]
+  \begin{column}{0.48\textwidth}
+    \begin{exampleblock}{R1: PROFESSOR\_DISCIPLINA}
+    \textbf{Chave:} $\underline{Professor}$
+    \vspace{0.1cm}
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Professor} & \textbf{Disciplina} \\ \hline
+    Prof. Silva & Banco de Dados \\ \hline
+    Prof. Lima  & Redes \\ \hline
+    Prof. Costa & Algoritmos \\ \hline
+    \end{tabular}
+    \end{exampleblock}
+  \end{column}
+
+  \begin{column}{0.48\textwidth}
+    \begin{exampleblock}{R2: ALUNO\_PROFESSOR}
+    \textbf{Chave:} $\underline{\{Aluno, Professor\}}$
+    \vspace{0.1cm}
+    \centering
+    \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Aluno} & \textbf{Professor} \\ \hline
+    Ana   & Prof. Silva \\ \hline
+    Bruno & Prof. Silva \\ \hline
+    Carla & Prof. Silva \\ \hline
+    Ana   & Prof. Lima  \\ \hline
+    \ldots & \ldots \\ \hline
+    \end{tabular}
+    \end{exampleblock}
+  \end{column}
+\end{columns}
+
+\vspace{0.3cm}
+\begin{block}{Resultado}
+\begin{itemize}
+  \item Cada professor aparece \textbf{uma única vez} com sua disciplina.
+  \item Ambas as tabelas estão na \textbf{BCNF}.
+  \item A DF original $\{Aluno, Disciplina\} \to Professor$ \alert{não} pode ser verificada diretamente (custo da normalização).
+\end{itemize}
+\end{block}
+\end{frame}
+
+% SLIDE 7 — Diagrama das tabelas na BCNF
+\begin{frame}{Diagrama: Tabelas na BCNF — CONSULTA}
+\centering
+\begin{tikzpicture}[
+  node distance=1.5cm and 0.8cm,
+  tabela/.style={draw, rounded corners, font=\footnotesize\sffamily, align=left, inner sep=8pt, text width=3cm}
+]
+  \node (r2) [tabela, fill=blue!5] {
+    \textbf{ALUNO\_PROFESSOR} \\ \rule{\textwidth}{0.4pt} \\
+    \textbf{Aluno (PK)} \\ \textbf{Professor (PK + FK)}
+  };
+  \node (r1) [tabela, fill=green!5, right=of r2] {
+    \textbf{PROFESSOR\_DISCIPLINA} \\ \rule{\textwidth}{0.4pt} \\
+    \textbf{Professor (PK)} \\ Disciplina
+  };
+
+  \draw[->, thick] (r2.east) -- (r1.west) node[midway, above] {$N:1$};
+
+  \node [below=1.4cm of r2, text width=10cm, font=\itshape\small, align=center]
+    {A disciplina de cada professor é armazenada \textbf{uma única vez}. Sem redundância. Ambas as tabelas estão na \textbf{BCNF}.};
+\end{tikzpicture}
+
+\vspace{0.3cm}
+\begin{exampleblock}{Checklist BCNF}
+\small
+\begin{itemize}
+  \item[$\checkmark$] Para toda DF $X \to Y$: $X$ é superchave?
+  \item[$\checkmark$] Não há atributo não-chave que determine qualquer outro atributo?
+  \item[$\checkmark$] Nenhum determinante parcial ou transitivo presente?
+\end{itemize}
+\end{exampleblock}
+\end{frame}
+
+\end{document}
+
+
+

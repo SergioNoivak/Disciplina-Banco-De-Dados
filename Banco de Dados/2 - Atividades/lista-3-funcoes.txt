@@ -1,0 +1,118 @@
+-- EXERCÍCIO (1)
+
+CREATE OR REPLACE FUNCTION calcular_total_vendas_periodo(
+    data_inicio DATE,
+    data_fim DATE
+) RETURNS NUMERIC AS $$
+DECLARE
+    v_total NUMERIC;
+BEGIN
+    SELECT COALESCE(SUM(total), 0) INTO v_total
+    FROM pedidos
+    WHERE data_pedido::DATE BETWEEN data_inicio AND data_fim
+    AND status IN ('Pago', 'Entregue');
+    
+    RETURN v_total;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- EXERCÍCIO (2)
+
+CREATE OR REPLACE FUNCTION verificar_disponibilidade_produto(
+    p_produto_id INTEGER,
+    p_quantidade INTEGER
+) RETURNS BOOLEAN AS $$
+DECLARE
+    v_disponivel BOOLEAN;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1 FROM produtos
+        WHERE produto_id = p_produto_id
+        AND disponivel >= p_quantidade
+    ) INTO v_disponivel;
+    
+    RETURN v_disponivel;
+END;
+$$ LANGUAGE plpgsql;
+
+-- EXERCÍCIO (3)
+
+CREATE OR REPLACE FUNCTION calcular_media_avaliacoes(
+    p_produto_id INTEGER
+) RETURNS NUMERIC AS $$
+DECLARE
+    v_media NUMERIC;
+BEGIN
+    SELECT COALESCE(AVG(nota)::NUMERIC(3,1), 0) INTO v_media
+    FROM avaliacoes_produto
+    WHERE produto_id = p_produto_id;
+    
+    RETURN v_media;
+END;
+$$ LANGUAGE plpgsql;
+
+-- EXERCÍCIO (4)
+
+
+CREATE OR REPLACE FUNCTION obter_produtos_categoria(
+    p_categoria_nome VARCHAR
+) RETURNS TABLE (
+    produto_id INTEGER,
+    nome VARCHAR,
+    preco NUMERIC,
+    estoque INTEGER
+) AS $$
+BEGIN
+    RETURN QUERY 
+    SELECT 
+        p.produto_id,
+        p.nome,
+        p.preco,
+        p.estoque
+    FROM produtos p
+    JOIN produtos_categorias pc ON p.produto_id = pc.produto_id
+    JOIN categorias c ON pc.categoria_id = c.categoria_id
+    WHERE c.nome = p_categoria_nome;
+END;
+$$ LANGUAGE plpgsql;
+
+-- EXERCÍCIO (5)
+
+
+CREATE OR REPLACE FUNCTION calcular_frete(
+    p_endereco_id INTEGER,
+    p_peso_total NUMERIC
+) RETURNS NUMERIC AS $$
+DECLARE
+    v_cidade_destino INTEGER;
+    v_estado_destino INTEGER;
+    v_valor_frete NUMERIC;
+BEGIN
+    -- Obtém cidade e estado do endereço
+    SELECT 
+        c.cidade_id,
+        e.estado_id 
+    INTO 
+        v_cidade_destino,
+        v_estado_destino
+    FROM enderecos end
+    JOIN cidades c ON end.cidade_id = c.cidade_id
+    JOIN estados e ON c.estado_id = e.estado_id
+    WHERE end.endereco_id = p_endereco_id;
+
+    -- Define valor base do frete
+    IF v_cidade_destino = v_cidade_destino THEN
+        v_valor_frete := 10.00;
+    ELSIF v_estado_destino = v_estado_destino THEN
+        v_valor_frete := 25.00;
+    ELSE
+        v_valor_frete := 50.00;
+    END IF;
+
+    -- Ajusta valor pelo peso
+    v_valor_frete := v_valor_frete * (1 + p_peso_total * 0.1);
+    
+    RETURN v_valor_frete;
+END;
+$$ LANGUAGE plpgsql;

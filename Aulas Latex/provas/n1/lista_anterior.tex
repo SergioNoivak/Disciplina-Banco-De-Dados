@@ -1,0 +1,339 @@
+\documentclass[12pt,a4paper]{article}
+
+% ------------------------------------------------
+% Pacotes
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{mathptmx} % Times New Roman
+\usepackage{enumitem}\usepackage{amsfonts}
+\usepackage{amsmath} % Recomendado para o comando \text{}
+\usepackage{amssymb}
+% ------------------------------------------------ 
+% Configuração de página
+% ------------------------------------------------
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=2cm,
+    bottom=2cm,
+    headheight=15pt % Adicione isso
+}% Caixa para resposta discursiva
+\newcommand{\resposta}[1]{
+\noindent
+\framebox[\textwidth]{
+\begin{minipage}{0.98\textwidth}
+\vspace{#1}
+\end{minipage}
+}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+
+\setlength{\parindent}{0pt}
+
+% ------------------------------------------------
+% Comandos auxiliares
+% ------------------------------------------------
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ------------------------------------------------
+% Documento
+% ------------------------------------------------
+\begin{document}
+
+% ------------------------------------------------
+% Cabeçalho - Corrigido para evitar aninhamento problemático
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{@{} L{4cm} X @{}}
+    \raisebox{-0.5cm}{\includegraphics[width=4cm]{Universidade_de_Rio_Verde.jpg}} &
+    \hfill
+    \begin{tabular}{|>{\centering\arraybackslash}m{10cm}|>{\raggedright\arraybackslash}p{1.8cm}|}
+        \hline
+        \cellcolor{black}\color{white}\rule{0pt}{1.2cm}\textbf{AVALIAÇÃO 1} 
+        & 
+        \scriptsize Nota \tabularnewline
+        \hline
+    \end{tabular} 
+\end{tabularx}
+\vspace{0.3cm}
+
+% ------------------------------------------------  
+% Tabela principal - Estrutura limpa
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{|X|L{2cm}|}
+\hline
+\textbf{Curso} & \textbf{Campus} \\
+\textit{Engenharia de Software} & \textit{Rio Verde} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Disciplina}} \\  
+\multicolumn{2}{|l|}{ \textit{Banco de dados}} \\
+\hline
+\textbf{Nome do(a) acadêmico(a)} & \textbf{Valor} \\
+& 7,0 \\
+\hline
+\textbf{Professor} & \textbf{Turma} \\
+\textit{ Sergio Souza Novak} & \textit{B} \\
+\hline
+\textbf{Data da Avaliação} & \textbf{Código} \\
+\textit{18/03/2026} & \textit{ESW418} \\
+\hline
+\end{tabularx}
+
+% ------------------------------------------------
+% Barra de Atenção
+% ------------------------------------------------
+\vspace{0.2cm}
+
+\begin{tabularx}{\textwidth}{|X|}
+\hline
+\cellcolor{black}\color{white}
+\centering \textbf{ATENÇÃO:} Somente serão passíveis de \textbf{REVISÃO} avaliações resolvidas à \textbf{TINTA}. \tabularnewline
+\hline
+\end{tabularx}
+
+\vspace{0.3cm}
+
+\textbf{ORIENTAÇÕES PARA A RESOLUÇÃO}  
+
+\begin{itemize}
+    \item A avaliação é individual, sem consulta;
+    \item A interpretação de texto faz parte da avaliação;
+\end{itemize}
+
+\vspace{0.5cm}
+
+\begin{center}
+    \rule{\textwidth}{0.4pt}
+    \textbf{QUESTÕES}
+\end{center}
+
+\vspace{0.5cm}
+
+\textbf{1) (ENADE 2023)} Uma relação $R$ em um conjunto $S$ é uma relação de equivalência se ela satisfiser todas as propriedades a seguir:
+\begin{enumerate}
+    \item \textbf{Reflexividade.} Para todo $a \in S$, $a R a$;
+    \item \textbf{Simetria.} Para todos $a, b \in S$, $a R b \Leftrightarrow b R a$;
+    \item \textbf{Transitividade.} Para todos $a, b, c \in S$, se $a R b$ e $b R c$, então, $a R c$.
+\end{enumerate}
+
+Uma partição de um conjunto $S$ é uma coleção de subconjuntos disjuntos não vazios, cuja união é igual a $S$. Se $R$ é uma relação de equivalência em um conjunto $S$ e se $x \in S$, denota-se por $[x]$ o conjunto de todos os elementos relacionados a $x$ em $S$ e chama-se esse conjunto de classe de equivalência de $x$.
+
+\vspace{0.2cm}
+\footnotesize
+GERSTING, J. L. \textbf{Fundamentos matemáticos para a ciência da computação:} um tratamento moderno de matemática discreta. 5. ed. Rio de Janeiro: LTC, 2008 (adaptado).
+\normalsize
+\vspace{0.2cm}
+
+A partir dessas informações, considere que, em um cluster computacional, haja 10 computadores com configurações de hardware diferentes. Os administradores desse cluster pretendem desenvolver um algoritmo de escalonamento de tarefas que mantenha processos de uma mesma aplicação sendo executados em máquinas semelhantes, mesmo com estruturas arquiteturais distintas. Assim, os administradores fizeram uma tabela relacionando os computadores. Essa tabela foi montada considerando pares de computadores. Dessa forma, dois computadores do cluster fazem parte de uma linha na tabela se possuem alguma característica semelhante, ou seja, se apresentam algum tipo de relacionamento (por exemplo, quantidade de memória ou de núcleos de processamento semelhantes). Obviamente, apesar de não estar evidente na tabela, um computador também tem relação consigo mesmo.
+
+Os computadores estão numerados de 1 até 10 e a tabela resultante pode ser vista a seguir.
+
+\begin{center}
+\textbf{Computadores com características semelhantes} \\
+\vspace{0.2cm}
+\begin{tabular}{|c|c|}
+\hline
+1 & 5 \\ \hline
+2 & 8 \\ \hline
+5 & 7 \\ \hline
+7 & 10 \\ \hline
+2 & 9 \\ \hline
+3 & 4 \\ \hline
+10 & 1 \\ \hline
+5 & 10 \\ \hline
+7 & 1 \\ \hline
+9 & 8 \\ \hline
+\end{tabular}
+\end{center}
+
+Com base nesse cenário e no conceito de relações de equivalência, assinale a opção correta.
+ 
+\begin{enumerate}[label=\Alph*)]
+    \item A relação descrita pela tabela é uma relação de equivalência.
+    \item A relação descrita pela tabela apresenta a propriedade de simetria, mas não a de transitividade.
+    \item A relação descrita pela tabela apresenta a propriedade de transitividade, mas não a de simetria.
+    \item O subconjunto de computadores representados pelos números 1, 3, 5, 7 e 10 forma uma classe de equivalência.
+    \item O subconjunto de computadores representados pelos números 2, 3, 4, 8 e 9 forma uma classe de equivalência.
+\end{enumerate}
+\vspace{0.8cm}
+\vspace{0.8cm}
+
+\textbf{3)} Seja $a$ um inteiro par e $b$ um inteiro ímpar. Prove que a soma $a+b$ é um número ímpar.
+
+\vspace{0.2cm}
+\resposta{4cm}
+\vspace{0.8cm}
+
+\textbf{4)} Sejam $a$ e $b$ dois inteiros ímpares. Prove que o produto $ab$ é um número ímpar.
+
+\vspace{0.2cm}
+\resposta{4cm}
+
+\vspace{0.8cm}
+
+\textbf{5) (ENADE 2017)} Uma relação de equivalência é uma relação binária $R$ em um conjunto $A$, tal que $R$ é reflexiva, simétrica e transitiva.
+
+Considere as relações binárias apresentadas a seguir:
+\begin{itemize}
+    \item $R_1 = \{(a, b) : a, b \in \mathbb{N} \text{ e } a = b\}$;
+    \item $R_2 = \{(a, b) : a, b \in \mathbb{N} \text{ e } a \leq b\}$;
+    \item $R_3 = \{(a, b) : a, b \in \mathbb{N} \text{ e } a = b - 1\}$;
+    \item $R_4 = \{(a, b) : a, b \in \mathbb{N} \text{ e } a + b \text{ é um número par}\}$.
+\end{itemize}
+
+São relações de equivalência apenas o que se apresenta em:
+\begin{enumerate}[label=\Alph*)]
+    \item $R_2$ e $R_3$.
+    \item $R_1$ e $R_3$.
+    \item $R_1$ e $R_4$. 
+    \item $R_1, R_2$ e $R_4$.
+    \item $R_2, R_3$ e $R_4$.
+\end{enumerate} 
+
+\vspace{0.8cm}
+
+\textbf{6)} Demonstre que $A \cap \varnothing = \varnothing$.
+
+\vspace{0.2cm}
+\resposta{6cm}
+
+\vspace{0.8cm}
+
+\textbf{7)} Prove que $A \cup \varnothing = A$.
+
+\vspace{0.2cm}
+\resposta{6cm}
+
+\vspace{0.8cm}
+
+\textbf{8)} Considere a implicação: \textit{“Se um número é múltiplo de 4, então é par.”} Identifique claramente:
+ a hipótese e a conclusão.
+
+\vspace{0.2cm}
+\resposta{4cm}
+
+\vspace{0.8cm}
+
+\textbf{9)} Construa a tabela-verdade completa da proposição $P \Rightarrow Q$. Em seguida, indique explicitamente em quais casos a implicação é falsa.
+
+\vspace{0.2cm}
+\resposta{12cm}
+% ------------------------------------------------
+% Colinha / Resumo de Definições
+% ------------------------------------------------
+
+\section*{Resumo de Definições (Referência)}
+
+\textbf{Conjunto Vazio}
+
+
+\[
+\varnothing = \{x \mid x \neq x\}
+\]
+
+
+\[
+(\forall x)(x \notin \varnothing)
+\]
+\textbf{Paridade}
+
+\[
+n \in \mathbb{Z} \text{ é par } \Leftrightarrow \exists k \in \mathbb{Z} \; (n = 2k)
+\]
+
+\[
+n \in \mathbb{Z} \text{ é ímpar } \Leftrightarrow \exists k \in \mathbb{Z} \; (n = 2k + 1)
+\]
+
+\vspace{0.3cm}
+
+\textbf{Relação de Contido}
+
+\[
+A \subseteq B \Leftrightarrow (\forall x)(x \in A \Rightarrow x \in B)
+\]
+
+\vspace{0.3cm}
+
+\textbf{União de Conjuntos}
+
+\[
+A \cup B = \{x \mid x \in A \lor x \in B\}
+\]
+
+Formalmente:
+
+\[
+(\forall x)(x \in A \cup B \Leftrightarrow (x \in A \lor x \in B))
+\]
+
+\vspace{0.3cm}
+
+\textbf{Interseção de Conjuntos}
+
+\[
+A \cap B = \{x \mid x \in A \land x \in B\}
+\]
+
+Formalmente:
+
+\[
+(\forall x)(x \in A \cap B \Leftrightarrow (x \in A \land x \in B))
+\]
+
+\vspace{0.3cm}
+
+\textbf{Relação Binária}
+
+Uma relação $R$ entre dois conjuntos $A$ e $B$ é um subconjunto do produto cartesiano:
+
+\[
+R \subseteq A \times B
+\]
+
+ou seja,
+
+\[
+(a,b) \in R \Rightarrow a \in A \land b \in B
+\]
+
+Quando $A=B$, dizemos que $R$ é uma relação em $A$:
+
+\[
+R \subseteq A \times A
+\]
+
+\vspace{0.3cm}
+
+\textbf{Propriedades de Relações}
+
+\textbf{Reflexiva}
+
+\[
+(\forall a \in A)(aRa)
+\]
+
+\textbf{Simétrica}
+
+\[
+(\forall a,b \in A)(aRb \Rightarrow bRa)
+\]
+
+\textbf{Transitiva}
+
+\[
+(\forall a,b,c \in A)((aRb \land bRc) \Rightarrow aRc)
+\]
+\end{document}

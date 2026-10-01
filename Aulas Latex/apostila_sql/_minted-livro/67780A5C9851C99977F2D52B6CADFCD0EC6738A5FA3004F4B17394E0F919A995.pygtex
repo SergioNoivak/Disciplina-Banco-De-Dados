@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{INSERT}\PYG{+w}{ }\PYG{k}{INTO}\PYG{+w}{ }\PYG{n}{pessoa}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{nome}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{cpf}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{email}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data\PYGZus{}nascimento}\PYG{p}{)}
+\PYG{k}{VALUES}\PYG{+w}{ }\PYG{p}{(}\PYG{l+s+s1}{\PYGZsq{}João Silva\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}12345678901\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}joao@email.com\PYGZsq{}}\PYG{p}{,}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}1990\PYGZhy{}05\PYGZhy{}15\PYGZsq{}}\PYG{p}{);}
+\end{Verbatim}

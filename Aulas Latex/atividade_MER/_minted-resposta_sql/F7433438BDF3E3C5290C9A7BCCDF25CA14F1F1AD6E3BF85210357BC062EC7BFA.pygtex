@@ -1,0 +1,12 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 1. Contagem específica com WHERE}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{k}{COUNT}\PYG{p}{(}\PYG{n}{id}\PYG{p}{)}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{carro}
+\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{marca}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}Toyota\PYGZsq{}}\PYG{+w}{ }\PYG{k}{AND}\PYG{+w}{ }\PYG{n}{ano}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{2020}\PYG{p}{;}
+
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 2. Agrupamento e Ordenação}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{marca}\PYG{p}{,}\PYG{+w}{ }\PYG{k}{COUNT}\PYG{p}{(}\PYG{n}{id}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{AS}\PYG{+w}{ }\PYG{n}{total}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{carro}
+\PYG{k}{GROUP}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{marca}
+\PYG{k}{ORDER}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{marca}\PYG{+w}{ }\PYG{k}{ASC}\PYG{p}{;}
+\end{Verbatim}

@@ -1,0 +1,343 @@
+\documentclass[12pt]{article}
+
+% Idioma e codificação
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Matemática, listas e tabelas
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{float} 
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{colortbl}
+
+% Layout e cores
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% Cores institucionais
+\definecolor{maincolor}{RGB}{0,100,50}
+\definecolor{forestgreen}{RGB}{0,100,50}
+\definecolor{tableheader}{RGB}{230,240,230}
+
+% Cabeçalho e rodapé
+\usepackage{fancyhdr}
+
+% Blocos
+\usepackage[most]{tcolorbox}
+\newtcolorbox{block}[1]{%
+  colback=green!5,
+  colframe=maincolor,
+  coltitle=white,
+  title=#1,
+  fonttitle=\bfseries,
+  boxrule=1.5pt,
+  arc=3mm,
+  left=6pt,
+  right=6pt,
+  top=6pt,
+  bottom=6pt
+}
+
+% Margens
+\geometry{margin=2.5cm}
+
+% Fancyhdr
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{2pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{forestgreen}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{forestgreen}\leaders\hrule height \footrulewidth\hfill}}
+\setlength{\headheight}{52pt}
+\addtolength{\topmargin}{-20pt}
+
+\fancyhead[L]{%
+  \includegraphics[height=1.2cm]{Universidade_de_Rio_Verde.jpg}
+}
+
+\fancyhead[R]{%
+  \raggedleft
+  \textcolor{forestgreen}{%
+    \small
+    \textbf{Lista de Exercícios}\\
+    Me.~Sergio Souza Novak\\
+    \textit{Banco de Dados}
+    }
+}
+    
+\fancyfoot[C]{\textcolor{forestgreen}{\thepage}}
+    
+\begin{document}
+    
+\vspace*{0.2cm}
+
+\section*{Exercício 01}
+
+Analise a instância do banco de dados abaixo para o sistema \textbf{PetShop 2.0}. As tabelas demonstram como os dados estão organizados e relacionados.
+
+\begin{table}[H]
+    \centering
+    \small
+    % Tabela Pessoa
+    \textbf{PESSOA}\\
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{cpf} (PK) & nome & email \\ \hline
+    111.222.333-44 & João Silva & joao@email.com \\ \hline
+    555.666.777-88 & Ana Costa & ana@email.com \\ \hline
+    999.000.111-22 & Ricardo Souza & ricardo@email.com \\ \hline
+    \end{tabular}
+
+    \vspace{0.5cm}
+
+    % Tabela Veterinário e Gerente
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \textbf{VETERINARIO}\\
+        \begin{tabular}{|l|l|}
+        \hline
+        \rowcolor{tableheader} \underline{\textit{cpf\_vet}} (FK) & crmv \\ \hline
+        111.222.333-44 & MG-1234 \\ \hline
+        \end{tabular}
+    \end{minipage}
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \textbf{GERENTE}\\
+        \begin{tabular}{|l|l|}
+        \hline
+        \rowcolor{tableheader} \underline{\textit{cpf\_gerente}} (FK) & \textit{cpf\_sup} (FK) \\ \hline
+        555.666.777-88 & NULL \\ \hline
+        999.000.111-22 & 555.666.777-88 \\ \hline
+        \end{tabular}
+    \end{minipage}
+
+    \vspace{0.5cm}
+
+    % Tabela Animal e Vacina
+    \textbf{ANIMAL}\\
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{id\_animal} (PK) & nome\_pet & \textit{cpf\_cliente} (FK) \\ \hline
+    10 & Rex (Cão) & 111.222.333-44 \\ \hline
+    20 & Mingau (Gato) & 111.222.333-44 \\ \hline
+    \end{tabular}
+
+    \vspace{0.5cm}
+
+    \textbf{HIST\_VACINA}\\
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{\textit{id\_animal}} (FK) & \underline{data\_vac} & lote \\ \hline
+    10 & 10/01/2026 & V8-456 \\ \hline
+    10 & 10/02/2026 & RV-789 \\ \hline
+    20 & 15/01/2026 & V5-123 \\ \hline
+    \end{tabular}
+\end{table}
+
+
+
+\section*{Instruções do Exercício}
+
+Com base na visualização das tabelas acima, responda:
+
+\begin{enumerate}[label=\alph*)]
+    \item Na tabela \texttt{HIST\_VACINA}, o que aconteceria se tentássemos inserir uma nova linha com o \texttt{id\_animal = 30}? Justifique com base no conceito de \textbf{Integridade Referencial} visto nos slides.
+    \item Observe a tabela \texttt{GERENTE}. Explique como o valor presente na coluna \texttt{cpf\_sup} de Ricardo Souza se relaciona com a mesma tabela e o que isso representa na hierarquia da empresa.
+    \item Por que o CPF de João Silva aparece tanto na tabela \texttt{PESSOA} quanto na tabela \texttt{VETERINARIO}? Qual estratégia de mapeamento de herança isso demonstra?
+    \item Identifique um exemplo de relacionamento \textbf{1:N} entre as tabelas acima e explique como a "Chave Estrangeira" é usada para manter esse vínculo.
+\end{enumerate}
+
+\begin{flushright}
+\textit{Use os exemplos das páginas 38 a 49 do material como referência.}
+\end{flushright}
+\section*{Exercício 02}
+
+A empresa \textbf{Pé na Tábua Autopeças} necessita organizar o seu estoque. No modelo lógico, as peças são classificadas por tipo, e o armazenamento é controlado por prateleiras. Analise as tabelas abaixo que representam uma parte do banco de dados:
+
+\begin{table}[H]
+    \centering
+    \small
+    
+    \textbf{PECA}\\
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{part\_number} (PK) & descricao & fabricante \\ \hline
+    P-001 & Amortecedor Dianteiro & Cofap \\ \hline
+    P-002 & Filtro de Óleo & Fram \\ \hline
+    P-003 & Pastilha de Freio & Bosch \\ \hline
+    \end{tabular}
+
+    \vspace{0.4cm}
+
+    % Especializações
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \textbf{PECA\_NACIONAL}\\
+        \begin{tabular}{|l|l|}
+        \hline
+        \rowcolor{tableheader} \underline{\textit{part\_num}} (FK) & ipi \\ \hline
+        P-001 & 8\% \\ \hline
+        \end{tabular}
+    \end{minipage}
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \textbf{PECA\_IMPORTADA}\\
+        \begin{tabular}{|l|l|}
+        \hline
+        \rowcolor{tableheader} \underline{\textit{part\_num}} (FK) & taxa\_imp \\ \hline
+        P-003 & 15\% \\ \hline
+        \end{tabular}
+    \end{minipage}
+
+    \vspace{0.6cm}
+
+    \textbf{PRATELEIRA}\\
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{id\_prat} (PK) & setor & corredor \\ \hline
+    A1 & Suspensão & 01 \\ \hline
+    B5 & Frenagem & 02 \\ \hline
+    \end{tabular}
+
+    \vspace{0.6cm}
+
+    \textbf{ESTOQUE\_ITEM (Tabela Associativa N:N)}\\
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{\textit{part\_num}} (FK) & \underline{\textit{id\_prat}} (FK) & quantidade \\ \hline
+    P-001 & A1 & 15 \\ \hline
+    P-003 & B5 & 22 \\ \hline
+    P-001 & B5 & 5 \\ \hline
+    \end{tabular}
+\end{table}
+
+
+
+\section*{Instruções do Exercício}
+
+Analise a estrutura e os dados das tabelas acima para responder aos itens:
+
+\begin{enumerate}[label=\alph*)]
+    \item A tabela \texttt{ESTOQUE\_ITEM} possui uma \textbf{Chave Primária Composta}. Identifique quais campos a formam e explique, com base nos dados apresentados, por que não poderíamos usar apenas o \texttt{part\_num} como PK nesta tabela.
+    
+    \item Na tabela \texttt{ESTOQUE\_ITEM}, a peça \texttt{P-001} aparece duas vezes. Isso caracteriza uma violação de integridade ou é uma característica de um relacionamento \textbf{N:N}? Justifique sua resposta.
+    
+    \item Caso a peça \texttt{P-002} fosse importada, em qual tabela deveríamos inserir os dados adicionais dela? Explique como a integridade referencial garante que essa peça "exista" antes de ser classificada como importada.
+    
+    \item Como o conceito de \textbf{Atributo de Relacionamento} é aplicado na tabela \texttt{ESTOQUE\_ITEM}? Onde está armazenada a informação de "quantidade" e por que ela não poderia estar na tabela \texttt{PECA}?
+\end{enumerate}
+
+\begin{block}{Desafio Prático}
+Se decidirmos apagar a Prateleira \texttt{B5} do sistema, o que aconteceria com os registros de estoque das peças \texttt{P-001} e \texttt{P-003} se a restrição de integridade for configurada como \textbf{ON DELETE RESTRICT}?
+\end{block} 
+
+\section*{Exercício 03}
+
+Um hospital universitário tentou implementar seu banco de dados, mas o esquema resultante apresenta graves falhas de modelagem e violações das regras de Edgar F. Codd. Analise as tabelas abaixo, que representam o estado atual do sistema de \textbf{Internações}:
+
+\begin{table}[H]
+    \centering
+    \small
+    
+    \textbf{MEDICO}\\
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{crm} (PK) & nome & especialidade \\ \hline
+    CRM-123 & Dr. Arnaldo & Cardiologia \\ \hline
+    CRM-123 & Dr. Arnaldo & Cardiologia \\ \hline
+    CRM-999 & Dra. Beatriz & NULL \\ \hline
+    \end{tabular}
+
+    \vspace{0.4cm}
+
+    \textbf{PACIENTE}\\
+    \begin{tabular}{|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{id\_paciente} (PK) & nome & data\_nasc \\ \hline
+    101 & Paciente A & 12/05/1980 \\ \hline
+    NULL & Paciente B & 20/10/1995 \\ \hline
+    \end{tabular}
+
+    \vspace{0.4cm}
+
+    \textbf{INTERNACAO (Tabela com falhas de integridade)}\\
+    \begin{tabular}{|l|l|l|l|}
+    \hline
+    \rowcolor{tableheader} \underline{id\_int} (PK) & \textit{id\_paciente} (FK) & \textit{crm\_medico} (FK) & quarto \\ \hline
+    1 & 101 & CRM-123 & 202 \\ \hline
+    2 & 500 & CRM-123 & 205 \\ \hline
+    3 & 101 & CRM-888 & 210 \\ \hline
+    \end{tabular}
+\end{table}
+
+
+
+\section*{Instruções do Exercício}
+
+Com base nos conceitos de integridade discutidos na \textbf{Aula 04}, identifique e explique as falhas encontradas:
+
+\begin{enumerate}[label=\alph*)]
+    \item \textbf{Violação de Integridade de Entidade:} Observe a tabela \texttt{PACIENTE}. Existe um erro grave na segunda linha. Qual é esse erro e por que o Modelo Relacional proíbe tal ocorrência?
+    
+    \item \textbf{Violação de Integridade de Domínio (Vazio):} Na tabela \texttt{MEDICO}, a Dra. Beatriz está com a especialidade como \texttt{NULL}. Considerando que todo médico deve obrigatoriamente ter uma especialidade no sistema, como essa restrição deveria ter sido definida no projeto lógico?
+    
+    \item \textbf{Violação de Integridade Referencial (O erro mais grave):} Analise as linhas 2 e 3 da tabela \texttt{INTERNACAO}.
+    \begin{itemize}
+        \item O que há de errado com o \texttt{id\_paciente = 500}?
+        \item O que há de errado com o \texttt{crm\_medico = CRM-888}?
+    \end{itemize}
+    Explique o conceito de "Chave Estrangeira Órfã" aplicado a este caso.
+    
+    \item \textbf{Redundância e Chaves:} Na tabela \texttt{MEDICO}, o Dr. Arnaldo aparece duas vezes com o mesmo CRM. Isso é permitido em uma coluna definida como \textit{Primary Key}? O que acontece com a unicidade da tupla?
+\end{enumerate}
+
+\begin{block}{Desafio de Correção}
+Como você redesenharia a tabela \texttt{INTERNACAO} para garantir que nunca fosse possível internar um paciente que não existe ou atribuir um médico não cadastrado? Cite o uso de \textit{Constraints} (Restrições).
+\end{block}
+
+
+\section*{Exercício 04}
+
+A correta alocação da Chave Estrangeira (FK) é fundamental para evitar a redundância de dados e o excesso de valores nulos (\texttt{NULL}). Com base nas definições de mapeamento lógico, determine em qual tabela a FK deve ser inserida para cada cenário abaixo.
+
+\begin{block}{Instrução}
+Para cada item, indique a \textbf{Tabela de Origem}, a \textbf{Tabela de Destino} da chave e justifique sua escolha com base na cardinalidade (\textit{1:1, 1:N ou N:N}).
+\end{block}
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item \textbf{Cenário de Biblioteca:} Uma biblioteca possui \textbf{Livros} e \textbf{Editoras}. Uma editora pode publicar vários livros, mas cada livro é publicado por apenas uma única editora. 
+    \begin{itemize}
+        \item Onde fica a FK? \hrulefill
+    \end{itemize}
+
+    \item \textbf{Cenário de Gestão Pública:} Um \textbf{Prefeito} governa exatamente um \textbf{Município}, e cada município possui apenas um prefeito em exercício. Sabe-se que todos os municípios cadastrados possuem um prefeito, mas nem todo político cadastrado como "Prefeito" está atualmente governando uma cidade.
+    \begin{itemize}
+        \item Onde fica a FK para evitar valores nulos? \hrulefill
+    \end{itemize}
+
+    \item \textbf{Cenário de E-commerce:} Um \textbf{Cliente} realiza vários \textbf{Pedidos}, e cada pedido pertence a um único cliente.
+    \begin{itemize}
+        \item Onde fica a FK? \hrulefill
+    \end{itemize}
+
+    \item \textbf{Cenário Escolar:} Um \textbf{Aluno} pode se matricular em várias \textbf{Disciplinas}, e uma disciplina pode ter vários alunos matriculados.
+    \begin{itemize}
+        \item Como este relacionamento é resolvido no modelo lógico? \hrulefill
+    \end{itemize}
+
+    \item \textbf{Cenário de Recursos Humanos:} Em uma empresa, um \textbf{Departamento} possui um \textbf{Gerente} (que é um empregado). Cada departamento tem apenas um gerente, e cada gerente gerencia apenas um departamento. Sabe-se que todos os departamentos devem ter um gerente obrigatoriamente.
+    \begin{itemize}
+        \item Em qual tabela a FK deve ser propagada? \hrulefill
+    \end{itemize}
+\end{enumerate}
+
+
+\vfill
+\begin{center}
+    \textit{"A chave estrangeira migra para o lado N da relação ou para o lado da participação total no caso 1:1."}
+\end{center}
+\end{document}

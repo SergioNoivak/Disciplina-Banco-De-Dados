@@ -1,0 +1,4 @@
+-- Lista sem omissões por excepcionalidade todos formandos expostos evidenciando até casos faltantes pendentes isolados:
+SELECT a.nome, m.nota
+FROM aluno AS a
+LEFT JOIN matricula AS m ON a.id = m.aluno_id;

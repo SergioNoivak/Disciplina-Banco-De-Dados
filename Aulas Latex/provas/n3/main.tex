@@ -1,0 +1,339 @@
+\documentclass[12pt,a4paper]{article}
+
+% ------------------------------------------------
+% Pacotes
+% ------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{mathptmx} % Times New Roman
+\usepackage{enumitem}\usepackage{amsfonts}
+\usepackage{amsmath} % Recomendado para o comando \text{}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning, shapes.geometric}
+
+% TikZ Styles for ER Diagrams
+\tikzset{
+    block/.style={rectangle, draw, thick, minimum width=2cm, minimum height=1cm, fill=white},
+    diamond_node/.style={diamond, draw, thick, minimum width=2cm, minimum height=1cm, fill=white, aspect=2},
+    attribute/.style={ellipse, draw, thin, minimum width=1.5cm, minimum height=0.6cm, fill=white, font=\scriptsize},
+    line/.style={draw, thick},
+}
+% ------------------------------------------------ 
+% Configuração de página
+% ------------------------------------------------
+\geometry{
+    a4paper,
+    left=2cm,
+    right=2cm,
+    top=2cm,
+    bottom=2cm,
+    headheight=15pt % Adicione isso
+}% Caixa para resposta discursiva
+\newcommand{\resposta}[1]{
+\noindent
+\framebox[\textwidth]{
+\begin{minipage}{0.98\textwidth}
+\vspace{#1}
+\end{minipage}
+}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+
+\setlength{\parindent}{0pt}
+
+% ------------------------------------------------
+% Comandos auxiliares
+% ------------------------------------------------
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ------------------------------------------------
+% Documento
+% ------------------------------------------------
+\begin{document}
+
+% ------------------------------------------------
+% Cabeçalho - Corrigido para evitar aninhamento problemático
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{@{} L{4cm} X @{}}
+    \raisebox{-0.5cm}{\includegraphics[width=4cm]{Universidade_de_Rio_Verde.jpg}} &
+    \hfill
+    \begin{tabular}{|>{\centering\arraybackslash}m{10cm}|>{\raggedright\arraybackslash}p{1.8cm}|}
+        \hline
+        \cellcolor{black}\color{white}\rule{0pt}{1.2cm}\textbf{AVALIAÇÃO 3} 
+        & 
+        \scriptsize Nota \tabularnewline
+        \hline
+    \end{tabular} 
+\end{tabularx}
+\vspace{0.3cm}
+
+% ------------------------------------------------  
+% Tabela principal - Estrutura limpa
+% ------------------------------------------------
+\begin{tabularx}{\textwidth}{|X|L{2cm}|}
+\hline
+\textbf{Curso} & \textbf{Campus} \\
+\textit{Engenharia de Software} & \textit{Rio Verde} \\
+\hline
+\multicolumn{2}{|l|}{\textbf{Disciplina}} \\  
+\multicolumn{2}{|l|}{ \textit{Banco de dados}} \\
+\hline
+\textbf{Nome do(a) acadêmico(a)} & \textbf{Valor} \\
+& 3,0 \\
+\hline
+\textbf{Professor} & \textbf{Turma} \\
+\textit{ Sergio Souza Novak} & \textit{B} \\
+\hline
+\textbf{Data da Avaliação} & \textbf{Código} \\
+\textit{23/06/2026} & \textit{ESW417} \\
+\hline
+\end{tabularx}
+ 
+% ------------------------------------------------
+% Barra de Atenção
+% ------------------------------------------------
+\vspace{0.2cm}
+
+\begin{tabularx}{\textwidth}{|X|}
+\hline
+\cellcolor{black}\color{white}
+\centering \textbf{ATENÇÃO:} Somente serão passíveis de \textbf{REVISÃO} avaliações resolvidas à \textbf{TINTA}. \tabularnewline
+\hline
+\end{tabularx}
+
+\vspace{0.3cm}
+
+\textbf{ORIENTAÇÕES PARA A RESOLUÇÃO}  
+
+\begin{itemize}
+    \item A avaliação é individual, sem consulta;
+    \item A interpretação de texto faz parte da avaliação;
+\end{itemize}
+
+\vspace{0.5cm}
+
+\begin{center}
+    \rule{\textwidth}{0.4pt}
+    \textbf{QUESTÕES}
+\end{center}
+
+\vspace{0.2cm}
+
+\begin{enumerate}
+    \item  Em muitas aplicações web e mobile, a exibição de grandes volumes de dados é feita de forma dividida através de páginas (paginação) para melhorar o desempenho e a usabilidade. Considere um banco de dados de uma loja virtual com o seguinte modelo de entidade para os \textbf{produtos}:
+    
+    \vspace{0.3cm}
+    \begin{center}
+    \begin{tikzpicture}
+        % Entidade
+        \node[block] (produtos) at (0,0) {\textbf{produtos}};
+        
+        % Atributos
+        \node[attribute] (id) at (-2.5, 1.2) {\underline{id}};
+        \node[attribute] (nome) at (2.5, 1.2) {nome};
+        \node[attribute] (preco) at (-2.5, -1.2) {preco};
+        \node[attribute] (categoria) at (2.5, -1.2) {categoria};
+        
+        % Ligações
+        \draw[line] (produtos) -- (id);
+        \draw[line] (produtos) -- (nome);
+        \draw[line] (produtos) -- (preco);
+        \draw[line] (produtos) -- (categoria);
+    \end{tikzpicture}
+    \end{center}
+    \vspace{0.2cm}
+    
+    Escreva uma consulta SQL que retorne o \texttt{nome} e o \texttt{preco} dos produtos para exibir a \textbf{3ª página} de resultados, assumindo que cada página mostra exatamente \textbf{15 produtos}. Os resultados devem estar ordenados pelo \texttt{preco} de forma decrescente.
+    
+    \vspace{0.2cm}
+    \resposta{6cm}
+
+    \vspace{0.5cm}
+    
+
+
+\item  \textbf{Leia o texto de apoio abaixo para responder à questão:}
+
+\begin{center}
+\fbox{\parbox{0.95\textwidth}{
+    \small
+    \textbf{Ações Referenciais em SQL} \\
+    Ações referenciais são regras aplicadas às restrições de chave estrangeira (FOREIGN KEY). Elas determinam como o banco de dados deve se comportar quando um registro "pai" (referenciado) é excluído ou atualizado. Servem para manter a integridade referencial de forma automática. As 5 ações padrão disponíveis no SQL são:
+    \vspace{-0.2cm}
+    \begin{enumerate}[leftmargin=*, label=\arabic*.]
+        \item \textbf{CASCADE}: Propaga a alteração. Se o registro pai for deletado ou atualizado, todos os registros filhos correspondentes são automaticamente deletados ou atualizados.
+        \item \textbf{RESTRICT}: Bloqueia a operação. Impede que o registro pai seja deletado ou alterado caso exista algum registro filho que dependa dele.
+        \item \textbf{NO ACTION}: Semelhante ao RESTRICT na maioria dos SGBDs, rejeitando a alteração quando existem registros dependentes.
+        \item \textbf{SET NULL}: Define a chave estrangeira dos registros filhos como NULL. Para isso, a coluna não pode possuir a restrição NOT NULL.
+        \item \textbf{SET DEFAULT}: Define a chave estrangeira dos registros filhos para um valor padrão previamente estabelecido.
+    \end{enumerate}
+}}
+\end{center}
+
+Considere o diagrama lógico e os dados das tabelas \texttt{Departamento} e \texttt{Funcionario} abaixo, em que cada funcionário pertence a um departamento por meio da chave estrangeira \texttt{idDepartamento}:
+
+\begin{center}
+\begin{tikzpicture}[
+    table/.style={rectangle, draw, thick, align=left, text width=3.5cm, inner sep=5pt},
+    header/.style={rectangle, draw, thick, align=center, text width=3.5cm, fill=gray!20, font=\bfseries, inner sep=5pt}
+]
+    % Departamento
+    \node[header] (dep_h) at (0,0) {Departamento};
+    \node[table, below=0pt of dep_h] (dep_b) {
+        \underline{idDepartamento} \\
+        nome
+    };
+    
+    % Funcionario
+    \node[header] (func_h) at (6,0) {Funcionario};
+    \node[table, below=0pt of func_h] (func_b) {
+        \underline{idFuncionario} \\
+        nome \\
+        idDepartamento (FK)
+    };
+    
+    % Relacionamento
+    \draw[-stealth, thick] (func_b.west) -- node[above] {\scriptsize \textit{referencia}} (dep_b.east);
+\end{tikzpicture}
+\end{center}
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Departamento} & \\
+\hline
+idDepartamento & nome \\
+\hline
+1 & Financeiro \\
+2 & Recursos Humanos \\
+3 & TI \\
+\hline
+\end{tabular}
+\hspace{1cm}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Funcionario} & & \\
+\hline
+idFuncionario & nome & idDepartamento \\
+\hline
+101 & Ana & 1 \\
+102 & Bruno & 3 \\
+103 & Carla & 3 \\
+104 & Daniel & 2 \\
+\hline
+\end{tabular}
+\end{center}
+
+Suponha que o departamento de código \texttt{3} (TI) seja removido da tabela \texttt{Departamento}. Relacione cada ação referencial da coluna da esquerda com o comportamento correspondente na coluna da direita.
+
+\begin{center}
+\begin{tabular}{|c|p{8cm}|}
+\hline
+\textbf{Ação Referencial} & \textbf{Comportamento após remover o departamento 3} \\
+\hline
+(1) CASCADE & ( \hspace{0.3cm} ) A exclusão do departamento é impedida porque existem funcionários associados. \\
+\hline
+(2) RESTRICT & ( \hspace{0.3cm} ) Os funcionários Bruno e Carla permanecem cadastrados, mas seu campo \texttt{idDepartamento} passa a valer \texttt{NULL}. \\
+\hline
+(3) NO ACTION & ( \hspace{0.3cm} ) Os funcionários Bruno e Carla são removidos automaticamente. \\
+\hline
+(4) SET NULL & ( \hspace{0.3cm} ) A exclusão é rejeitada devido à existência de registros dependentes. \\
+\hline
+(5) SET DEFAULT & ( \hspace{0.3cm} ) O campo \texttt{idDepartamento} dos funcionários Bruno e Carla assume um valor padrão previamente definido. \\
+\hline
+\end{tabular}
+\end{center}
+
+Assinale a sequência correta de preenchimento dos parênteses.
+
+\begin{enumerate}[label=\alph*)]
+    \item 2 -- 4 -- 3 -- 1 -- 5
+    \item 1 -- 4 -- 2 -- 3 -- 5
+    \item 2 -- 4 -- 1 -- 3 -- 5
+\item 2 -- 5 -- 1 -- 3 -- 4
+\item 3 -- 4 -- 1 -- 2 -- 5
+\end{enumerate}
+
+    \vspace{0.5cm}
+
+    \item  Considere o seguinte modelo de entidade das tabelas \texttt{funcionarios} e \texttt{log\_sistema}:
+    
+    \vspace{0.3cm}
+    \begin{center}
+    \begin{tikzpicture}
+        % Entidade funcionarios
+        \node[block] (func) at (0,0) {\textbf{funcionarios}};
+        \node[attribute] (id_func) at (-2.5, 1.2) {\underline{id}};
+        \node[attribute] (nome_func) at (2.5, 1.2) {nome};
+        \node[attribute] (cargo) at (-2.5, -1.2) {cargo};
+        \node[attribute] (salario) at (2.5, -1.2) {salario};
+        
+        \draw[line] (func) -- (id_func);
+        \draw[line] (func) -- (nome_func);
+        \draw[line] (func) -- (cargo);
+        \draw[line] (func) -- (salario);
+        
+        % Entidade log_sistema
+        \node[block] (log) at (8,0) {\textbf{log\_sistema}};
+        \node[attribute] (id_log) at (5.5, 1.2) {\underline{idLog}};
+        \node[attribute] (acao) at (10.5, 1.2) {acao};
+        \node[attribute] (data) at (5.5, -1.2) {dataHora};
+        \node[attribute] (tabela) at (10.5, -1.2) {tabelaAlvo};
+        
+        \draw[line] (log) -- (id_log);
+        \draw[line] (log) -- (acao);
+        \draw[line] (log) -- (data);
+        \draw[line] (log) -- (tabela);
+    \end{tikzpicture}
+    \end{center}
+    \vspace{0.3cm}
+
+    Existe a necessidade de popular automaticamente a tabela de auditoria (\texttt{log\_sistema}) toda vez que um registro for \textbf{inserido} ou \textbf{apagado} da tabela \texttt{funcionarios}. Assinale a alternativa que apresenta a configuração estrutural e sintática \textbf{CORRETA} de um \textbf{Trigger} (Gatilho) para essa finalidade:
+    
+    \begin{enumerate}[label=\alph*)]
+        \item O gatilho deve ser criado com \texttt{BEFORE SELECT ON funcionarios}, pois a leitura dos dados deve obrigatoriamente anteceder a gravação do log no sistema.
+        \item O gatilho deve utilizar a estrutura \texttt{AFTER INSERT OR DELETE ON funcionarios FOR EACH ROW}, executando internamente um \texttt{INSERT} na tabela de log para cada linha afetada.
+        \item A cláusula obrigatória para tabelas de auditoria é \texttt{FOR ALL TABLES}, garantindo que o gatilho seja acionado independentemente da tabela que sofreu a ação.
+        \item O código de um gatilho não pode executar comandos \texttt{INSERT INTO log\_sistema}, pois gatilhos são objetos restritos exclusivamente à validação de dados em memória.
+        \item Para garantir que o log seja populado, o desenvolvedor deve disparar o gatilho manualmente através da aplicação usando o comando \texttt{EXECUTE TRIGGER trg\_log}.
+    \end{enumerate}
+
+    \vspace{0.5cm}
+
+    \item  Os índices são estruturas fundamentais para otimizar o tempo de resposta das consultas. Sobre o índice \textbf{B-Tree} (Árvore B) e como verificar sua existência em um banco de dados, assinale a alternativa \textbf{CORRETA}:
+    
+    \begin{enumerate}[label=\alph*)]
+        \item O índice B-Tree organiza os dados de forma ordenada e hierárquica, acelerando muito buscas exatas e por intervalos (como \texttt{BETWEEN}). Podemos verificar os índices de uma tabela usando comandos específicos do SGBD (como \texttt{SHOW INDEX}).
+        \item O índice B-Tree organiza os dados de forma totalmente aleatória, tornando as consultas (\texttt{SELECT}) mais demoradas, mas acelerando a inserção (\texttt{INSERT}).
+        \item Índices B-Tree só podem ser criados em tabelas pequenas. Em tabelas muito grandes, com milhões de registros, o uso de índices é proibido e não é suportado pelo banco de dados.
+        \item É impossível listar ou verificar os índices de uma tabela após a sua criação, pois o SGBD esconde essas informações por questões de segurança.
+        \item A única maneira de saber se um índice existe é apagando a coluna da tabela e verificando se o banco de dados apresenta um erro de restrição.
+    \end{enumerate}
+
+    \vspace{0.5cm}
+
+    \item  Na otimização de bancos de dados, a \textbf{complexidade computacional} (expressa pela notação \textit{Big-O}) é utilizada para descrever o desempenho de algoritmos de busca. Ao procurar um registro específico pelo valor de uma coluna, o SGBD pode realizar uma varredura sequencial completa (\textit{Full Table Scan}) ou consultar um índice baseado em \textbf{Árvore B} (\textit{B-Tree}). Assinale a alternativa que apresenta a complexidade de tempo de busca teórica correta para essas duas operações, respectivamente:
+    
+    \begin{enumerate}[label=\alph*)]
+        \item $O(1)$ para a varredura sequencial e $O(N)$ para a consulta no índice B-Tree.
+        \item $O(N)$ para a varredura sequencial e $O(\log N)$ para a consulta no índice B-Tree.
+        \item $O(\log N)$ para a varredura sequencial e $O(1)$ para a consulta no índice B-Tree.
+        \item $O(N^2)$ para a varredura sequencial e $O(N \log N)$ para a consulta no índice B-Tree.
+        \item $O(N)$ para ambas as estratégias, pois o índice afeta apenas a leitura física do disco, não alterando a complexidade do algoritmo de busca.
+    \end{enumerate}
+
+\end{enumerate}
+
+\end{document} 

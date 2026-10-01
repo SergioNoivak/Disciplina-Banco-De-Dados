@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} 1. Soma total de funcionários ativos}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{k}{SUM}\PYG{p}{(}\PYG{n}{salario}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{AS}\PYG{+w}{ }\PYG{n}{custo\PYGZus{}total\PYGZus{}folha}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{empregado}
+\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{ativo}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{k}{TRUE}\PYG{p}{;}
+\end{Verbatim}

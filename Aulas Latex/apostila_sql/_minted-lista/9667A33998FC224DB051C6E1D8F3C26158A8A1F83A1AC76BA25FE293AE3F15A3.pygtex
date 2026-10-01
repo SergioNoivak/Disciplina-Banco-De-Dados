@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{data\PYGZus{}nascimento}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{pessoa}
+\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{data\PYGZus{}nascimento}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}2000\PYGZhy{}12\PYGZhy{}31\PYGZsq{}}\PYG{p}{;}
+\end{Verbatim}

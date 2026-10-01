@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Lista sem omissões por excepcionalidade todos formandos expostos evidenciando até casos faltantes pendentes isolados:}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{a}\PYG{p}{.}\PYG{n}{nome}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{m}\PYG{p}{.}\PYG{n}{nota}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{aluno}\PYG{+w}{ }\PYG{k}{AS}\PYG{+w}{ }\PYG{n}{a}
+\PYG{k}{LEFT}\PYG{+w}{ }\PYG{k}{JOIN}\PYG{+w}{ }\PYG{n}{matricula}\PYG{+w}{ }\PYG{k}{AS}\PYG{+w}{ }\PYG{n}{m}\PYG{+w}{ }\PYG{k}{ON}\PYG{+w}{ }\PYG{n}{a}\PYG{p}{.}\PYG{n}{id}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{m}\PYG{p}{.}\PYG{n}{aluno\PYGZus{}id}\PYG{p}{;}
+\end{Verbatim}

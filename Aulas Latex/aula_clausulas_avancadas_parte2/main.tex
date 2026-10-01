@@ -1,0 +1,910 @@
+\documentclass[9pt]{beamer}
+\mode<presentation>
+
+% Theme choice:
+\usetheme{Madrid}%Darmstadt 
+
+\usecolortheme[RGB={0,100,50}]{structure}
+ \usefonttheme{structurebold} 
+\setbeamercovered{invisible}
+%\setbeamertemplate{navigation symbols}{}
+\usepackage{dynblocks}
+\usepackage{textpos}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\newtheorem{teorema}{Teorema}\usepackage{mathtools}
+\renewcommand{\proofname}{Prova}
+\usepackage[portuguese]{babel}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\uselanguage{Portuguese}
+\languagepath{Portuguese}
+
+\deftranslation[to=Portuguese]{Theorem}{Teorema}
+\deftranslation[to=Portuguese]{Lemma}{Lema}
+\deftranslation[to=Portuguese]{Corollary}{Corolário}
+\deftranslation[to=Portuguese]{Proof}{Prova}
+
+\usepackage{dutchcal}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm}
+
+
+\usepackage[affil-it]{authblk} 
+\usepackage{etoolbox}
+\usepackage{lmodern}
+\usepackage[normalem]{ulem}
+
+% TikZ configuration for diagrams
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, shapes.multipart, shapes.misc, arrows, positioning, calc, decorations.pathreplacing, babel}
+\tikzset{smartphone/.style={draw, rectangle, rounded corners=3pt, minimum width=1.2cm, minimum height=2.2cm, fill=white, thick}}
+
+% SQL Syntax Highlighting
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{sqlstyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegray},
+    keywordstyle=\color{structure},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=none,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=SQL,
+    morekeywords={REFERENCES, ON, CASCADE, SET, NULL, NO, ACTION, RESTRICT, OFFSET, LIMIT, DISTINCT},
+    literate={á}{{\'a}}1 {ã}{{\~a}}1 {â}{{\^a}}1 {à}{{\`a}}1 {é}{{\'e}}1 {ê}{{\^e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {õ}{{\~o}}1 {ô}{{\^o}}1 {ú}{{\'u}}1 {ç}{{\c{c}}}1 {Á}{{\'A}}1 {Ã}{{\~A}}1 {Â}{{\^A}}1 {À}{{\`A}}1 {É}{{\'E}}1 {Ê}{{\^E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Õ}{{\~O}}1 {Ô}{{\^O}}1 {Ú}{{\'U}}1 {Ç}{{\c{C}}}1
+}
+
+\lstset{style=sqlstyle}
+
+\makeatletter
+\patchcmd{\@maketitle}{\LARGE \@title}{\fontsize{18}{19.2}\selectfont\@title}{}{}
+\makeatother
+
+\renewcommand\Authfont{\fontsize{12}{14.4}\selectfont}
+\renewcommand\Affilfont{\fontsize{9}{10.8}\itshape}
+
+% Title page details: 
+\title[Presentation]{Banco de Dados} %add title
+
+
+\institute[UniRV]{\textbf{\large  \textcolor{structure}{\textbf{\large
+Window Functions, Views e Triggers
+}} %add name 
+% \hspace{0.5pt}
+\\ \qquad
+\\Professor: Me. Sergio Souza Novak 
+\\Faculdade de Engenharia de Software}
+} 
+% \titlegraphic{\includegraphics[width=5cm]{msu.eps}}
+\titlegraphic{\includegraphics[width=5cm]{Universidade_de_Rio_Verde.jpg}}
+\date{}
+
+% Logo only on title page
+%\logo{\includegraphics[width=1cm,keepaspectratio]{Logo.png}}
+\usepackage[pscoord]{eso-pic}
+
+
+\begin{document}
+\shorthandoff{"}
+
+% Title page frame
+\frame[plain]{\titlepage}
+%logo
+\AddToShipoutPictureFG{
+    \put(\LenToUnit{.92\paperwidth},
+    \LenToUnit{.185\paperheight})
+    {\vtop{{\null}
+    \makebox{\includegraphics[width=.8cm,keepaspectratio]{Universidade_de_Rio_Verde.jpg}}}}}
+
+
+% Slide 1
+\begin{frame}{O que são Window Functions?}
+    As \textbf{Window Functions} em SQL fazem cálculos em um \textbf{conjunto de linhas} relacionadas à linha atual, \textbf{sem agrupar} ou remover as linhas originais.
+    
+    \vspace{0.1cm}
+    \begin{center}
+        \begin{tikzpicture}[node distance=0.6cm, auto, thick]
+            % The table rows
+            \node[draw, rectangle, minimum width=3.5cm, minimum height=0.5cm, fill=gray!10] (row1) {Linha 1};
+            \node[draw, rectangle, minimum width=3.5cm, minimum height=0.5cm, fill=structure!30, below of=row1] (row2) {Linha 2 (Atual)};
+            \node[draw, rectangle, minimum width=3.5cm, minimum height=0.5cm, fill=gray!10, below of=row2] (row3) {Linha 3};
+            \node[draw, rectangle, minimum width=3.5cm, minimum height=0.5cm, fill=gray!10, below of=row3] (row4) {Linha 4};
+            \node[draw, rectangle, minimum width=3.5cm, minimum height=0.5cm, fill=gray!10, below of=row4] (row5) {Linha 5};
+            
+            % The Window bounding box
+            \draw[red, thick, rounded corners, dashed] ($(row1.north west)+(-0.15,0.15)$) rectangle ($(row3.south east)+(0.15,-0.15)$);
+            \node[red, anchor=south west, font=\scriptsize] at ($(row1.north west)+(-0.15,0.25)$) {Janela (Window)};
+            
+            % The result column for the current row
+            \node[draw, rectangle, minimum width=2.5cm, minimum height=0.5cm, fill=structure!40, right of=row2, xshift=4cm] (result) {Valor Calculado};
+            
+            % Arrow from Window to Result
+            \draw[->, thick, structure] ($(row2.east)+(0.25,0)$) -- node[above, font=\scriptsize] {Função()} (result.west);
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.1cm}
+    \begin{itemize}
+        \item Todas as linhas da consulta original são \textbf{preservadas}.
+        \item O resultado é apenas \textbf{adicionado} como uma nova coluna.
+    \end{itemize}
+\end{frame}
+
+% Slide 2
+\begin{frame}{Quando usar Window Functions?}
+    \begin{itemize}
+        \item \textbf{Análises complexas:} Totais acumulados, médias móveis e rankings.
+        \item \textbf{Comparações temporais:} Comparar valor atual com o anterior ou seguinte.
+        \item \textbf{Otimização de Código:} Substituem \textit{subqueries} e \textit{self-joins} lentos.
+    \end{itemize}
+    
+    \vspace{0.4cm}
+    \begin{center}
+        \begin{tikzpicture}[node distance=3.5cm, auto, thick]
+            % Box 1: Análises Complexas (Soma Acumulada)
+            \node[draw, rectangle, rounded corners, fill=blue!10, text width=2.8cm, align=center, minimum height=1.8cm] (b1) {
+                \textbf{Soma Acumulada} \\
+                \vspace{0.1cm}
+                \scriptsize $10 \rightarrow \mathbf{10}$ \\
+                \scriptsize $20 \rightarrow \mathbf{30}$ \\
+                \scriptsize $15 \rightarrow \mathbf{45}$
+            };
+            
+            % Box 2: Ranking
+            \node[draw, rectangle, rounded corners, fill=green!10, text width=2.8cm, align=center, minimum height=1.8cm, right of=b1] (b2) {
+                \textbf{Rankings} \\
+                \vspace{0.1cm}
+                \scriptsize \textbf{1º} $\rightarrow$ Ana (10) \\
+                \scriptsize \textbf{2º} $\rightarrow$ João (8) \\
+                \scriptsize \textbf{2º} $\rightarrow$ Bia (8)
+            };
+            
+            % Box 3: Comparações Temporais
+            \node[draw, rectangle, rounded corners, fill=orange!10, text width=2.8cm, align=center, minimum height=1.8cm, right of=b2] (b3) {
+                \textbf{Comparações} \\
+                \vspace{0.1cm}
+                \scriptsize Atual: R\$ 50 \\
+                \scriptsize Anterior: R\$ 40 \\
+                \scriptsize Crescimento: \textcolor{green!60!black}{\textbf{+ R\$ 10}}
+            };
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+% Slide 3
+\begin{frame}{A Cláusula OVER()}
+    \begin{itemize}
+        \item O uso das Window Functions é habilitado pela palavra-chave \textbf{OVER()}.
+        \item Ela determina exatamente qual é a "janela" (ou quadro/conjunto de linhas) que será considerada para o cálculo de cada linha específica da consulta.
+        \item Pode ser usada vazia \texttt{OVER()}, o que significa que a "janela" é toda a tabela resultante da consulta.
+    \end{itemize}
+\end{frame}
+
+% Slide 4
+\begin{frame}{Agregação Comum vs Window Function}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{GROUP BY}
+                Retorna apenas \textbf{uma linha por grupo}. As linhas originais perdem sua identidade.
+            \end{block}
+            
+            \vspace{0.5cm}
+            \begin{center}
+                \begin{tikzpicture}[node distance=0.6cm, auto, thick]
+                    \node[draw, rectangle, rounded corners, minimum width=2cm, minimum height=0.4cm, fill=gray!10] (r1) {Linha A};
+                    \node[draw, rectangle, rounded corners, minimum width=2cm, minimum height=0.4cm, fill=gray!10, below of=r1] (r2) {Linha B};
+                    \node[draw, rectangle, rounded corners, minimum width=2cm, minimum height=0.4cm, fill=gray!10, below of=r2] (r3) {Linha C};
+                    
+                    \node[draw, rectangle, rounded corners, minimum width=1.5cm, minimum height=0.5cm, fill=structure!30, right of=r2, xshift=2cm] (res) {Agregado};
+                    
+                    \draw[->, structure] (r1.east) -| ([xshift=-0.2cm]res.west) -- (res.west);
+                    \draw[->, structure] (r2.east) -- (res.west);
+                    \draw[->, structure] (r3.east) -| ([xshift=-0.2cm]res.west) -- (res.west);
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+        
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Window Function}
+                Mantém \textbf{todas as linhas}. O cálculo é apenas anexado como uma nova coluna.
+            \end{block}
+            
+            \vspace{0.5cm}
+            \begin{center}
+                \begin{tikzpicture}[node distance=0.6cm, auto, thick]
+                    \node[draw, rectangle, rounded corners, minimum width=1.6cm, minimum height=0.4cm, fill=gray!10] (r1) {Linha A};
+                    \node[draw, rectangle, rounded corners, minimum width=1.6cm, minimum height=0.4cm, fill=gray!10, below of=r1] (r2) {Linha B};
+                    \node[draw, rectangle, rounded corners, minimum width=1.6cm, minimum height=0.4cm, fill=gray!10, below of=r2] (r3) {Linha C};
+                    
+                    \node[draw, rectangle, rounded corners, minimum width=1.6cm, minimum height=0.4cm, fill=structure!40, right of=r1, xshift=1.6cm] (res1) {Cálculo A};
+                    \node[draw, rectangle, rounded corners, minimum width=1.6cm, minimum height=0.4cm, fill=structure!40, right of=r2, xshift=1.6cm] (res2) {Cálculo B};
+                    \node[draw, rectangle, rounded corners, minimum width=1.6cm, minimum height=0.4cm, fill=structure!40, right of=r3, xshift=1.6cm] (res3) {Cálculo C};
+                    
+                    \draw[->, structure] (r1.east) -- (res1.west);
+                    \draw[->, structure] (r2.east) -- (res2.west);
+                    \draw[->, structure] (r3.east) -- (res3.west);
+                \end{tikzpicture}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 5
+\begin{frame}{Exemplo Visual: A Ideia Principal}
+    \begin{center}
+        \begin{tikzpicture}[node distance=1.5cm, auto]
+            % GROUP BY
+            \node (gb_text) {\textbf{GROUP BY:}};
+            \node [draw, rectangle, rounded corners, below of=gb_text, yshift=0.5cm, text width=2.5cm, align=center, fill=gray!20] (gb_linhas) {Várias Linhas};
+            \node [draw, rectangle, rounded corners, right of=gb_linhas, xshift=2.5cm, text width=2cm, align=center, fill=structure!30] (gb_uma) {UMA linha};
+            \draw [->, thick, structure] (gb_linhas) -- node[above, font=\footnotesize] {agrega} (gb_uma);
+            
+            \vspace{1cm}
+            
+            % WINDOW FUNCTION
+            \node [below of=gb_text, yshift=-1.5cm] (wf_text) {\textbf{WINDOW FUNCTION:}};
+            \node [draw, rectangle, rounded corners, below of=wf_text, yshift=0.5cm, text width=2.5cm, align=center, fill=gray!20] (wf_linhas) {Várias Linhas};
+            \node [draw, rectangle, rounded corners, right of=wf_linhas, xshift=2.5cm, text width=3cm, align=center, fill=structure!30] (wf_mesmas) {Mesmas linhas \\ + coluna calculada};
+            \draw [->, thick, structure] (wf_linhas) -- node[above, font=\footnotesize] {calcula} (wf_mesmas);
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+% Slide 6
+\begin{frame}[fragile]{Agregação Comum: Exemplo de Código}
+    Considere uma tabela de \textbf{alunos} com ID, Nome, Idade e Curso.
+    
+    Com uma agregação normal:
+    
+    \begin{lstlisting}
+SELECT curso_id, AVG(idade) AS media_idade
+FROM alunos
+GROUP BY curso_id;
+    \end{lstlisting}
+    
+    \begin{itemize}
+        \item Nós agrupamos por \texttt{curso\_id}.
+        \item O resultado não possuirá as informações individuais (como o nome) dos alunos.
+    \end{itemize}
+\end{frame}
+
+% Slide 7
+\begin{frame}{Agregação Comum: Resultado}
+    O resultado da consulta anterior nos mostra apenas a média por curso. \\
+    Perdemos quem são os alunos (Ana, João, etc.).
+    
+    \vspace{0.5cm}
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline
+            \textbf{curso\_id} & \textbf{media\_idade} \\
+            \hline
+            1 & 21 \\
+            \hline
+            2 & 25 \\
+            \hline
+            3 & 22 \\
+            \hline
+            4 & 26 \\
+            \hline
+            5 & 20 \\
+            \hline
+            6 & 23 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+% Slide 8
+\begin{frame}[fragile]{Window Function: Exemplo de Código}
+    Como fazer a mesma média, mas preservando as linhas originais?
+    
+    \begin{lstlisting}
+SELECT
+    nome,
+    idade,
+    curso_id,
+    AVG(idade) OVER(PARTITION BY curso_id) AS avg_idade
+FROM alunos;
+    \end{lstlisting}
+    
+    \begin{itemize}
+        \item Note a ausência do \texttt{GROUP BY}.
+        \item O cálculo é feito pela cláusula \texttt{OVER}.
+    \end{itemize}
+\end{frame}
+
+% Slide 9
+\begin{frame}{Window Function: Resultado}
+    A tabela final mantém todos os alunos, mas adiciona a média correspondente do curso de cada um.
+    
+    \vspace{0.5cm}
+    \begin{center}
+        \begin{tabular}{|l|c|c|c|}
+            \hline
+            \textbf{nome} & \textbf{idade} & \textbf{curso\_id} & \textbf{avg\_idade} \\
+            \hline
+            Ana & 20 & 1 & 21 \\
+            João & 22 & 1 & 21 \\
+            \hline
+            Carlos & 24 & 2 & 25 \\
+            Maria & 26 & 2 & 25 \\
+            \hline
+            Bia & 21 & 3 & 22 \\
+            Pedro & 23 & 3 & 22 \\
+            \hline
+            Lucas & 26 & 4 & 26 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+% Slide 10
+\begin{frame}[fragile]{Anatomia de uma Window Function}
+    A estrutura sintática completa é:
+    
+    \begin{lstlisting}
+FUNCAO_DE_JANELA() OVER(
+    [PARTITION BY coluna_agrupamento]
+    [ORDER BY coluna_ordenacao]
+    [CLAUSULA_DE_FRAME (ROWS ou RANGE)]
+)
+    \end{lstlisting}
+    
+    \begin{itemize}
+        \item \textbf{FUNCAO}: \texttt{SUM}, \texttt{AVG}, \texttt{RANK}, \texttt{LEAD}, etc.
+        \item \textbf{PARTITION BY} (opcional): Divide a janela.
+        \item \textbf{ORDER BY} (opcional): Ordena dentro da janela.
+        \item \textbf{FRAME} (opcional): Restringe ainda mais a janela (ex: apenas as 3 linhas anteriores).
+    \end{itemize}
+\end{frame}
+
+% Slide 11
+\begin{frame}{Entendendo o PARTITION BY}
+    \begin{itemize}
+        \item Divide os dados em partições ou blocos lógicos.
+        \item A Window Function é calculada independentemente para cada partição.
+        \item Quando os dados de uma partição acabam, o cálculo é reiniciado para a próxima.
+        \item \textbf{Semelhança:} Age de forma análoga ao \texttt{GROUP BY}, mas apenas limitando a área de atuação da função, sem esmagar as linhas.
+        \item \textbf{Omissão:} Se não especificado, toda a tabela do \texttt{SELECT} é considerada uma única partição.
+    \end{itemize}
+\end{frame}
+
+
+% --- SEÇÃO: VIEWS ---
+\section{Views}
+
+% Slide 23
+\begin{frame}{O que é uma View?}
+    Uma \textbf{View} (visão) em SQL é uma \textbf{tabela virtual} criada a partir de uma consulta (\texttt{SELECT}).
+    
+    \vspace{0.1cm}
+    \begin{center}
+        \begin{tikzpicture}[node distance=2cm, auto, thick]
+            % Physical Tables
+            \node [draw, cylinder, shape border rotate=90, aspect=0.25, fill=gray!20, minimum height=1.2cm, minimum width=1.5cm, align=center] (db1) {Tabela A};
+            \node [draw, cylinder, shape border rotate=90, aspect=0.25, fill=gray!20, minimum height=1.2cm, minimum width=1.5cm, align=center, below of=db1, yshift=-0.2cm] (db2) {Tabela B};
+            
+            % View
+            \node [draw, rectangle, rounded corners, fill=structure!30, right of=db1, xshift=3cm, yshift=-1.1cm, minimum height=1.5cm, minimum width=2.5cm, align=center] (view) {\textbf{VIEW} \\ \footnotesize(Tabela Virtual)};
+            
+            % Arrows
+            \draw [->, dashed, structure] (db1.east) -- node[above, sloped, font=\scriptsize] {Lê dados} (view.west);
+            \draw [->, dashed, structure] (db2.east) -- node[below, sloped, font=\scriptsize] {Lê dados} (view.west);
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.1cm}
+    Características principais:
+    \begin{itemize}
+        \item \textbf{Não armazena dados fisicamente} no disco.
+        \item Armazena \textbf{apenas a consulta SQL} no banco de dados.
+        \item Quando consultada, mostra os dados como se fosse uma tabela normal.
+    \end{itemize}
+\end{frame}
+
+% Slide 24
+\begin{frame}{A Ideia Principal}
+    \begin{itemize}
+        \item Uma view funciona como um \textbf{“atalho”} para consultas complexas.
+        \item Em vez de escrever uma consulta grande (com múltiplos \texttt{JOIN}s, funções de agregação, filtros) repetidas vezes, você a encapsula em uma View.
+        \item Depois, basta consultar a view diretamente, simplificando muito a escrita de novos códigos SQL.
+    \end{itemize}
+\end{frame}
+
+% Slide 25
+\begin{frame}[fragile]{Exemplo Prático: Tabelas de Origem}
+    Suponha que temos duas tabelas relacionadas:
+    
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Tabela: alunos}
+            \begin{center}
+                \begin{tabular}{|c|l|c|}
+                    \hline
+                    \textbf{id} & \textbf{nome} & \textbf{curso\_id} \\
+                    \hline
+                    1 & Ana & 1 \\
+                    2 & João & 2 \\
+                    3 & Bia & 1 \\
+                    4 & Pedro & 3 \\
+                    5 & Lucas & 2 \\
+                    \hline
+                \end{tabular}
+            \end{center}
+        \end{column}
+        
+        \begin{column}{0.5\textwidth}
+            \textbf{Tabela: cursos}
+            \begin{center}
+                \begin{tabular}{|c|l|}
+                    \hline
+                    \textbf{id} & \textbf{nome\_curso} \\
+                    \hline
+                    1 & Computação \\
+                    2 & Matemática \\
+                    3 & Física \\
+                    \hline
+                \end{tabular}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 26
+\begin{frame}[fragile]{Criando uma View}
+    Para evitar fazer um \texttt{JOIN} toda vez que quisermos ver os alunos e seus cursos, podemos criar uma view:
+    
+    \begin{lstlisting}
+CREATE VIEW vw_alunos_cursos AS
+SELECT
+    alunos.nome,
+    cursos.nome_curso
+FROM alunos
+JOIN cursos
+ON alunos.curso_id = cursos.id;
+    \end{lstlisting}
+    
+    \begin{itemize}
+        \item A palavra-chave é \texttt{CREATE VIEW}.
+        \item Convenciona-se usar prefixos como \texttt{vw\_} ou \texttt{v\_} para identificar visualmente que o objeto é uma view.
+    \end{itemize}
+\end{frame}
+
+% Slide 27
+\begin{frame}[fragile]{Usando a View e Resultado}
+    Depois da criação, a view pode ser consultada da mesma forma que consultamos uma tabela comum:
+    
+    \begin{lstlisting}
+SELECT * FROM vw_alunos_cursos;
+    \end{lstlisting}
+    
+    \vspace{0.3cm}
+    \textbf{Resultado:}
+    \begin{center}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{nome} & \textbf{nome\_curso} \\
+            \hline
+            Ana & Computação \\
+            Bia & Computação \\
+            João & Matemática \\
+            Lucas & Matemática \\
+            Pedro & Física \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+% Slide 28
+\begin{frame}{Vantagens das Views (Parte 1)}
+    \begin{block}{Simplificam Consultas}
+        Evitam a repetição de lógicas \texttt{SQL} grandes e complexas. Os desenvolvedores e analistas podem acessar os dados sem conhecer a estrutura de \texttt{JOIN}s por trás.
+    \end{block}
+    
+    \vspace{0.5cm}
+    
+    \begin{block}{Organização}
+        Centraliza a lógica de negócios e regras complexas no banco de dados. Se a lógica mudar, atualiza-se apenas a view, não todo o código da aplicação.
+    \end{block}
+\end{frame}
+
+% Slide 29
+\begin{frame}{Vantagens das Views (Parte 2)}
+    \begin{block}{Segurança e Controle de Acesso}
+        Você pode mostrar apenas algumas colunas e linhas específicas para determinados usuários.
+        \begin{itemize}
+            \item Exemplo: Uma view que mostra \texttt{nome} e \texttt{departamento}, mas \textbf{esconde} \texttt{CPF} e \texttt{salário} dos funcionários.
+        \end{itemize}
+    \end{block}
+    
+    \vspace{0.5cm}
+    
+    \begin{block}{Reutilização}
+        Várias consultas e até diferentes sistemas ou relatórios podem utilizar a mesma view como fonte padronizada de dados.
+    \end{block}
+\end{frame}
+
+% Slide 30
+\begin{frame}{Tabela vs View}
+    \begin{center}
+        \renewcommand{\arraystretch}{1.5}
+        \begin{tabular}{|l|l|}
+            \hline
+            \textbf{Tabela (Table)} & \textbf{View (Visão)} \\
+            \hline
+            Armazena dados fisicamente & \textbf{Não} armazena dados \\
+            \hline
+            Ocupa espaço físico no disco & Armazena \textbf{apenas a consulta} (SQL) \\
+            \hline
+            Contém dados próprios & Exibe dados vindos de \textbf{outras tabelas} \\
+            \hline
+            É a fonte real das informações & É uma interface/filtro sobre as informações \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+% Slide 31
+\begin{frame}[fragile]{Alterando uma View}
+    Em muitos bancos de dados (como PostgreSQL e MySQL), podemos alterar a definição de uma view existente usando \texttt{CREATE OR REPLACE VIEW}:
+    
+    \begin{lstlisting}
+CREATE OR REPLACE VIEW vw_alunos_cursos AS
+SELECT
+    alunos.nome,
+    cursos.nome_curso,
+    alunos.idade -- nova coluna adicionada
+FROM alunos
+JOIN cursos
+ON alunos.curso_id = cursos.id;
+    \end{lstlisting}
+\end{frame}
+
+% Slide 32
+\begin{frame}[fragile]{Alterando uma View no SQLite}
+    No \textbf{SQLite}, o comando \texttt{OR REPLACE} não é suportado nativamente para views.\\
+    Normalmente é mais comum apagar a view e recriá-la:
+    
+    \vspace{0.3cm}
+    \begin{lstlisting}
+-- 1. Apaga a view antiga
+DROP VIEW vw_alunos_cursos;
+
+-- 2. Cria a nova view atualizada
+CREATE VIEW vw_alunos_cursos AS
+SELECT ...;
+    \end{lstlisting}
+\end{frame}
+
+% Slide 33
+\begin{frame}[fragile]{Removendo uma View}
+    Caso a view não seja mais necessária, basta utilizar o comando \texttt{DROP VIEW}.
+    
+    \begin{lstlisting}
+DROP VIEW vw_alunos_cursos;
+    \end{lstlisting}
+    
+    \begin{itemize}
+        \item \textbf{Importante:} O \texttt{DROP VIEW} apaga apenas a definição da view.
+        \item As tabelas originais (\texttt{alunos} e \texttt{cursos}) e os seus dados continuam intactos e \textbf{não} são apagados.
+    \end{itemize}
+\end{frame}
+
+% Slide 34
+\begin{frame}{Observação Importante: Atualização Automática}
+    \begin{block}{Dinamicidade}
+        Uma view comum \textbf{não copia} os dados. Ela sempre mostra os dados atualizados das tabelas originais em tempo real.
+    \end{block}
+    
+    \begin{center}
+        \begin{tikzpicture}[node distance=2.5cm, auto]
+            \node [draw, rectangle, rounded corners, text width=3cm, align=center, fill=gray!20] (tabela) {Tabela Original alterada \\ (INSERT / UPDATE)};
+            \node [draw, rectangle, rounded corners, right of=tabela, xshift=3cm, text width=3cm, align=center, fill=structure!30] (view) {View reflete \\ automaticamente};
+            \draw [->, thick, structure] (tabela) -- node[above] {impacta} (view);
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.3cm}
+    Ou seja: alterou a tabela $\rightarrow$ a view reflete imediatamente na próxima consulta.
+\end{frame}
+
+% --- SEÇÃO: TRIGGERS ---
+\section{Triggers}
+
+% Slide 1
+\begin{frame}{O que são Triggers?}
+    Um \textbf{Trigger} (Gatilho) é um tipo especial de rotina (ou procedimento) no banco de dados que é \textbf{executado automaticamente} em resposta a certos eventos.
+    
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item Ficam armazenados no próprio banco de dados.
+        \item Estão diretamente associados a uma tabela ou view.
+        \item São ativados ("disparados") invisivelmente no plano de fundo.
+    \end{itemize}
+\end{frame}
+
+% Slide 2
+\begin{frame}{A Ideia Principal}
+    \begin{center}
+        \begin{tikzpicture}[node distance=2.5cm, auto, thick]
+            \node [draw, rectangle, rounded corners, minimum width=2cm, minimum height=1cm, fill=gray!20, align=center] (evento) {Evento \\ (Ex: INSERT)};
+            \node [draw, rectangle, rounded corners, minimum width=2cm, minimum height=1cm, fill=orange!30, align=center, right of=evento, xshift=2cm] (gatilho) {Gatilho \\ (Trigger)};
+            \node [draw, rectangle, rounded corners, minimum width=2cm, minimum height=1cm, fill=structure!30, align=center, right of=gatilho, xshift=2cm] (acao) {Ação \\ (Ex: Gravar Log)};
+            
+            \draw [->, structure, line width=1pt] (evento) -- node[above, font=\scriptsize] {Dispara} (gatilho);
+            \draw [->, structure, line width=1pt] (gatilho) -- node[above, font=\scriptsize] {Executa} (acao);
+        \end{tikzpicture}
+    \end{center}
+    
+    \vspace{0.5cm}
+    \begin{block}{Ação Reativa}
+        Você não invoca um trigger manualmente com um \texttt{CALL} ou \texttt{SELECT}. O banco de dados fica "vigiando" a tabela e o invoca por você!
+    \end{block}
+\end{frame}
+
+% Slide 3
+\begin{frame}{Para que servem os Triggers?}
+    Triggers resolvem vários problemas cruciais:
+    
+    \begin{itemize}
+        \item \textbf{Auditoria (Logs):} Registrar quem alterou um dado, quando alterou e qual era o valor antigo.
+        \item \textbf{Integridade Complexa:} Validar regras de negócio que vão além das simples \textit{Constraints} (\texttt{CHECK}, \texttt{UNIQUE}).
+        \item \textbf{Sincronização de Dados:} Atualizar outras tabelas automaticamente (Ex: ao vender um produto, diminuir o estoque).
+        \item \textbf{Cálculos Automáticos:} Derivar valores sempre que uma linha é inserida ou alterada.
+    \end{itemize}
+\end{frame}
+
+% Slide 4
+\begin{frame}{Momentos de Disparo}
+    O trigger pode ser configurado para rodar em momentos diferentes em relação ao evento que o acionou:
+    
+    \begin{itemize}
+        \item \textbf{BEFORE (Antes):} Roda antes do dado ser de fato gravado na tabela. Ideal para validações de regras de negócio ou para modificar o dado antes de salvar.
+        \item \textbf{AFTER (Depois):} Roda após a gravação. Ideal para atualizar outras tabelas ou criar registros de log/auditoria.
+        \item \textbf{INSTEAD OF (Ao invés de):} Executa a ação do trigger no lugar do evento original. Muito usado em \textit{Views} para permitir atualizações complexas.
+    \end{itemize}
+\end{frame}
+
+% Slide 5
+\begin{frame}{Eventos de Disparo}
+    Quais ações no banco "puxam" o gatilho? Os Triggers de manipulação de dados (DML) respondem aos comandos:
+    
+    \vspace{0.3cm}
+    \begin{columns}[T]
+        \begin{column}{0.3\textwidth}
+            \begin{block}{\centering INSERT}
+                \centering Quando uma nova linha é criada.
+            \end{block}
+        \end{column}
+        \begin{column}{0.3\textwidth}
+            \begin{block}{\centering UPDATE}
+                \centering Quando uma linha existente é modificada.
+            \end{block}
+        \end{column}
+        \begin{column}{0.3\textwidth}
+            \begin{block}{\centering DELETE}
+                \centering Quando uma linha é apagada.
+            \end{block}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.4cm}
+    \textit{Nota: Um mesmo trigger pode ser associado a múltiplos eventos ao mesmo tempo (ex: \texttt{BEFORE INSERT OR UPDATE}).}
+\end{frame}
+
+% Slide 6
+\begin{frame}[fragile]{Sintaxe Geral}
+    A sintaxe exata varia muito entre bancos de dados (MySQL, Oracle, SQL Server, PostgreSQL). Em geral:
+    
+    \begin{lstlisting}
+CREATE TRIGGER nome_do_gatilho
+{ BEFORE | AFTER } { INSERT | UPDATE | DELETE }
+ON nome_da_tabela
+FOR EACH ROW -- Executa para cada linha afetada
+BEGIN
+    -- Lógica SQL a ser executada
+END;
+    \end{lstlisting}
+    
+    \begin{itemize}
+        \item \textbf{FOR EACH ROW:} Se um \texttt{UPDATE} alterar 10 linhas, o gatilho rodará 10 vezes (uma para cada).
+    \end{itemize}
+\end{frame}
+
+% Slide 7
+\begin{frame}{Variáveis Especiais: NEW e OLD}
+    Como o Trigger sabe quais dados estão sendo manipulados no momento do disparo? Através de palavras reservadas mágicas!
+    
+    \begin{itemize}
+        \item \textbf{NEW}: Refere-se aos novos dados que estão chegando. (O que você está tentando inserir ou atualizar).
+        \item \textbf{OLD}: Refere-se aos dados antigos que já estavam na tabela. (O que você está tentando alterar ou apagar).
+    \end{itemize}
+\end{frame}
+
+% Slide 8
+\begin{frame}{Tabela Comparativa: NEW vs OLD}
+    O estado de \texttt{NEW} e \texttt{OLD} depende do evento!
+    
+    \vspace{0.5cm}
+    \begin{center}
+        \renewcommand{\arraystretch}{1.5}
+        \begin{tabular}{|l|c|c|}
+            \hline
+            \textbf{Evento} & \textbf{OLD} & \textbf{NEW} \\
+            \hline
+            \textbf{INSERT} & Vazio (\texttt{NULL}) & Disponível (Novo dado) \\
+            \hline
+            \textbf{UPDATE} & Disponível (Antes da alteração) & Disponível (Após a alteração) \\
+            \hline
+            \textbf{DELETE} & Disponível (Dado a ser apagado) & Vazio (\texttt{NULL}) \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+% Slide 9
+\begin{frame}[fragile]{Exemplo Prático 1: Auditoria (Log)}
+    \textbf{Cenário:} Temos uma tabela \texttt{funcionarios} e queremos registrar em uma tabela \texttt{log\_salario} sempre que o salário de alguém for alterado (\texttt{UPDATE}).
+    
+    \vspace{0.3cm}
+    \begin{columns}
+        \begin{column}{0.48\textwidth}
+            \begin{lstlisting}
+CREATE TABLE funcionarios (
+  id INT,
+  nome VARCHAR(50),
+  salario DECIMAL
+);
+            \end{lstlisting}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{lstlisting}
+CREATE TABLE log_salario (
+  func_id INT,
+  sal_velho DECIMAL,
+  sal_novo DECIMAL,
+  data TIMESTAMP
+);
+            \end{lstlisting}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% Slide 10
+\begin{frame}[fragile]{Exemplo 1: Criando a Função (PostgreSQL)}
+    No \textbf{PostgreSQL}, o trigger é dividido em duas partes. Primeiro, criamos uma função que dita a ação:
+    
+    \begin{lstlisting}
+CREATE OR REPLACE FUNCTION log_mudanca_salario()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Verifica se o salario realmente mudou
+    IF NEW.salario <> OLD.salario THEN
+        INSERT INTO log_salario (func_id, sal_velho, sal_novo, data)
+        VALUES (OLD.id, OLD.salario, NEW.salario, NOW());
+    END IF;
+    RETURN NEW; -- Retorna a nova linha
+END;
+$$ LANGUAGE plpgsql;
+    \end{lstlisting}
+\end{frame}
+
+% Slide 11
+\begin{frame}[fragile]{Exemplo 1: Associando o Trigger}
+    Agora, associamos a função criada à tabela usando o comando de Trigger de fato:
+    
+    \begin{lstlisting}
+CREATE TRIGGER trg_audita_salario
+AFTER UPDATE ON funcionarios
+FOR EACH ROW
+EXECUTE FUNCTION log_mudanca_salario();
+    \end{lstlisting}
+    
+    \begin{itemize}
+        \item Usamos \texttt{AFTER} porque o log só faz sentido se o update for um sucesso.
+        \item Fica "escutando" \texttt{ON funcionarios}.
+    \end{itemize}
+\end{frame}
+
+% Slide 12
+\begin{frame}[fragile]{Exemplo 1: Testando o Gatilho}
+    \textbf{Ação do Usuário:}
+    \begin{lstlisting}
+UPDATE funcionarios SET salario = 5000 WHERE id = 1;
+    \end{lstlisting}
+    
+    \vspace{0.3cm}
+    \textbf{Reação do Banco (Invisível para o Usuário):}
+    O trigger dispara e injeta uma linha na tabela de logs usando \texttt{OLD.salario} (o que estava antes) e \texttt{NEW.salario} (os 5000).
+    
+    \vspace{0.3cm}
+    Se olharmos a tabela de log depois:
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|}
+            \hline
+            \textbf{func\_id} & \textbf{sal\_velho} & \textbf{sal\_novo} & \textbf{data} \\
+            \hline
+            1 & 4500.00 & 5000.00 & 2026-05-22 \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+% Slide 13
+\begin{frame}[fragile]{Exemplo Prático 2: Validação de Regras (BEFORE)}
+    Como impedir que insiram ou atualizem um salário negativo? (Caso Constraints não sejam suficientes).
+    
+    \begin{lstlisting}
+CREATE OR REPLACE FUNCTION valida_salario()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.salario < 0 THEN
+        RAISE EXCEPTION 'O salário não pode ser negativo!';
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_valida_salario
+BEFORE INSERT OR UPDATE ON funcionarios
+FOR EACH ROW EXECUTE FUNCTION valida_salario();
+    \end{lstlisting}
+\end{frame}
+
+% Slide 14
+\begin{frame}{Cuidados e Boas Práticas}
+    \begin{block}{Cuidado com a Performance}
+        Como rodam silenciosamente \texttt{FOR EACH ROW}, se você fizer um \texttt{UPDATE} em 1.000.000 de linhas, o trigger roda 1.000.000 de vezes! Isso pode deixar o banco muito lento.
+    \end{block}
+    
+    \vspace{0.3cm}
+    
+    \begin{block}{O Efeito Cascata (Loops Infinitos)}
+        Tenha cuidado para que um trigger não dispare outro trigger que dispara o primeiro em um loop infinito. Ex: O trigger A altera a tabela B, que tem um trigger que altera a tabela A... e o banco trava!
+    \end{block}
+\end{frame}
+
+% Slide 15
+\begin{frame}{Triggers vs Outros Recursos}
+    Quando usar cada coisa?
+    
+    \begin{center}
+        \renewcommand{\arraystretch}{1.5}
+        \begin{tabular}{|l|p{7cm}|}
+            \hline
+            \textbf{Recurso} & \textbf{Uso Ideal} \\
+            \hline
+            \textbf{Constraints} & Regras de integridade simples (não pode ser nulo, deve ser único, maior que zero). \\
+            \hline
+            \textbf{Procedure} & Quando o usuário deve \textbf{escolher} invocar o procedimento manualmente. \\
+            \hline
+            \textbf{Triggers} & Quando a ação deve ser \textbf{reacionária e inevitável}. Auditoria e validações que ninguém pode burlar. \\
+            \hline
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+\end{document}

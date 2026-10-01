@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Exemplo: Salario com 10 digitos no total, sendo 2 decimais}
+\PYG{n}{salario}\PYG{+w}{ }\PYG{n+nb}{DECIMAL}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,}\PYG{l+m+mi}{2}\PYG{p}{)}
+\end{Verbatim}

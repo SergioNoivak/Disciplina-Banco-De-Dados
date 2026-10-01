@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{idade}
+\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{alunos}
+\PYG{k}{WHERE}\PYG{+w}{ }\PYG{n}{idade}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{18}\PYG{p}{;}
+\end{Verbatim}

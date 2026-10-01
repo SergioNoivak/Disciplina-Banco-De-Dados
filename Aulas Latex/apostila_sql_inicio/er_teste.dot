@@ -1,0 +1,92 @@
+digraph G {
+
+  rankdir=LR;
+  splines=polyline;
+  graph [forcelabels=true, nodesep=0.5, ranksep=1.4];
+
+  node [fontname="Arial", fontsize=18];
+  edge [dir=none, fontsize=16];
+
+  // =====================
+  // ENTIDADES
+  // =====================
+
+  Produtor   [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+  Lavoura    [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+  Animal     [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+  Ordenha    [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+  Veterinario [shape=rectangle, style=filled, fillcolor="#c9d3e8"];
+
+  // =====================
+  // RELACIONAMENTOS
+  // =====================
+
+  possui      [shape=diamond, label="possui", style=filled, fillcolor="#c9d3e8"];
+  cria        [shape=diamond, label="cria", style=filled, fillcolor="#c9d3e8"];
+  participa   [shape=diamond, label="participa", style=filled, fillcolor="#c9d3e8"];
+  atendimento [shape=diamond, label="atendimento", style=filled, fillcolor="#c9d3e8"];
+
+  Produtor -> possui [label="(1,N)"];
+  possui -> Lavoura [label="(1,1)"];
+
+  Produtor -> cria [label="(1,N)"];
+  cria -> Animal [label="(1,1)"];
+
+  Animal -> participa [label="(1,N)"];
+  participa -> Ordenha [label="(1,1)"];
+
+  Veterinario -> atendimento [label="(1,N)"];
+  atendimento -> Animal [label="(1,N)"];
+
+  // =====================
+  // ATRIBUTOS
+  // =====================
+
+  node [shape=ellipse, fontsize=15];
+
+  // PRODUTOR
+  id_produtor [label="id_produtor", style=filled, fillcolor="#004628", fontcolor=white];
+  nome_produtor [label="nome"];
+  cpf [label="cpf"];
+
+  Produtor -> id_produtor;
+  Produtor -> nome_produtor;
+  Produtor -> cpf;
+
+  // LAVOURA
+  id_lavoura [label="id_lavoura", style=filled, fillcolor="#004628", fontcolor=white];
+  cultura [label="cultura"];
+  area [label="area"];
+
+  Lavoura -> id_lavoura;
+  Lavoura -> cultura;
+  Lavoura -> area;
+
+  // ANIMAL
+  id_animal [label="id_animal", style=filled, fillcolor="#004628", fontcolor=white];
+  raca [label="raça"];
+  idade [label="idade"];
+
+  Animal -> id_animal;
+  Animal -> raca;
+  Animal -> idade;
+
+  // ORDENHA
+  id_ordenha [label="id_ordenha", style=filled, fillcolor="#004628", fontcolor=white];
+  data_ordenha [label="data"];
+  quantidade_leite [label="litros"];
+
+  Ordenha -> id_ordenha;
+  Ordenha -> data_ordenha;
+  Ordenha -> quantidade_leite;
+
+  // VETERINARIO
+  id_vet [label="id_veterinario", style=filled, fillcolor="#004628", fontcolor=white];
+  nome_vet [label="nome"];
+  crmv [label="CRMV"];
+
+  Veterinario -> id_vet;
+  Veterinario -> nome_vet;
+  Veterinario -> crmv;
+
+}

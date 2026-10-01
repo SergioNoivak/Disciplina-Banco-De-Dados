@@ -1,0 +1,5 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} Agrupa blocos em ordem crescente pelas cidades adjacentes,}
+\PYG{c+c1}{\PYGZhy{}\PYGZhy{} desempatando alunos residentes da mesma urbe pelo nome em ordem decrescente}
+\PYG{k}{SELECT}\PYG{+w}{ }\PYG{n}{nome}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{cidade}\PYG{+w}{ }\PYG{k}{FROM}\PYG{+w}{ }\PYG{n}{aluno}\PYG{+w}{ }\PYG{k}{ORDER}\PYG{+w}{ }\PYG{k}{BY}\PYG{+w}{ }\PYG{n}{cidade}\PYG{+w}{ }\PYG{k}{ASC}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{nome}\PYG{+w}{ }\PYG{k}{DESC}\PYG{p}{;}
+\end{Verbatim}

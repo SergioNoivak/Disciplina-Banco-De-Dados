@@ -1,0 +1,90 @@
+@startuml
+skinparam style strictuml
+skinparam monochrome false
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+header Sistema de Ordenha - UniRV
+title Modelagem Lógica: Herança e Agregação
+
+' --- ESPECIALIZAÇÃO DE FUNCIONÁRIOS ---
+class Funcionario {
+    + id_funcionario : int <<PK>>
+    + nome : string
+    + telefone : string
+}
+
+class Ordenhador {
+    + nivel_experiencia : string
+}
+
+class Veterinario {
+    + crmv : string
+}
+
+class Supervisor {
+    + bonus_produtividade : float
+}
+
+' Herança (Especialização)
+Funcionario <|-- Ordenhador
+Funcionario <|-- Veterinario
+Funcionario <|-- Supervisor
+
+' --- ESPECIALIZAÇÃO DE EQUIPAMENTOS ---
+class Equipamento {
+    + id_equipamento : int <<PK>>
+    + situacao : string
+    + data_manutencao : date
+}
+
+class EquipamentoManual {
+    + material : string
+}
+
+class EquipamentoRobotico {
+    + versao_software : string
+    + consumo_kwh : float
+}
+
+Equipamento <|-- EquipamentoManual
+Equipamento <|-- EquipamentoRobotico
+
+' --- AGREGAÇÃO E ATENDIMENTO ---
+class Vaca {
+    + id_vaca : int <<PK>>
+    + nome : string
+    + raca : string
+}
+
+class Atendimento <<(A,green) Agregação>> {
+    + data_atendimento : date
+    + diagnostico : text
+}
+
+' Relacionamento Base
+Veterinario "1" -- "*" Vaca : realiza >
+(Veterinario, Vaca) .. Atendimento
+
+class Medicamento {
+    + id_medicamento : int <<PK>>
+    + nome_comercial : string
+    + dosagem : string
+}
+
+' O Medicamento se relaciona com a AGREGAÇÃO (Atendimento)
+Atendimento "1" *-- "*" Medicamento : prescreve >
+
+' --- ORDENHA (Contexto Geral) ---
+class Ordenha {
+    + id_ordenha : int <<PK>>
+    + data : date
+    + hora : time
+    + quantidade_litros : float
+}
+
+Ordenha "*" -- "1" Vaca
+Ordenha "*" -- "1" Ordenhador
+Ordenha "*" -- "*" Equipamento
+
+@enduml
